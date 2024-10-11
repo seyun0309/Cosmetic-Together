@@ -1,6 +1,7 @@
 package Capston.CosmeticTogether.domain.member.repository;
 
 import Capston.CosmeticTogether.domain.member.domain.Member;
+import Capston.CosmeticTogether.global.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByNickname(String nickName);
 
-    String findRoleById(Long id);
+    @Query("SELECT m.role FROM Member m WHERE m.id = :id")
+    Role findRoleById(@Param("id") Long id);
 
     Optional<Member> findByEmail(String email);
+
 }
