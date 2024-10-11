@@ -4,14 +4,21 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
-    USER("USER", "유저"),
-    GUEST("GUEST", "게스트");
+    USER("USER"),
+    GUEST("GUEST");
 
-    private final String code ;
-    private final String description;
+    private final String value ;
 
-    Role(String code,  String description) {
-        this.code = code;
-        this.description = description;
+    Role(String value) {
+        this.value = value;
+    }
+
+    public static Role fromValue(String value) {
+        for (Role role : values()) {
+            if (role.value.equalsIgnoreCase(value)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("지원하지 않는 권한입니다: " + value);
     }
 }
