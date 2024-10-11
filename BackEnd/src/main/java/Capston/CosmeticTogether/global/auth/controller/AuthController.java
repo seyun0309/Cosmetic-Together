@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/auth")
+@RequestMapping("/api/v1")
 public class AuthController {
     private final AuthService authService;
     private final JwtProvider jwtProvider;
@@ -36,6 +36,7 @@ public class AuthController {
         SignUpResponseDTO responseDTO = authService.signUp(signUpRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
+
     //이메일 유니크 속성 고려해봐야 함
 //    @PostMapping("/duplicate/email")
 //    @Operation(summary = "이메일 중복 검사 로직", description = "이메일 중복 검사를 진행합니다.")
