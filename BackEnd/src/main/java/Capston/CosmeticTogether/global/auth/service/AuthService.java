@@ -168,7 +168,6 @@ public class AuthService {
             if (passwordEncoder.matches(loginRequestDTO.getPassword(), member.getPassword())) {
                 SecurityMemberDTO securityMemberDTO = SecurityMemberDTO.builder()
                         .id(member.getId())
-                        .userName(member.getUserName())
                         .email(member.getEmail())
                         .nickName(member.getNickname())
                         .role(member.getRole())
