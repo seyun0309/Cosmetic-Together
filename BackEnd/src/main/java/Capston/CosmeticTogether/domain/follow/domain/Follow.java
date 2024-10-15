@@ -18,11 +18,11 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "follow")
 public class Follow extends BaseEntity {
 
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "follower_member_id")
     @ManyToOne
     private Member follower;
 
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "following_member_id")
     @ManyToOne
-    private Member followee;
+    private Member following;
 }
