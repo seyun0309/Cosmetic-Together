@@ -72,7 +72,6 @@ public class FollowService {
         return followingMember.getNickname();
     }
 
-    //TODO 반환값 변경해야 함(사진+닉네임)
     public List<GetFollowAndFollowingMemberDTO> getFollowers() {
         // 1. 로그인 한 사용자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());

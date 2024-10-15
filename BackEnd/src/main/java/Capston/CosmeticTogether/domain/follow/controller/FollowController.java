@@ -31,7 +31,6 @@ public class FollowController {
         return ResponseEntity.ok(unfollowingMemberNickName + " 님을 팔로우 취소하였습니다");
     }
 
-    //TODO 사진 같이 전달
     @GetMapping("/followers")
     @Operation(summary = "[API] 본인의 팔로워 가져오기 - 토큰 필요", description = "본인의 팔로워를 사진, 이름과 함께 전달합니다")
     public ResponseEntity<List<GetFollowAndFollowingMemberDTO>> getFollowers() {
