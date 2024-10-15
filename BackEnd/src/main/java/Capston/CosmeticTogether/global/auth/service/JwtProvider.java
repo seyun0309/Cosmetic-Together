@@ -61,7 +61,7 @@ public class JwtProvider {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .nickName(nickName)
-                .role(memberRepository.findRoleById(securityMemberDTO.getId()))
+                .role(String.valueOf(memberRepository.findRoleById(securityMemberDTO.getId())))
                 .build();
     }
 
@@ -69,6 +69,7 @@ public class JwtProvider {
         Claims claims = Jwts.claims().setSubject("id");
         claims.put("email", securityMemberDTO.getEmail());
         claims.put("role", securityMemberDTO.getRole().name());
+        claims.put("nickName", securityMemberDTO.getNickName());
         claims.setId(String.valueOf(securityMemberDTO.getId()));
         Date now = new Date();
 

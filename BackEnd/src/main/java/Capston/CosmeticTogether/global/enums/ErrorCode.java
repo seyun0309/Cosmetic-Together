@@ -27,7 +27,31 @@ public enum ErrorCode {
 
     // Token
     MISMATCH_REFRESH_TOKEN(401, "T001", "유효하지 않은 리프레시 토큰입니다"),
-    NO_PERMISSION(401, "T002", "요청에 대한 권한이 없습니다");
+    NO_PERMISSION(401, "T002", "요청에 대한 권한이 없습니다"),
+
+    // Board
+    BOARD_NOT_FOUND(400, "B001", "존재하는 않는 게시글입니다"),
+    NOT_WRITER_OF_POST(400, "B002", "게시글의 작성자가 아닙니다"),
+
+    // Form
+    USER_INFO_NOT_COMPLETED(400, "F001", "추가 정보 기입이 필요합니다"),
+    FORM_NOT_FOUND(400, "F002", "존재하는 않는 폼입니다"),
+    FORM_NOT_ACTIVE(400, "F003", "폼이 아직 활성화 상태가 아닙니다"),
+    NOT_WRITER_OF_FORM(400, "F004", "폼의 작성자가 아닙니다"),
+    ORDER_EXISTS(400, "F005", "주문이 있는 폼은 수정이 불가능합니다"),
+
+    // Follow
+    SELF_FOLLOW(400, "FW001", "자기 자신을 팔로우하였습니다."),
+    ALREADY_FOLLOW(400, "FW002", "이미 팔로우하였습니다."),
+    NOT_FOLLOWING(400, "FW003", "팔로우 한 상태가 아닙니다"),
+
+    //S3(Image)
+    EMPTY_FILE_EXCEPTION(400, "S001", "파일이 비어있습니다"),
+    IO_EXCEPTION_ON_IMAGE_UPLOAD(500, "S002", "이미지 업로드 중에 IO 예외 발생"),
+    NO_FILE_EXTENSION(400, "S003", "확장자가 없습니다"),
+    INVALID_FILE_EXTENSION(400, "S004", "jpg, jpeg, png, gif가 아닌 확장자가 들어왔습니다"),
+    PUT_OBJECT_EXCEPTION(500, "S005", "S3에 저장할 때 문제가 발생하였습니다"),
+    IO_EXCEPTION_ON_IMAGE_DELETE(500, "S006", "파일을 삭제 중에 입출력 예외 발생");
 
     private final String code;
     private final String message;

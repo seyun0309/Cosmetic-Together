@@ -5,10 +5,7 @@ import Capston.CosmeticTogether.domain.board.domain.Board;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -19,15 +16,15 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "likes")
 public class Likes extends BaseEntity {
 
-    @JoinColumn(columnDefinition = "varchar(100)",nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne
     private Member member;
 
-    @JoinColumn(columnDefinition = "varchar(100)",nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne
     private Board board;
 
     @Column(nullable = false)
-    private boolean is_valid;
-
+    @Setter
+    private boolean isValid;
 }

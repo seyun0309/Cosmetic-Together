@@ -2,6 +2,7 @@ package Capston.CosmeticTogether.domain.follow.service;
 
 
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
+import Capston.CosmeticTogether.domain.follow.dto.response.GetFollowAndFollowingMemberDTO;
 import Capston.CosmeticTogether.domain.follow.repository.FollowRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
@@ -31,18 +32,18 @@ public class FollowService {
     public String followMember(Long followingId) {
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        // 본인을 팔로잉 하는지 검사
+        // 자기자신을 팔로잉 하는지 검사
         if(followingId.equals(loginMember.getId())) {
-            throw new BusinessException(ErrorCode.SELF_FOLLOW);
+            throw new BusinessException("자기 자신을 팔로우하는건 불가능합니다", ErrorCode.SELF_FOLLOW);
         }
 
         // DB에 있는 id인지 검사
-        Member followingMember = memberRepository.findById(followingId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Member followingMember = memberRepository.findById(followingId).orElseThrow(() -> new BusinessException("해당 사용자가 존재하지 않습니다", ErrorCode.MEMBER_NOT_FOUND));
 
         // 기존에 팔로잉 된 거였는지 검사
         Optional<Follow> checkFollow = followRepository.findByFollowerIdAndFollowingId(followingId, loginMember.getId());
         if(checkFollow.isPresent()) {
-            throw new BusinessException(ErrorCode.ALREADY_FOLLOW);
+            throw new BusinessException("이미 팔로우하였습니다", ErrorCode.ALREADY_FOLLOW);
         }
 
         // 정상적으로 팔로잉 진행
@@ -56,7 +57,7 @@ public class FollowService {
     public String unfollowMember(Long unfollowingId) {
         // 1. 로그인 한 사용자 가져오기 / 언팔로우 대상자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        Member followingMember = memberRepository.findById(unfollowingId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Member followingMember = memberRepository.findById(unfollowingId).orElseThrow(() -> new BusinessException("존재하는 사용자가 아닙니다", ErrorCode.MEMBER_NOT_FOUND));
 
         // 2. DB에 있는 id인지 검사
         Optional<Follow> checkFollow = followRepository.findByFollowerIdAndFollowingId(unfollowingId, loginMember.getId());
@@ -66,35 +67,42 @@ public class FollowService {
             // 3. 언팔로잉 진행
             followRepository.delete(follow);
         } else {
-            throw new BusinessException(ErrorCode.NOT_FOLLOWING);
+            throw new BusinessException("팔로우 한 사용자가 아닙니다", ErrorCode.NOT_FOLLOWING);
         }
         return followingMember.getNickname();
     }
 
-    //TODO 반환값 변경해야 함(사진+닉네임)
-    public List<String> getFollowers() {
+    public List<GetFollowAndFollowingMemberDTO> getFollowers() {
         // 1. 로그인 한 사용자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         // 2. 팔로워 리스트 가져오기
-        List<String> followerMemberList = new ArrayList<>();
+        List<GetFollowAndFollowingMemberDTO> followerMemberList = new ArrayList<>();
 
         for(Follow follow : loginMember.getFollowerList()) {
-            followerMemberList.add(follow.getFollower().getNickname());
+            GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
+                    .nickname(follow.getFollower().getNickname())
+                    .profileUrl(follow.getFollower().getProfile_url())
+                    .build();
+            followerMemberList.add(getFollowAndFollowingMemberDTO);
         }
 
         return followerMemberList;
     }
 
-    public List<String> getFollowings() {
+    public List<GetFollowAndFollowingMemberDTO> getFollowings() {
         // 1. 로그인 한 사용자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         // 2. 팔로워 리스트 가져오기
-        List<String> followingMemberList = new ArrayList<>();
+        List<GetFollowAndFollowingMemberDTO> followingMemberList = new ArrayList<>();
 
-        for(Follow follow : loginMember.getFollowingList()) {
-            followingMemberList.add(follow.getFollowing().getNickname());
+        for(Follow follow : loginMember.getFollowerList()) {
+            GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
+                    .nickname(follow.getFollower().getNickname())
+                    .profileUrl(follow.getFollower().getProfile_url())
+                    .build();
+            followingMemberList.add(getFollowAndFollowingMemberDTO);
         }
 
         return followingMemberList;
