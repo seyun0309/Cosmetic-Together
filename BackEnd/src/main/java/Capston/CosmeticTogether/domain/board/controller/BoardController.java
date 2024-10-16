@@ -2,7 +2,7 @@ package Capston.CosmeticTogether.domain.board.controller;
 
 import Capston.CosmeticTogether.domain.board.dto.request.CreateBoardRequestDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.GetBoardResponseDTO;
-import Capston.CosmeticTogether.domain.board.dto.response.UpdateFormResponseDTO;
+import Capston.CosmeticTogether.domain.board.dto.response.UpdateBoardResponseDTO;
 import Capston.CosmeticTogether.domain.board.service.BoardService;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -64,8 +62,8 @@ public class BoardController {
     // 게시글 수정 정보 띄우기
     @PostMapping("/info/{boardId}")
     @Operation(summary = "[UI] 게시글 수정 정보 화면에 띄우기", description = "해당 게시글의 boardId를 URL 경로에 포함시켜 수정 단계에서 화면에 해당 게시글 정보를 화면에 띄우는 역할")
-    public ResponseEntity<UpdateFormResponseDTO> getBoardUpdateInfo(@PathVariable("boardId") Long boardId) {
-        UpdateFormResponseDTO response = boardService.getBoardUpdateInfo(boardId);
+    public ResponseEntity<UpdateBoardResponseDTO> getBoardUpdateInfo(@PathVariable("boardId") Long boardId) {
+        UpdateBoardResponseDTO response = boardService.getBoardUpdateInfo(boardId);
         return ResponseEntity.ok(response);
     }
     // 게시글 수정
