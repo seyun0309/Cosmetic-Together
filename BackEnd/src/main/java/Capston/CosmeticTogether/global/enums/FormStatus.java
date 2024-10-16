@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 public enum FormStatus {
-    ACTIVE("S001", "활성"),
+    ACTIVE("S001", "판매중"),
     CLOSED("S002", "마감");
 
     private final String code ;
