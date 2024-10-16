@@ -73,7 +73,7 @@ public class BoardController {
     @Operation(summary = "[API] 본인 게시글 수정 - 토큰 필요", description = "해당 게시글의 boardId를 URL 경로에 포함하고 이미지 파일(images)과 게시글 내용(request)을 서버에 전송하여 게시글 수정")
     public ResponseEntity<String> updateBoard(@PathVariable("boardId") Long boardId,
                                               @RequestPart(required = false, name = "images") List<MultipartFile> images,
-                                              @RequestPart(name = "request") @Valid CreateBoardRequestDTO createBoardRequestDTO) {
+                                              @RequestPart(required = false, name = "request") @Valid CreateBoardRequestDTO createBoardRequestDTO) {
 
         boardService.updateBoard(boardId, images, createBoardRequestDTO);
         return ResponseEntity.ok("게시글이 수정되었습니다");

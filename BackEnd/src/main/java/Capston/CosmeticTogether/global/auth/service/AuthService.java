@@ -3,6 +3,7 @@ package Capston.CosmeticTogether.global.auth.service;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
 import Capston.CosmeticTogether.global.auth.dto.kakao.KakaoProfile;
+import Capston.CosmeticTogether.global.auth.dto.request.DuplicateDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.LoginRequestDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.SignUpRequestDTO;
 import Capston.CosmeticTogether.global.auth.dto.response.SignUpResponseDTO;
@@ -148,14 +149,13 @@ public class AuthService {
                 .email(member.getEmail())
                 .build();
     }
-//
-//    public boolean checkLoginIdDuplicate(String LoginId) {
-//        return memberRepository.existsBy(LoginId);
-
-//    }
 
     public boolean checkNickNameDuplicate(String nickName) {
         return memberRepository.existsByNickname(nickName);
+    }
+
+    public boolean checkEmailDuplicate(DuplicateDTO.Email mailDTO) {
+        return memberRepository.existsByEmail(mailDTO.getEmail());
     }
 
     @Transactional
