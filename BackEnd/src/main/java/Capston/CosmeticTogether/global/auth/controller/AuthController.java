@@ -1,5 +1,8 @@
 package Capston.CosmeticTogether.global.auth.controller;
 
+import Capston.CosmeticTogether.global.auth.dto.EmailAuthResponseDto;
+import Capston.CosmeticTogether.global.auth.dto.MailAuthenticationDTO;
+import Capston.CosmeticTogether.global.auth.dto.MailDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.DuplicateDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.LoginRequestDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.SignUpRequestDTO;
@@ -8,12 +11,16 @@ import Capston.CosmeticTogether.global.auth.dto.token.GeneratedTokenDTO;
 import Capston.CosmeticTogether.global.auth.dto.token.TokenModifyDTO;
 import Capston.CosmeticTogether.global.auth.service.AuthService;
 import Capston.CosmeticTogether.global.auth.service.JwtProvider;
+import Capston.CosmeticTogether.global.auth.service.MailService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,12 +29,33 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
     private final JwtProvider jwtProvider;
+    private final MailService mailService;
+
 
     @GetMapping("/kakao/callback")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인")
     public ResponseEntity<GeneratedTokenDTO> kakaoCallback(@RequestParam(value = "code") String code) {
         GeneratedTokenDTO generatedTokenDTO = authService.kakaoLogin(code);
         return ResponseEntity.ok(generatedTokenDTO);
+    }
+
+    @GetMapping("/emailCheck")
+    @Operation(summary = "이메일 중복 검사 및 인증번호 전송", description = "사용자가 입력한 이메일을 중복 검사 한 후 중복이 아니라면 인증코드 발송합니다")
+    public ResponseEntity<String> sendAuthCode(@RequestBody DuplicateDTO.Email mailDTO) {
+        boolean isDuplicate = authService.checkEmailDuplicate(mailDTO);
+
+        if(isDuplicate) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 이메일입니다");
+        } else {
+            mailService.sendEmail(mailDTO);
+            return ResponseEntity.ok("인증코드가 발송되었습니다");
+        }
+    }
+
+    @PostMapping("/emailCheck")
+    @Operation(summary = "이메일 인증번호 검증", description = "사용자가 입력한 인증번호가 올바른 인증번호인지 검사합니다")
+    public EmailAuthResponseDto checkAuthCode(@RequestBody MailAuthenticationDTO mailAuthenticationDTO) {
+        return mailService.validateAuthCode(mailAuthenticationDTO.getEmail(), mailAuthenticationDTO.getAuthCode());
     }
 
     @PostMapping("/signup")
@@ -37,20 +65,7 @@ public class AuthController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    //이메일 유니크 속성 고려해봐야 함
-//    @PostMapping("/duplicate/email")
-//    @Operation(summary = "이메일 중복 검사 로직", description = "이메일 중복 검사를 진행합니다.")
-//    public ResponseEntity<String> checkLoginIdDuplicate(@RequestBody @Valid DuplicateDTO.Email duplicateLoginIdDTO ) {
-//        boolean isDuplicate = authService.checkLoginIdDuplicate(duplicateLoginIdDTO.getEmail());
-//
-//        if (isDuplicate) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 이메일입니다");
-//        } else {
-//            return ResponseEntity.ok("사용 가능한 이메일입니다");
-//        }
-//    }
-
-    @PostMapping("/duplicate/nickname")
+    @PostMapping("/nickname")
     @Operation(summary = "닉네임 중복 검사 로직", description = "닉네임 중복 검사를 진행합니다.")
     public ResponseEntity<String> checkNickNameDuplicate(@RequestBody @Valid DuplicateDTO.NickName duplicateNickNameDTO ) {
         boolean isDuplicate = authService.checkNickNameDuplicate(duplicateNickNameDTO.getNickName());
