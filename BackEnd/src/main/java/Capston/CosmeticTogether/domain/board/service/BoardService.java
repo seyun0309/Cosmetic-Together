@@ -4,7 +4,7 @@ import Capston.CosmeticTogether.domain.board.domain.Board;
 import Capston.CosmeticTogether.domain.board.domain.BoardImage;
 import Capston.CosmeticTogether.domain.board.dto.request.CreateBoardRequestDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.GetBoardResponseDTO;
-import Capston.CosmeticTogether.domain.board.dto.response.UpdateFormResponseDTO;
+import Capston.CosmeticTogether.domain.board.dto.response.UpdateBoardResponseDTO;
 import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +165,7 @@ public class BoardService {
         return response;
     }
 
-    public UpdateFormResponseDTO getBoardUpdateInfo(Long boardId) {
+    public UpdateBoardResponseDTO getBoardUpdateInfo(Long boardId) {
         // 1. 유효한 boardId인지 확인
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
 
@@ -178,7 +177,7 @@ public class BoardService {
                 .map(BoardImage::getImageUrl)
                 .collect(Collectors.toList());
 
-        return UpdateFormResponseDTO.builder()
+        return UpdateBoardResponseDTO.builder()
                 .description(board.getDescription())
                 .boardUrl(imageUrls)
                 .build();
