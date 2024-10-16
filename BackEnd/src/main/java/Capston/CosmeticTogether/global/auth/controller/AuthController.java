@@ -1,8 +1,7 @@
 package Capston.CosmeticTogether.global.auth.controller;
 
-import Capston.CosmeticTogether.global.auth.dto.EmailAuthResponseDto;
+import Capston.CosmeticTogether.global.auth.dto.EmailAuthResponseDTO;
 import Capston.CosmeticTogether.global.auth.dto.MailAuthenticationDTO;
-import Capston.CosmeticTogether.global.auth.dto.MailDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.DuplicateDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.LoginRequestDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.SignUpRequestDTO;
@@ -13,14 +12,11 @@ import Capston.CosmeticTogether.global.auth.service.AuthService;
 import Capston.CosmeticTogether.global.auth.service.JwtProvider;
 import Capston.CosmeticTogether.global.auth.service.MailService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,7 +50,7 @@ public class AuthController {
 
     @PostMapping("/emailCheck")
     @Operation(summary = "이메일 인증번호 검증", description = "사용자가 입력한 인증번호가 올바른 인증번호인지 검사합니다")
-    public EmailAuthResponseDto checkAuthCode(@RequestBody MailAuthenticationDTO mailAuthenticationDTO) {
+    public EmailAuthResponseDTO checkAuthCode(@RequestBody MailAuthenticationDTO mailAuthenticationDTO) {
         return mailService.validateAuthCode(mailAuthenticationDTO.getEmail(), mailAuthenticationDTO.getAuthCode());
     }
 
