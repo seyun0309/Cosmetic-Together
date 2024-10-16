@@ -1,14 +1,15 @@
 package Capston.CosmeticTogether.domain.form.domain;
 
+import Capston.CosmeticTogether.domain.favorites.domain.Favorites;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.global.common.BaseEntity;
 import Capston.CosmeticTogether.global.enums.FormStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @SuperBuilder
 @Getter
@@ -28,7 +29,43 @@ public class Form extends BaseEntity {
     @Column
     private String form_description;
 
+    @Column
+    private String formUrl;
+
+    @OneToMany(mappedBy = "form")
+    private List<Product> product;
+
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FormStatus form_status;
+    private FormStatus formStatus;
+
+    @Column
+    private LocalDateTime startDate;
+
+    @Column
+    private LocalDateTime endDate;
+
+    @OneToMany(mappedBy = "form")
+    private List<Favorites> favorites;
+
+    // 업데이트 메서드
+    public void update(String title, String form_description, String formUrl, LocalDateTime startDate, LocalDateTime endDate) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (form_description != null) {
+            this.form_description = form_description;
+        }
+        if (formUrl != null) {
+            this.formUrl = formUrl;
+        }
+        if (startDate != null) {
+            this.startDate = startDate;
+        }
+        if (endDate != null) {
+            this.endDate = endDate;
+        }
+    }
+
 }
