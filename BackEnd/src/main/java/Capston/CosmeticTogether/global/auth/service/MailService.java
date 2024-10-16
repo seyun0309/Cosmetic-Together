@@ -1,7 +1,6 @@
 package Capston.CosmeticTogether.global.auth.service;
 
-import Capston.CosmeticTogether.global.auth.dto.EmailAuthResponseDto;
-import Capston.CosmeticTogether.global.auth.dto.MailDTO;
+import Capston.CosmeticTogether.global.auth.dto.EmailAuthResponseDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.DuplicateDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -22,7 +21,7 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final RedisUtil redisUtil;
 
-    public EmailAuthResponseDto sendEmail(DuplicateDTO.Email mailDTO) {
+    public EmailAuthResponseDTO sendEmail(DuplicateDTO.Email mailDTO) {
         if (redisUtil.existData(mailDTO.getEmail())) {
             redisUtil.deleteData(mailDTO.getEmail());
         }
@@ -30,9 +29,9 @@ public class MailService {
         try {
             MimeMessage emailForm = createEmailForm(mailDTO.getEmail());
             mailSender.send(emailForm);
-            return new EmailAuthResponseDto(true, "인증번호가 메일로 전송되었습니다.");
+            return new EmailAuthResponseDTO(true, "인증번호가 메일로 전송되었습니다.");
         } catch (MessagingException | MailSendException e) {
-            return new EmailAuthResponseDto(false, "메일 전송 중 오류가 발생하였습니다. 다시 시도해주세요.");
+            return new EmailAuthResponseDTO(false, "메일 전송 중 오류가 발생하였습니다. 다시 시도해주세요.");
         }
     }
 
@@ -65,17 +64,17 @@ public class MailService {
         return message;
     }
 
-    public EmailAuthResponseDto validateAuthCode(String email, String authCode) {
+    public EmailAuthResponseDTO validateAuthCode(String email, String authCode) {
         String findAuthCode = redisUtil.getData(email);
         if (findAuthCode == null) {
-            return new EmailAuthResponseDto(false, "인증번호가 만료되었습니다. 다시 시도해주세요.");
+            return new EmailAuthResponseDTO(false, "인증번호가 만료되었습니다. 다시 시도해주세요.");
         }
 
         if (findAuthCode.equals(authCode)) {
-            return new EmailAuthResponseDto(true, "인증 성공에 성공했습니다.");
+            return new EmailAuthResponseDTO(true, "인증 성공에 성공했습니다.");
 
         } else {
-            return new EmailAuthResponseDto(false, "인증번호가 일치하지 않습니다.");
+            return new EmailAuthResponseDTO(false, "인증번호가 일치하지 않습니다.");
         }
     }
 }
