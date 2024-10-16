@@ -36,7 +36,7 @@ public enum ErrorCode {
     // Form
     USER_INFO_NOT_COMPLETED(400, "F001", "추가 정보 기입이 필요합니다"),
     FORM_NOT_FOUND(400, "F002", "존재하는 않는 폼입니다"),
-    FORM_NOT_ACTIVE(400, "F003", "폼이 아직 활성화 상태가 아닙니다"),
+    FORM_NOT_ACTIVE(400, "F003", "판매기간이 지난 폼입니다"),
     NOT_WRITER_OF_FORM(400, "F004", "폼의 작성자가 아닙니다"),
     ORDER_EXISTS(400, "F005", "주문이 있는 폼은 수정이 불가능합니다"),
 
