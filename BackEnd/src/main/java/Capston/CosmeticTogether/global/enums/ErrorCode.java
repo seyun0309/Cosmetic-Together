@@ -40,6 +40,14 @@ public enum ErrorCode {
     NOT_WRITER_OF_FORM(400, "F004", "폼의 작성자가 아닙니다"),
     ORDER_EXISTS(400, "F005", "주문이 있는 폼은 수정이 불가능합니다"),
 
+    // ORDER
+    ORDER_NOT_FOUND(400, "O001", "존재하는 주문이 아닙니다"),
+    NOT_BUYER_OF_ORDER(400, "O002", "해당 주문의 구매자가 아닙니다"),
+
+    // PRODUCT
+    PRODUCT_NOT_FOUND(400, "P001", "존재하는 제품이 아닙니다"),
+    PRODUCT_OUT_OF_STOCK(400, "P002", "재고가 부족합니다"),
+
     // Follow
     SELF_FOLLOW(400, "FW001", "자기 자신을 팔로우하였습니다."),
     ALREADY_FOLLOW(400, "FW002", "이미 팔로우하였습니다."),
