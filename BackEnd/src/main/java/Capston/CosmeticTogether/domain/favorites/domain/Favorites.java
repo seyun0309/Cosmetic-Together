@@ -29,9 +29,9 @@ public class Favorites extends BaseEntity {
     private Form form;
 
     @Column(nullable = false)
-    private boolean is_valid;
+    private boolean isValid;
 
     public void setValid(boolean b) {
-        this.is_valid = b;
+        this.isValid = b;
     }
 }
