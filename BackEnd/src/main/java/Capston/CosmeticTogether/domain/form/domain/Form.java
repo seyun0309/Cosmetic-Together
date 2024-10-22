@@ -7,6 +7,7 @@ import Capston.CosmeticTogether.global.enums.FormStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +34,7 @@ public class Form extends BaseEntity {
     private String formUrl;
 
     @OneToMany(mappedBy = "form")
+    @OrderBy("id ASC")
     private List<Product> product;
 
     @Setter
@@ -45,6 +47,9 @@ public class Form extends BaseEntity {
 
     @Column
     private LocalDateTime endDate;
+
+    @OneToMany(mappedBy = "form")
+    private List<Delivery> deliveries;
 
     @OneToMany(mappedBy = "form")
     private List<Favorites> favorites;
@@ -67,5 +72,4 @@ public class Form extends BaseEntity {
             this.endDate = endDate;
         }
     }
-
 }
