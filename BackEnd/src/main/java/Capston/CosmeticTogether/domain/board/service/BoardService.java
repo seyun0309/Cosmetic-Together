@@ -168,6 +168,36 @@ public class BoardService {
         return response;
     }
 
+    public List<GetBoardResponseDTO> searchBoardByKeyword(String keyword) {
+        // 1. 키워드가 포함된 게시글 불러오기
+        List<Board> boardList = boardRepository.findByDescriptionContaining(keyword);
+        List<GetBoardResponseDTO> response = new ArrayList<>();
+
+        // 2. 매핑해서 리턴
+        for(Board board : boardList) {
+            long likeCount = likesRepository.countLikesByBoardId(board.getId());
+
+            // 2-1. BoardImage 리스트에서 이미지 URL 추출
+            List<String> imageUrls = board.getBoardImages().stream()
+                    .map(BoardImage::getImageUrl)
+                    .collect(Collectors.toList());
+
+            // 2-2. 작성시간 포맷팅
+            String postTime = formatTime(board.getCreatedAt());
+
+            GetBoardResponseDTO getBoardResponseDTO = GetBoardResponseDTO.builder()
+                    .writerNickName(board.getMember().getNickname())
+                    .profileUrl(board.getMember().getProfile_url())
+                    .description(board.getDescription())
+                    .boardUrl(imageUrls)
+                    .likeCount(likeCount)
+                    .postTime(postTime)
+                    .build();
+            response.add(getBoardResponseDTO);
+        }
+        return response;
+    }
+
     public UpdateBoardResponseDTO getBoardUpdateInfo(Long boardId) {
         // 1. 유효한 boardId인지 확인
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
