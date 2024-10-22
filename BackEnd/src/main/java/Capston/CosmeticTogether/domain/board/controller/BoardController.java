@@ -20,7 +20,6 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/v1/board")
 public class BoardController {
-    private final S3ImageService s3ImageService;
     private final BoardService boardService;
 
     // 게시글 등록
@@ -56,6 +55,20 @@ public class BoardController {
     @Operation(summary = "[API] 팔로잉 게시글 조회 - 토큰 필요", description = "사용자가 팔로잉한 사용자의 최신 게시글들(List)을 리턴합니다")
     public ResponseEntity<List<GetBoardResponseDTO>> getFollowingMemberBoard() {
         List<GetBoardResponseDTO> response = boardService.getFollowingMemberBoard();
+        return ResponseEntity.ok(response);
+    }
+
+    // 키워드 조회
+    @GetMapping()
+    @Operation(summary = "[API] 키워드 통한 게시글 검색", description = "사용자가 키워드를 검색창에 넣으면 키워드가 포함된 게시글을 불러옵니다")
+    public ResponseEntity<List<GetBoardResponseDTO>> searchBoardByKeyword(@RequestParam(value = "keyword", required = false) String keyword) {
+        List<GetBoardResponseDTO> response;
+
+        if(keyword == null) {
+            response = boardService.getRecentBoard();
+        } else {
+            response = boardService.searchBoardByKeyword(keyword);
+        }
         return ResponseEntity.ok(response);
     }
 
