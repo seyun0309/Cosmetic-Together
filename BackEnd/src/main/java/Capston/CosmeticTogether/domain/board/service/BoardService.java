@@ -5,6 +5,7 @@ import Capston.CosmeticTogether.domain.board.domain.BoardImage;
 import Capston.CosmeticTogether.domain.board.dto.request.CreateBoardRequestDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.GetBoardResponseDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.UpdateBoardResponseDTO;
+import Capston.CosmeticTogether.domain.board.repository.BoardImageRepository;
 import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final BoardImageRepository boardImageRepository;
     private final MemberService memberService;
     private final LikesRepository likesRepository;
     private final S3ImageService s3ImageService;
@@ -54,7 +56,7 @@ public class BoardService {
         boardRepository.save(board);
     }
 
-    private void saveBoardImages(List<MultipartFile> images, Board board) {
+    public void saveBoardImages(List<MultipartFile> images, Board board) {
         List<BoardImage> boardImages = new ArrayList<>();
 
         for (MultipartFile image : images) {
@@ -65,7 +67,8 @@ public class BoardService {
             }
         }
 
-        board.getBoardImages().addAll(boardImages);
+        boardImageRepository.saveAll(boardImages);
+        board.setBoardImages(boardImages);
     }
 
     public GetBoardResponseDTO getBoard(Long boardId) {
@@ -132,7 +135,7 @@ public class BoardService {
         // 2. 로그인한 사용자가 팔로우한 사람들의 목록 가져오기
         List<Member> followingMembers = new ArrayList<>();
         for (Follow follow : loginMember.getFollowingList()) {
-            followingMembers.add(follow.getFollowing()); // Follow 엔티티에서 following 필드를 가져옴
+            followingMembers.add(follow.getFollower()); // Follow 엔티티에서 following 필드를 가져옴
         }
 
         // 3. 팔로우한 사람들의 게시글 조회
@@ -165,12 +168,46 @@ public class BoardService {
         return response;
     }
 
+    public List<GetBoardResponseDTO> searchBoardByKeyword(String keyword) {
+        // 1. 키워드가 포함된 게시글 불러오기
+        List<Board> boardList = boardRepository.findByDescriptionContaining(keyword);
+        List<GetBoardResponseDTO> response = new ArrayList<>();
+
+        // 2. 매핑해서 리턴
+        for(Board board : boardList) {
+            long likeCount = likesRepository.countLikesByBoardId(board.getId());
+
+            // 2-1. BoardImage 리스트에서 이미지 URL 추출
+            List<String> imageUrls = board.getBoardImages().stream()
+                    .map(BoardImage::getImageUrl)
+                    .collect(Collectors.toList());
+
+            // 2-2. 작성시간 포맷팅
+            String postTime = formatTime(board.getCreatedAt());
+
+            GetBoardResponseDTO getBoardResponseDTO = GetBoardResponseDTO.builder()
+                    .writerNickName(board.getMember().getNickname())
+                    .profileUrl(board.getMember().getProfile_url())
+                    .description(board.getDescription())
+                    .boardUrl(imageUrls)
+                    .likeCount(likeCount)
+                    .postTime(postTime)
+                    .build();
+            response.add(getBoardResponseDTO);
+        }
+        return response;
+    }
+
     public UpdateBoardResponseDTO getBoardUpdateInfo(Long boardId) {
         // 1. 유효한 boardId인지 확인
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
 
         // 2. 로그인한 사용자랑 게시글의 작성자가 같은지 확인
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        if(!loginMember.equals(board.getMember())) {
+            throw new BusinessException(ErrorCode.NOT_WRITER_OF_POST);
+        }
 
         // 3. 정보 매핑해서 리턴
         List<String> imageUrls = board.getBoardImages().stream()
@@ -195,10 +232,13 @@ public class BoardService {
             board.update(createBoardRequestDTO.getDescription());
 
             // 3-1. 기존 이미지 삭제
-            board.getBoardImages().clear();
 
             // 3. 이미지 저장 처리
             if (images != null && !images.isEmpty()) {
+                for(BoardImage boardImage : board.getBoardImages()) {
+                    boardImageRepository.delete(boardImage);
+                    s3ImageService.deleteImageFromS3(boardImage.getImageUrl());
+                }
                 saveBoardImages(images, board);
             }
 

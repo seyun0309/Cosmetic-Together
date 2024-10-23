@@ -81,8 +81,8 @@ public class FollowService {
 
         for(Follow follow : loginMember.getFollowerList()) {
             GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
-                    .nickname(follow.getFollower().getNickname())
-                    .profileUrl(follow.getFollower().getProfile_url())
+                    .nickname(follow.getFollowing().getNickname())
+                    .profileUrl(follow.getFollowing().getProfile_url())
                     .build();
             followerMemberList.add(getFollowAndFollowingMemberDTO);
         }
@@ -97,7 +97,7 @@ public class FollowService {
         // 2. 팔로워 리스트 가져오기
         List<GetFollowAndFollowingMemberDTO> followingMemberList = new ArrayList<>();
 
-        for(Follow follow : loginMember.getFollowerList()) {
+        for(Follow follow : loginMember.getFollowingList()) {
             GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
                     .nickname(follow.getFollower().getNickname())
                     .profileUrl(follow.getFollower().getProfile_url())

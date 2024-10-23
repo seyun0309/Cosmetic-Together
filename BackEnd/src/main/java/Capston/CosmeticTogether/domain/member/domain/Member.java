@@ -56,16 +56,28 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AuthType authType;
 
-    @OneToMany(mappedBy = "following")
+    @OneToMany(mappedBy = "follower")
     @JsonIgnore
     private List<Follow> followerList;
 
-    @OneToMany(mappedBy = "follower")
+    @OneToMany(mappedBy = "following")
     @JsonIgnore
     private List<Follow> followingList;
 
     @Setter
     private String refreshToken;
+
+    // 초기 데이터 삽입시 사용하는 생성자
+    public Member(String userName, String email, String password, String phone, String nickName, String address, Role role, AuthType authType) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.nickname = nickName;
+        this.address = address;
+        this.role = role;
+        this.authType = authType;
+    }
 
     public void updateMemberInfo(MemberProfileDTO memberProfileDTO, Role role) {
         this.userName = memberProfileDTO.getUserName();
