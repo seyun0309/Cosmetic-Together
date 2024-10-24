@@ -139,7 +139,7 @@ public class MemberProfileService {
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
                     .organizer_url(form.getOrganizer().getProfile_url())
-                    .productStatus(form.getFormStatus().getDescription())
+                    .formStatus(form.getFormStatus().getDescription())
                     .build();
 
             response.add(formResponseDTO);
@@ -197,7 +197,7 @@ public class MemberProfileService {
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
                     .organizer_url(form.getOrganizer().getProfile_url())
-                    .productStatus(form.getFormStatus().getDescription())
+                    .formStatus(form.getFormStatus().getDescription())
                     .build();
 
             response.add(formResponseDTO);

@@ -6,6 +6,7 @@ import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,13 +27,22 @@ public class Order extends BaseEntity {
     @ManyToOne
     private Member buyer;
 
-    @JoinColumn(nullable = false)
-    @ManyToOne
-    private Product product;
-
-    @Column(nullable = false)
-    private int quantity;
+    @OneToMany(mappedBy = "order")
+    private List<OrderProduct> orderProducts;
 
     @Column
-    private String delivery_msg;
+    private String recipientName;
+
+    @Column
+    private String recipientPhone;
+
+    @Column
+    private String recipientAddress;
+
+    @Column(nullable = false)
+    private int totalPrice;
+
+    public void saveProducts(List<OrderProduct> orderProducts) {
+        this.orderProducts = orderProducts;
+    }
 }

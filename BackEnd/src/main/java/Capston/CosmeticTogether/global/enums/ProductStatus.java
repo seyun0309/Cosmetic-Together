@@ -1,14 +1,15 @@
 package Capston.CosmeticTogether.global.enums;
 
-public enum ProductStatus {
-    INSTOCK("INSTOCK", "판매중"),
-    OUTSTOCK("OUTSTOCK", "품절");
+import lombok.Getter;
 
-    private final String code ;
+@Getter
+public enum ProductStatus {
+    INSTOCK("판매중"),
+    OUTSTOCK("품절");
+
     private final String description;
 
-    ProductStatus(String code,  String description) {
-        this.code = code;
+    ProductStatus(String description) {
         this.description = description;
     }
 }
