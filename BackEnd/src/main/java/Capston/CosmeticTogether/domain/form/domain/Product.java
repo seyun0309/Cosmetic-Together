@@ -39,22 +39,7 @@ public class Product extends BaseEntity {
     @JoinColumn(nullable = false)
     private Form form;
 
-    public void update(String productName, Integer price, Integer stock, Integer maxPurchaseLimit, String productUrl) {
-        if (productName != null) {
-            this.productName = productName;
-        }
-        if (price != null) {
-            this.price = price;
-        }
-        if (stock != null) {
-            this.stock = stock;
-        }
-        if (maxPurchaseLimit != null) {
-            this.maxPurchaseLimit = maxPurchaseLimit;
-        }
-        if (productUrl != null) {
-            this.product_url = productUrl;
-        }
+    public void decreaseStock(Integer quantity) {
+        this.stock -= quantity;
     }
-
 }
