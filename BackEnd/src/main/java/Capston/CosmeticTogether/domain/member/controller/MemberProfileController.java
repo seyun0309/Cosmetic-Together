@@ -71,7 +71,6 @@ public class MemberProfileController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO 내가 작성한 게시물 조회
     @GetMapping("/posts")
     @Operation(summary = "내가 작성한 게시글 조회 - 토큰필요", description = "토큰을 통해 해당 사용자가 작성한 게시글을 조회합니다")
     public ResponseEntity<List<GetBoardResponseDTO>> getMyBoard() {
@@ -79,7 +78,6 @@ public class MemberProfileController {
         return ResponseEntity.ok(response);
     }
 
-    //TODO 내가 작성한 폼 조회
     @GetMapping("/forms")
     @Operation(summary = "내가 작성한 폼 조회 - 토큰필요", description = "토큰을 통해 해당 사용자가 작성한 폼을 조회합니다")
     public ResponseEntity<List<FormResponseDTO>> getMyForm() {
