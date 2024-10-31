@@ -35,7 +35,7 @@ public class AuthController {
         return ResponseEntity.ok(generatedTokenDTO);
     }
 
-    @GetMapping("/emailCheck")
+    @PostMapping("/email/code")
     @Operation(summary = "이메일 중복 검사 및 인증번호 전송", description = "사용자가 입력한 이메일을 중복 검사 한 후 중복이 아니라면 인증코드 발송합니다")
     public ResponseEntity<String> sendAuthCode(@RequestBody DuplicateDTO.Email mailDTO) {
         boolean isDuplicate = authService.checkEmailDuplicate(mailDTO);
