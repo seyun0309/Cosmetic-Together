@@ -1,7 +1,8 @@
 package Capston.CosmeticTogether.domain.member.domain;
 
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
-import Capston.CosmeticTogether.domain.member.dto.MemberProfileDTO;
+import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.global.common.BaseEntity;
 import Capston.CosmeticTogether.global.enums.AuthType;
 import Capston.CosmeticTogether.global.enums.Role;
@@ -79,14 +80,14 @@ public class Member extends BaseEntity {
         this.authType = authType;
     }
 
-    public void updateMemberInfo(MemberProfileDTO memberProfileDTO, Role role) {
-        this.userName = memberProfileDTO.getUserName();
-        this.email = memberProfileDTO.getEmail();
-        this.phone = memberProfileDTO.getPhone();
-        this.nickname = memberProfileDTO.getNickname();
-        this.address = memberProfileDTO.getAddress();
-        this.profile_url = memberProfileDTO.getProfile_url();
-        this.background_url = memberProfileDTO.getBackground_url();
+    public void updateMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO, Role role) {
+        this.userName = memberUpdateRequestDTO.getUserName();
+        this.email = memberUpdateRequestDTO.getEmail();
+        this.phone = memberUpdateRequestDTO.getPhone();
+        this.nickname = memberUpdateRequestDTO.getNickname();
+        this.address = memberUpdateRequestDTO.getAddress();
+        this.profile_url = memberUpdateRequestDTO.getProfile_url();
+        this.background_url = memberUpdateRequestDTO.getBackground_url();
         this.role = role;
     }
 }
