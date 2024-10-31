@@ -1,4 +1,4 @@
-package Capston.CosmeticTogether.domain.member.dto;
+package Capston.CosmeticTogether.domain.member.dto.response;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberProfileDTO {
+public class MemberProfileResponseDTO {
     @NotBlank
     private String userName;
 
