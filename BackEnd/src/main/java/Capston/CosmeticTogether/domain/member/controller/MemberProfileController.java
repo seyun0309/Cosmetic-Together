@@ -3,7 +3,8 @@ package Capston.CosmeticTogether.domain.member.controller;
 
 import Capston.CosmeticTogether.domain.board.dto.response.GetBoardResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
-import Capston.CosmeticTogether.domain.member.dto.MemberProfileDTO;
+import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
 import Capston.CosmeticTogether.domain.member.service.MemberProfileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,8 +41,8 @@ public class MemberProfileController {
     // 사용자 정보 화면에 띄우는 거
     @GetMapping("/info")
     @Operation(summary = "[UI] 사용자 정보 리턴 - 토큰필요", description = "사용자의 정보를 수정하는 화면에서 기존의 있던 사용자 정보를 화면단에 띄우는 데에 사용합니다")
-    public ResponseEntity<MemberProfileDTO> getMemberProfile() {
-        MemberProfileDTO response = memberProfileService.getMemberProfile();
+    public ResponseEntity<MemberProfileResponseDTO> getMemberProfile() {
+        MemberProfileResponseDTO response = memberProfileService.getMemberProfile();
         return ResponseEntity.ok(response);
     }
 
@@ -50,8 +51,8 @@ public class MemberProfileController {
     @Operation(summary = "사용자 정보 수정 - 토큰필요", description = "image1(프로필 사진), image2(배경사진), request(사용자 정보)로 서버에 데이터를 보내면 사용자 정보 수정이 완료됩니다")
     public ResponseEntity<String> updateMemberProfile(@RequestPart(required = false, name = "image1") MultipartFile profileUrl,
                                                       @RequestPart(required = false, name = "image2") MultipartFile backgroundUrl,
-                                                      @RequestPart(name = "request") @Valid MemberProfileDTO memberProfileDTO) {
-        memberProfileService.updateMemberProfile(profileUrl, backgroundUrl, memberProfileDTO);
+                                                      @RequestPart(name = "request") @Valid MemberUpdateRequestDTO memberUpdateRequestDTO) {
+        memberProfileService.updateMemberProfile(profileUrl, backgroundUrl, memberUpdateRequestDTO);
         return ResponseEntity.ok("회원 정보가 수정되었습니다");
     }
 

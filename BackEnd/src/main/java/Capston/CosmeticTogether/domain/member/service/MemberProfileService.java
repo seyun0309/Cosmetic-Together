@@ -12,7 +12,8 @@ import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
 import Capston.CosmeticTogether.domain.form.repository.FormRepository;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
-import Capston.CosmeticTogether.domain.member.dto.MemberProfileDTO;
+import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
 import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -51,12 +53,12 @@ public class MemberProfileService {
         return passwordEncoder.matches(passwordCheckDTO.getPassword(), loginMember.getPassword());
     }
 
-    public MemberProfileDTO getMemberProfile() {
+    public MemberProfileResponseDTO getMemberProfile() {
         // 1. 로그인 사용자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         // 2. 사용자 정보 매핑해서 리턴
-        return MemberProfileDTO.builder()
+        return MemberProfileResponseDTO.builder()
                 .userName(loginMember.getUserName())
                 .email(loginMember.getEmail())
                 .phone(loginMember.getPhone())
@@ -67,7 +69,8 @@ public class MemberProfileService {
                 .build();
     }
 
-    public void updateMemberProfile(MultipartFile profileUrl, MultipartFile backgroundUrl, MemberProfileDTO memberProfileDTO) {
+    @Transactional
+    public void updateMemberProfile(MultipartFile profileUrl, MultipartFile backgroundUrl, MemberUpdateRequestDTO memberUpdateRequestDTO) {
         // 1. 로그인 사용자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -76,18 +79,18 @@ public class MemberProfileService {
         //2.1 이미지가 원래 없었다면 그냥 넣기
         if(loginMember.getProfile_url().isEmpty()) {
             s3ImageService.upload(profileUrl);
-            loginMember.updateMemberInfo(memberProfileDTO, Role.USER);
+            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         } else {
             // 2.2 이미지가 원래 있었다면 기존 이미지 삭제하고 진행
             s3ImageService.deleteImageFromS3(loginMember.getProfile_url());
-            loginMember.updateMemberInfo(memberProfileDTO, Role.USER);
+            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         }
         if(loginMember.getBackground_url().isEmpty()) {
             s3ImageService.upload(backgroundUrl);
-            loginMember.updateMemberInfo(memberProfileDTO, Role.USER);
+            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         } else {
             s3ImageService.deleteImageFromS3(loginMember.getBackground_url());
-            loginMember.updateMemberInfo(memberProfileDTO, Role.USER);
+            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         }
 
         memberRepository.save(loginMember);

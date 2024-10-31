@@ -338,7 +338,7 @@ public class FormService {
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         // 2. formId 유효성 검사
-        Form form = formRepository.findById(formId).orElseThrow(() -> new BusinessException("존재하지 않는 폼입니다", ErrorCode.FORM_NOT_FOUND));
+        Form form = formRepository.findDeleteAtIsNullById(formId).orElseThrow(() -> new BusinessException("존재하지 않는 폼입니다", ErrorCode.FORM_NOT_FOUND));
 
         // 3. 로그인 사용자와 form 작성자 비교
         if(!(loginMember.equals(form.getOrganizer()))) {
@@ -352,11 +352,49 @@ public class FormService {
         String formattedStartDate = form.getStartDate().format(formatter);
         String formattedEndDate = form.getEndDate().format(formatter);
 
+        // 4. 제품 상태 확인 및 업데이트 로직
+        boolean allOutOfStock = true;
+
+        for (Product product : form.getProduct()) {
+            // 4-1. 해당 제품의 주문 수량 계산
+            Integer totalOrderedQuantity = orderRepository.sumQuantityByProductId(product.getId());
+
+            if (totalOrderedQuantity == null) {
+                totalOrderedQuantity = 0;
+            }
+
+            // 4-2. 주문 수량과 재고 비교
+            if (totalOrderedQuantity >= product.getStock()) {
+                // 4-3. 재고가 소진되었을 경우, productStatus를 OUTSTOCK으로 변경
+                product.setProductStatus(ProductStatus.OUTSTOCK);
+            } else {
+                // 4-4. 재고가 남아있는 경우, 전체 품절 여부를 false로 설정
+                allOutOfStock = false;
+            }
+        }
+
+        // 5. 모든 제품 품절 및 판매기간 지난 경우 formStatus 마감으로 설정
+        if (allOutOfStock || (form.getStartDate().isAfter(LocalDateTime.now()) || form.getEndDate().isBefore(LocalDateTime.now()))) {
+            form.setFormStatus(FormStatus.CLOSED);
+        }
+
+        // 7. 매핑해서 리턴
         return UpdateFormInfoResponseDTO.builder()
+                .thumbnail(form.getFormUrl())
+                .organizerName(form.getOrganizer().getNickname())
+                .organizer_profileUrl(form.getOrganizer().getProfile_url())
                 .title(form.getTitle())
-                .formUrl(form.getFormUrl())
+                .form_description(form.getForm_description())
                 .startDate(formattedStartDate)
                 .endDate(formattedEndDate)
+                .productName(form.getProduct().stream().map(Product::getProductName).collect(Collectors.toList()))
+                .price(form.getProduct().stream().map(product -> product.getPrice() + "원").collect(Collectors.toList()))
+                .product_url(form.getProduct().stream().map(Product::getProduct_url).collect(Collectors.toList()))
+                .maxPurchaseLimit(form.getProduct().stream().map(product -> product.getMaxPurchaseLimit() + "개").collect(Collectors.toList()))
+                .stock(form.getProduct().stream().map(product -> product.getStock() + "개").collect(Collectors.toList()))
+                .productStatuses(form.getProduct().stream().map(product -> product.getProductStatus().getDescription()).collect(Collectors.toList()))
+                .deliveryOption(form.getDeliveries().stream().map(Delivery::getDeliveryOption).collect(Collectors.toList()))
+                .deliveryCost(form.getDeliveries().stream().map(delivery -> delivery.getDeliveryCost() + "원").collect(Collectors.toList()))
                 .build();
     }
 
