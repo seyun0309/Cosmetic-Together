@@ -3,7 +3,7 @@ package Capston.CosmeticTogether.domain.member.service;
 
 import Capston.CosmeticTogether.domain.board.domain.Board;
 import Capston.CosmeticTogether.domain.board.domain.BoardImage;
-import Capston.CosmeticTogether.domain.board.dto.response.GetBoardResponseDTO;
+import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
 import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import Capston.CosmeticTogether.domain.favorites.repository.FavoritesRepository;
@@ -63,9 +63,9 @@ public class MemberProfileService {
                 .email(loginMember.getEmail())
                 .phone(loginMember.getPhone())
                 .address(loginMember.getAddress())
-                .status_msg(loginMember.getStatus_msg())
-                .profile_url(loginMember.getProfile_url())
-                .background_url(loginMember.getBackground_url())
+                .status_msg(loginMember.getStatusMsg())
+                .profile_url(loginMember.getProfileUrl())
+                .background_url(loginMember.getBackgroundUrl())
                 .build();
     }
 
@@ -77,26 +77,26 @@ public class MemberProfileService {
         // 2. 정보 수정
 
         //2.1 이미지가 원래 없었다면 그냥 넣기
-        if(loginMember.getProfile_url().isEmpty()) {
+        if(loginMember.getProfileUrl().isEmpty()) {
             s3ImageService.upload(profileUrl);
             loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         } else {
             // 2.2 이미지가 원래 있었다면 기존 이미지 삭제하고 진행
-            s3ImageService.deleteImageFromS3(loginMember.getProfile_url());
+            s3ImageService.deleteImageFromS3(loginMember.getProfileUrl());
             loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         }
-        if(loginMember.getBackground_url().isEmpty()) {
+        if(loginMember.getBackgroundUrl().isEmpty()) {
             s3ImageService.upload(backgroundUrl);
             loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         } else {
-            s3ImageService.deleteImageFromS3(loginMember.getBackground_url());
+            s3ImageService.deleteImageFromS3(loginMember.getBackgroundUrl());
             loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
         }
 
         memberRepository.save(loginMember);
     }
 
-    public List<GetBoardResponseDTO> getLikedBoard() {
+    public List<BoardDetailResponseDTO> getLikedBoard() {
         // 1. 로그인 사용자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -104,18 +104,18 @@ public class MemberProfileService {
         List<Board> boardList = likesRepository.findLikedBoardsByMemberId(loginMember.getId());
 
         // 3. 매핑해서 리턴
-        List<GetBoardResponseDTO> response = new ArrayList<>();
+        List<BoardDetailResponseDTO> response = new ArrayList<>();
 
         for(Board board : boardList) {
             long likeCount = likesRepository.countLikesByBoardId(board.getId());
 
             List<String> imageUrls = board.getBoardImages().stream()
-                    .map(BoardImage::getImageUrl)
+                    .map(BoardImage::getBoardUrl)
                     .collect(Collectors.toList());
 
-            GetBoardResponseDTO getBoardResponseDTO = GetBoardResponseDTO.builder()
+            BoardDetailResponseDTO getBoardResponseDTO = BoardDetailResponseDTO.builder()
                     .writerNickName(board.getMember().getNickname())
-                    .profileUrl(board.getMember().getProfile_url())
+                    .profileUrl(board.getMember().getProfileUrl())
                     .description(board.getDescription())
                     .boardUrl(imageUrls)
                     .likeCount(likeCount)
@@ -141,7 +141,7 @@ public class MemberProfileService {
             FormResponseDTO formResponseDTO = FormResponseDTO.builder()
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
-                    .organizer_url(form.getOrganizer().getProfile_url())
+                    .organizer_url(form.getOrganizer().getProfileUrl())
                     .formStatus(form.getFormStatus().getDescription())
                     .build();
 
@@ -150,7 +150,7 @@ public class MemberProfileService {
         return response;
     }
 
-    public List<GetBoardResponseDTO> getMyBoard() {
+    public List<BoardDetailResponseDTO> getMyBoard() {
         // 1. 로그인 사용자 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -158,21 +158,21 @@ public class MemberProfileService {
         List<Board> boardList = boardRepository.findByMemberId(loginMember.getId());
 
         // 3. 매핑해서 리턴
-        List<GetBoardResponseDTO> response = new ArrayList<>();
+        List<BoardDetailResponseDTO> response = new ArrayList<>();
         for(Board board : boardList) {
             long likeCount = likesRepository.countLikesByBoardId(board.getId());
 
 
             List<String> imageUrls = board.getBoardImages().stream()
-                    .map(BoardImage::getImageUrl)
+                    .map(BoardImage::getBoardUrl)
                     .collect(Collectors.toList());
 
             // 4. 작성시간 포맷팅
             String postTime = formatTime(board.getCreatedAt());
 
-            GetBoardResponseDTO getBoardResponseDTO = GetBoardResponseDTO.builder()
+            BoardDetailResponseDTO getBoardResponseDTO = BoardDetailResponseDTO.builder()
                     .writerNickName(board.getMember().getNickname())
-                    .profileUrl(board.getMember().getProfile_url())
+                    .profileUrl(board.getMember().getProfileUrl())
                     .description(board.getDescription())
                     .boardUrl(imageUrls)
                     .likeCount(likeCount)
@@ -199,7 +199,7 @@ public class MemberProfileService {
             FormResponseDTO formResponseDTO = FormResponseDTO.builder()
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
-                    .organizer_url(form.getOrganizer().getProfile_url())
+                    .organizer_url(form.getOrganizer().getProfileUrl())
                     .formStatus(form.getFormStatus().getDescription())
                     .build();
 
