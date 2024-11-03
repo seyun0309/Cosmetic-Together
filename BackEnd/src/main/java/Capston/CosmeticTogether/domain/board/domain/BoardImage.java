@@ -18,10 +18,9 @@ import lombok.experimental.SuperBuilder;
 public class BoardImage extends BaseEntity {
 
     @Column(nullable = false)
-    private String imageUrl;
+    private String boardUrl;
 
     @ManyToOne
     @JoinColumn
     private Board board;
-
 }
