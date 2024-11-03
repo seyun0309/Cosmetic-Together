@@ -3,11 +3,13 @@ package Capston.CosmeticTogether.domain.likes.controller;
 
 import Capston.CosmeticTogether.domain.likes.service.LikeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "좋아요 [게시글]", description = "좋아요, 좋아요 취소")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
