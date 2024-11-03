@@ -9,9 +9,7 @@ import Capston.CosmeticTogether.domain.form.domain.Form;
 import Capston.CosmeticTogether.domain.form.domain.Product;
 import Capston.CosmeticTogether.domain.form.dto.request.CreateFormRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.request.UpdateFormRequestDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.DetailFormResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.UpdateFormInfoResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.*;
 import Capston.CosmeticTogether.domain.form.repository.DeliveryRepository;
 import Capston.CosmeticTogether.domain.form.repository.FormRepository;
 import Capston.CosmeticTogether.domain.form.repository.OrderRepository;
@@ -67,7 +65,7 @@ public class FormService {
         Form form = Form.builder()
                 .organizer(loginMember)
                 .title(createFormRequestDTO.getTitle())
-                .form_description(createFormRequestDTO.getForm_description())
+                .formDescription(createFormRequestDTO.getForm_description())
                 .formUrl(thumbnailURL)
                 .formStatus(FormStatus.ACTIVE)
                 .startDate(createFormRequestDTO.getStartDate())
@@ -112,7 +110,7 @@ public class FormService {
                     .productName(productNames.get(i))
                     .price(prices.get(i))
                     .stock(stocks.get(i))
-                    .product_url(imageUrls.get(i))
+                    .productUrl(imageUrls.get(i))
                     .maxPurchaseLimit(maxPurchaseLimit.get(i))
                     .productStatus(ProductStatus.INSTOCK)
                     .form(form)
@@ -164,22 +162,34 @@ public class FormService {
         Long favoriteCount = favoritesRepository.countFavoritesByFormId(form.getId());
 
         // 7. 매핑해서 리턴
+        List<ProductResponseDTO> products = form.getProduct().stream()
+                .map(product -> ProductResponseDTO.builder()
+                        .productName(product.getProductName())
+                        .price(product.getPrice() + "원")
+                        .product_url(product.getProductUrl())
+                        .maxPurchaseLimit(product.getMaxPurchaseLimit() + "개")
+                        .stock(product.getStock() + "개")
+                        .productStatuses(product.getProductStatus().getDescription())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<DeliveryResponseDTO> deliveries = form.getDeliveries().stream()
+                .map(delivery -> DeliveryResponseDTO.builder()
+                        .deliveryOption(delivery.getDeliveryOption())
+                        .deliveryCost(delivery.getDeliveryCost() + "원")
+                        .build())
+                .collect(Collectors.toList());
+
         return DetailFormResponseDTO.builder()
                 .thumbnail(form.getFormUrl())
                 .organizerName(form.getOrganizer().getNickname())
-                .organizer_profileUrl(form.getOrganizer().getProfile_url())
+                .organizer_profileUrl(form.getOrganizer().getProfileUrl())
                 .title(form.getTitle())
-                .form_description(form.getForm_description())
+                .form_description(form.getFormDescription())
                 .salesPeriod(salesPeriod)
                 .favoriteCount(favoriteCount)
-                .productName(form.getProduct().stream().map(Product::getProductName).collect(Collectors.toList()))
-                .price(form.getProduct().stream().map(product -> product.getPrice() + "원").collect(Collectors.toList()))
-                .product_url(form.getProduct().stream().map(Product::getProduct_url).collect(Collectors.toList()))
-                .maxPurchaseLimit(form.getProduct().stream().map(product -> product.getMaxPurchaseLimit() + "개").collect(Collectors.toList()))
-                .stock(form.getProduct().stream().map(product -> product.getStock() + "개").collect(Collectors.toList()))
-                .productStatuses(form.getProduct().stream().map(product -> product.getProductStatus().getDescription()).collect(Collectors.toList()))
-                .deliveryOption(form.getDeliveries().stream().map(Delivery::getDeliveryOption).collect(Collectors.toList()))
-                .deliveryCost(form.getDeliveries().stream().map(delivery -> delivery.getDeliveryCost() + "원").collect(Collectors.toList()))
+                .products(products)
+                .deliveries(deliveries)
                 .build();
     }
 
@@ -222,7 +232,7 @@ public class FormService {
                     .title(form.getTitle())
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
-                    .organizer_url(form.getOrganizer().getProfile_url())
+                    .organizer_url(form.getOrganizer().getProfileUrl())
                     .formStatus(form.getFormStatus().getDescription())
                     .build();
         response.add(formResponseDTO);
@@ -278,7 +288,7 @@ public class FormService {
                     .title(form.getTitle())
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
-                    .organizer_url(form.getOrganizer().getProfile_url())
+                    .organizer_url(form.getOrganizer().getProfileUrl())
                     .formStatus(form.getFormStatus().getDescription())
                     .build();
             response.add(formResponseDTO);
@@ -325,7 +335,7 @@ public class FormService {
                     .title(form.getTitle())
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
-                    .organizer_url(form.getOrganizer().getProfile_url())
+                    .organizer_url(form.getOrganizer().getProfileUrl())
                     .formStatus(form.getFormStatus().getDescription())
                     .build();
             response.add(formResponseDTO);
@@ -382,14 +392,14 @@ public class FormService {
         return UpdateFormInfoResponseDTO.builder()
                 .thumbnail(form.getFormUrl())
                 .organizerName(form.getOrganizer().getNickname())
-                .organizer_profileUrl(form.getOrganizer().getProfile_url())
+                .organizer_profileUrl(form.getOrganizer().getProfileUrl())
                 .title(form.getTitle())
-                .form_description(form.getForm_description())
+                .form_description(form.getFormDescription())
                 .startDate(formattedStartDate)
                 .endDate(formattedEndDate)
                 .productName(form.getProduct().stream().map(Product::getProductName).collect(Collectors.toList()))
                 .price(form.getProduct().stream().map(product -> product.getPrice() + "원").collect(Collectors.toList()))
-                .product_url(form.getProduct().stream().map(Product::getProduct_url).collect(Collectors.toList()))
+                .product_url(form.getProduct().stream().map(Product::getProductUrl).collect(Collectors.toList()))
                 .maxPurchaseLimit(form.getProduct().stream().map(product -> product.getMaxPurchaseLimit() + "개").collect(Collectors.toList()))
                 .stock(form.getProduct().stream().map(product -> product.getStock() + "개").collect(Collectors.toList()))
                 .productStatuses(form.getProduct().stream().map(product -> product.getProductStatus().getDescription()).collect(Collectors.toList()))
