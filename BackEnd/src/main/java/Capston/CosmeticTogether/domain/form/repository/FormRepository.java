@@ -26,6 +26,6 @@ public interface FormRepository extends JpaRepository<Form, Long> {
     @Query("SELECT f FROM Form f WHERE f.deletedAt IS NULL AND f.organizer.id = :memberId")
     List<Form> findByMemberId(Long memberId);
 
-    @Query( "SELECT DISTINCT f FROM Form f LEFT JOIN f.product p WHERE (f.title LIKE %:keyword% OR f.form_description LIKE %:keyword% OR p.productName LIKE %:keyword%) AND f.deletedAt IS NULL ORDER BY f.createdAt DESC")
+    @Query( "SELECT DISTINCT f FROM Form f LEFT JOIN f.product p WHERE (f.title LIKE %:keyword% OR f.formDescription LIKE %:keyword% OR p.productName LIKE %:keyword%) AND f.deletedAt IS NULL ORDER BY f.createdAt DESC")
     List<Form> findByKeywordInTitleOrDescriptionOrProductName(@Param("keyword") String keyword);
 }
