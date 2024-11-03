@@ -1,6 +1,5 @@
 package Capston.CosmeticTogether.domain.form.dto.resonse;
 
-import Capston.CosmeticTogether.global.enums.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,12 +17,6 @@ public class DetailFormResponseDTO {
     private String form_description;
     private String salesPeriod;
     private Long favoriteCount;
-    private List<String> productName;
-    private List<String> price;
-    private List<String> product_url;
-    private List<String> maxPurchaseLimit;
-    private List<String> stock;
-    private List<String> productStatuses;
-    private List<String> deliveryOption;
-    private List<String> deliveryCost;
+    private List<ProductResponseDTO> products;
+    private List<DeliveryResponseDTO> deliveries;
 }
