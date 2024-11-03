@@ -7,7 +7,6 @@ import Capston.CosmeticTogether.global.enums.FormStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.core.annotation.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +27,7 @@ public class Form extends BaseEntity {
     private String title;
 
     @Column
-    private String form_description;
+    private String formDescription;
 
     @Column
     private String formUrl;
@@ -60,7 +59,7 @@ public class Form extends BaseEntity {
             this.title = title;
         }
         if (form_description != null) {
-            this.form_description = form_description;
+            this.formDescription = form_description;
         }
         if (formUrl != null) {
             this.formUrl = formUrl;
