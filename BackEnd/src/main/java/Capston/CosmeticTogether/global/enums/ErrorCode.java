@@ -59,7 +59,11 @@ public enum ErrorCode {
     NO_FILE_EXTENSION(400, "S003", "확장자가 없습니다"),
     INVALID_FILE_EXTENSION(400, "S004", "jpg, jpeg, png, gif가 아닌 확장자가 들어왔습니다"),
     PUT_OBJECT_EXCEPTION(500, "S005", "S3에 저장할 때 문제가 발생하였습니다"),
-    IO_EXCEPTION_ON_IMAGE_DELETE(500, "S006", "파일을 삭제 중에 입출력 예외 발생");
+    IO_EXCEPTION_ON_IMAGE_DELETE(500, "S006", "파일을 삭제 중에 입출력 예외 발생"),
+
+    COMMENT_NOT_FOUND(400, "C001", "존재하는 댓글이 아닙니다"),
+    NOT_COMMENTER_OF_BOARD(400, "C002", "댓글 작성자가 아닙니다")
+    ;
 
     private final String code;
     private final String message;
