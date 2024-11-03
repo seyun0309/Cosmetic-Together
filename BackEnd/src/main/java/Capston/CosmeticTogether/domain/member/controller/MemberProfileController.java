@@ -1,13 +1,14 @@
 package Capston.CosmeticTogether.domain.member.controller;
 
 
-import Capston.CosmeticTogether.domain.board.dto.response.GetBoardResponseDTO;
+import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
 import Capston.CosmeticTogether.domain.member.service.MemberProfileService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Tag(name = "마이페이지", description = "비밀번호 체크, 사용자 정보 수정, 좋아요 게시글 조회, 찜 폼 조회, 본인 작성 게시글 조회, 본인 작성 폼 조회")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -59,8 +61,8 @@ public class MemberProfileController {
     //좋아요 게시글 조회
     @GetMapping("/liked-board")
     @Operation(summary = "사용자가 좋아요 한 게시글 조회 - 토큰필요", description = "사용자가 좋아요를 한 게시글들을 조회합니다")
-    public ResponseEntity<List<GetBoardResponseDTO>> getLikedBoard() {
-        List<GetBoardResponseDTO> response = memberProfileService.getLikedBoard();
+    public ResponseEntity<List<BoardDetailResponseDTO>> getLikedBoard() {
+        List<BoardDetailResponseDTO> response = memberProfileService.getLikedBoard();
         return ResponseEntity.ok(response);
     }
 
@@ -74,8 +76,8 @@ public class MemberProfileController {
 
     @GetMapping("/posts")
     @Operation(summary = "내가 작성한 게시글 조회 - 토큰필요", description = "토큰을 통해 해당 사용자가 작성한 게시글을 조회합니다")
-    public ResponseEntity<List<GetBoardResponseDTO>> getMyBoard() {
-        List<GetBoardResponseDTO> response = memberProfileService.getMyBoard();
+    public ResponseEntity<List<BoardDetailResponseDTO>> getMyBoard() {
+        List<BoardDetailResponseDTO> response = memberProfileService.getMyBoard();
         return ResponseEntity.ok(response);
     }
 
@@ -85,4 +87,8 @@ public class MemberProfileController {
         List<FormResponseDTO> response = memberProfileService.getMyForm();
         return ResponseEntity.ok(response);
     }
+
+    //TODO 주문건
+
+    //TODO 주문 들어온 건
 }
