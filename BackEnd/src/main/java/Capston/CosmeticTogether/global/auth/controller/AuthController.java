@@ -12,12 +12,15 @@ import Capston.CosmeticTogether.global.auth.service.AuthService;
 import Capston.CosmeticTogether.global.auth.service.JwtProvider;
 import Capston.CosmeticTogether.global.auth.service.MailService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+
+@Tag(name = "인증/인가", description = "회원가입, 닉네임 중복 검사, 로그인, 이메일 중복 검사 및 인증코드 발송, 이메일 인증코드 검증, 로그아웃")
 @RestController
 @RequiredArgsConstructor
 @Slf4j

@@ -37,7 +37,7 @@ dependencies {
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 	//Swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
 	//Lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -65,6 +65,17 @@ dependencies {
 
 	//Mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//Firebase
+//	implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+	//WebSocket
+//	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//	implementation 'org.webjars:webjars-locator-core'
+//	implementation 'org.webjars:sockjs-client:1.5.1'
+//	implementation 'org.webjars:stomp-websocket:2.3.4'
+//	implementation 'org.webjars:bootstrap:5.2.3'
+//	implementation 'org.webjars:jquery:3.6.4'
 
 }
 

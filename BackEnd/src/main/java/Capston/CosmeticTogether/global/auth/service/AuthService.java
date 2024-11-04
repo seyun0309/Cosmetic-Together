@@ -114,7 +114,7 @@ public class AuthService {
                 .password(UUID.randomUUID().toString()) // 비밀번호는 더미값 혹은 UUID로 설정
                 .phone("")
                 .nickname(kakaoProfile.getProperties().getNickname()) // 카카오 닉네임을 nickname에 저장
-                .profile_url(kakaoProfile.getProperties().getProfile_image()) // 프로필 이미지를 profile_url에 저장
+                .profileUrl(kakaoProfile.getProperties().getProfile_image()) // 프로필 이미지를 profile_url에 저장
                 .role(Role.GUEST) // Role은 일반 유저로 설정
                 .authType(AuthType.KAKAO) // AuthType은 카카오로 설정
                 .build();

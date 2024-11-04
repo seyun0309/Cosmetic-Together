@@ -25,7 +25,7 @@ public class Product extends BaseEntity {
     private int stock;
 
     @Column
-    private String product_url;
+    private String productUrl;
 
     @Column(nullable = false)
     private int maxPurchaseLimit;

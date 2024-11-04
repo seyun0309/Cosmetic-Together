@@ -82,7 +82,7 @@ public class FollowService {
         for(Follow follow : loginMember.getFollowerList()) {
             GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
                     .nickname(follow.getFollowing().getNickname())
-                    .profileUrl(follow.getFollowing().getProfile_url())
+                    .profileUrl(follow.getFollowing().getProfileUrl())
                     .build();
             followerMemberList.add(getFollowAndFollowingMemberDTO);
         }
@@ -100,7 +100,7 @@ public class FollowService {
         for(Follow follow : loginMember.getFollowingList()) {
             GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
                     .nickname(follow.getFollower().getNickname())
-                    .profileUrl(follow.getFollower().getProfile_url())
+                    .profileUrl(follow.getFollower().getProfileUrl())
                     .build();
             followingMemberList.add(getFollowAndFollowingMemberDTO);
         }

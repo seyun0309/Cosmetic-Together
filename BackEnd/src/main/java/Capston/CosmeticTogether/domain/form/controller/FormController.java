@@ -8,6 +8,7 @@ import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.UpdateFormInfoResponseDTO;
 import Capston.CosmeticTogether.domain.form.service.FormService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Tag(name = "폼", description = "등록, 세부 조회, 최신 조회, 팔로잉 조회, 키워드 조회, 수정, 삭제")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
