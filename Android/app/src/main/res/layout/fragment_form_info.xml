@@ -1,0 +1,10 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/productDescriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="상품 설명 내용이 여기에 표시됩니다."
+        android:textSize="16sp" />
+</layout>

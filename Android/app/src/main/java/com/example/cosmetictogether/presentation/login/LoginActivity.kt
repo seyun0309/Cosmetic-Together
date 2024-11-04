@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
             val email = loginIDEditText.text.toString()
             val password = loginPasswordEditText.text.toString()
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                viewModel.login(email, password)
+                viewModel.login(email, password, this)
             } else {
                 Toast.makeText(this, "이메일과 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
             if (it.accessToken.isNotEmpty()) {
                 startActivity(Intent(this, HomeActivity::class.java))
             } else {
-                Toast.makeText(this, "로그인 실패: ${it.refresh}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "로그인 실패: ${it.refreshToken}", Toast.LENGTH_SHORT).show()
             }
         } ?: run {
             Toast.makeText(this, "로그인 실패: 응답이 없습니다.", Toast.LENGTH_SHORT).show()

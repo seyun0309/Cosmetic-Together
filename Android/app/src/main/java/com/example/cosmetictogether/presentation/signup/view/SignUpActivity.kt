@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.cosmetictogether.R
 import com.example.cosmetictogether.presentation.signup.viewmodel.SignUpViewModel
+import org.w3c.dom.Text
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -19,12 +20,15 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var nameText: EditText
     private lateinit var nickNameText: EditText
+    private lateinit var nickNameCheckMessage:TextView
     private lateinit var passwordText: EditText
+    private lateinit var passwordCheckMessage: TextView
     private lateinit var confirmPasswordText: EditText
+    private lateinit var passwordConfirmMessage: TextView
+    private lateinit var passwordCheckBtn: Button
     private lateinit var phoneText: EditText
     private lateinit var addressText: EditText
     private lateinit var detailAddressText: EditText
-    private lateinit var passwordCheckMessage: TextView
     private lateinit var signUpButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,12 +37,15 @@ class SignUpActivity : AppCompatActivity() {
 
         nameText = findViewById(R.id.NameText)
         nickNameText = findViewById(R.id.NickNameText)
+        nickNameCheckMessage = findViewById(R.id.SignupIDMessage)
         passwordText = findViewById(R.id.SignUpPasswordText)
+        passwordCheckMessage = findViewById(R.id.SignupPasswordMessage)
         confirmPasswordText = findViewById(R.id.SignupPasswordText2)
+        passwordConfirmMessage = findViewById(R.id.SignupPasswordMessage2)
+        passwordCheckBtn = findViewById(R.id.PasswordCheckBtn)
         phoneText = findViewById(R.id.SignupPhoneText)
-        addressText = findViewById(R.id.SignUpAddressText)
-        detailAddressText = findViewById(R.id.SignUpHomeText)
-        passwordCheckMessage = findViewById(R.id.SignupPasswordMessage2)
+        addressText = findViewById(R.id.SignupAddressText)
+        detailAddressText = findViewById(R.id.SignupAddressText2)
         signUpButton = findViewById(R.id.SignUpButton)
 
         findViewById<Button>(R.id.PasswordCheckBtn).setOnClickListener { checkPassword() }
