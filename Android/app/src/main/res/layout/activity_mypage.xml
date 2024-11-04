@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/MyPageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30sp"
+            android:layout_marginTop="84dp"
+            android:layout_marginEnd="30sp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/baseline_account_box_24"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- 사용자 이름을 ViewModel의 데이터를 바인딩 -->
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/nanum_square_r"
+                android:text="@{MyPageInfoResponse.nickname}"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                app:layout_constraintTop_toBottomOf="@+id/imgLogo"
+                tools:text="강인서" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="33sp" />
+
+            <Button
+                android:id="@+id/profileEditButton"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:background="@color/white"
+                android:fontFamily="@font/nanum_square_b"
+                android:gravity="center"
+                android:text="프로필 수정"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
+
+            <Button
+                android:id="@+id/likePostButton"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:background="@color/white"
+                android:fontFamily="@font/nanum_square_b"
+                android:gravity="center"
+                android:text="저장한 글"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
+
+            <Button
+                android:id="@+id/likeFormButton"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:background="@color/white"
+                android:fontFamily="@font/nanum_square_b"
+                android:gravity="center"
+                android:text="저장한 폼"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
+
+            <Button
+                android:id="@+id/writePostButton"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:background="@color/white"
+                android:fontFamily="@font/nanum_square_b"
+                android:gravity="center"
+                android:text="작성한 글"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
+
+            <Button
+                android:id="@+id/writeFormButton"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:background="@color/white"
+                android:fontFamily="@font/nanum_square_b"
+                android:gravity="center"
+                android:text="작성한 폼"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
+
+            <Button
+                android:id="@+id/logOutButton"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:background="@color/white"
+                android:fontFamily="@font/nanum_square_b"
+                android:gravity="center"
+                android:text="로그아웃"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
