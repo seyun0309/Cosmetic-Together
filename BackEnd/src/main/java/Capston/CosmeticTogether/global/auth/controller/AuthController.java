@@ -1,5 +1,6 @@
 package Capston.CosmeticTogether.global.auth.controller;
 
+import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.global.auth.dto.EmailAuthResponseDTO;
 import Capston.CosmeticTogether.global.auth.dto.MailAuthenticationDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.DuplicateDTO;
@@ -40,14 +41,15 @@ public class AuthController {
 
     @PostMapping("/email/code")
     @Operation(summary = "이메일 중복 검사 및 인증번호 전송", description = "사용자가 입력한 이메일을 중복 검사 한 후 중복이 아니라면 인증코드 발송합니다")
-    public ResponseEntity<String> sendAuthCode(@RequestBody DuplicateDTO.Email mailDTO) {
+    public ResponseEntity<ResponseMessage> sendAuthCode(@RequestBody DuplicateDTO.Email mailDTO) {
         boolean isDuplicate = authService.checkEmailDuplicate(mailDTO);
 
-        if(isDuplicate) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 이메일입니다");
+        if (isDuplicate) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ResponseMessage(HttpStatus.CONFLICT.value(), "이미 존재하는 이메일입니다"));
         } else {
             mailService.sendEmail(mailDTO);
-            return ResponseEntity.ok("인증코드가 발송되었습니다");
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "인증코드가 발송되었습니다"));
         }
     }
 
