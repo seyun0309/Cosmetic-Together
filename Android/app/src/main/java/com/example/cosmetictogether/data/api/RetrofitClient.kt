@@ -8,24 +8,24 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
     private const val BASE_URL = "http://10.0.2.2:8080/"
 
-    private val retrofitInstance: Retrofit by lazy {
-
-        val logger = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+    private val retrofit: Retrofit by lazy {
+        // 로깅 인터셉터 추가
+        val logging = HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BODY)
         }
 
         val client = OkHttpClient.Builder()
-            .addInterceptor(logger)
-            .build()  // 타임아웃 설정 제거
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addInterceptor(logging)
             .build()
 
-        retrofit.create(Retrofit::class.java)
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
 
-    fun getRetrofit(): Retrofit = retrofitInstance
+    val apiService: AuthRetrofitInterface by lazy {
+        retrofit.create(AuthRetrofitInterface::class.java)
+    }
 }
-
