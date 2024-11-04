@@ -47,12 +47,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20sp"
-        android:layout_marginBottom="27dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/SignUpAppBarLayout">
+        app:layout_constraintTop_toBottomOf="@id/SignUpAppBarLayout"
+        app:layout_constraintVertical_bias="0.2">
 
         <LinearLayout
             android:id="@+id/SignupLayout"
@@ -174,49 +175,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="10sp" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <EditText
-                    android:id="@+id/SignUpAddressText"
-                    android:layout_width="350sp"
-                    android:layout_height="55sp"
-                    android:ems="10"
-                    android:fontFamily="@font/nanum_square_r"
-                    android:hint="우편번호"
-                    android:inputType="text"
-                    android:paddingLeft="10sp"
-                    android:textColor="#000000"
-                    android:textColorHint="#9E9E9E"
-                    android:editable="false"
-                    android:focusable="false"/>
-
-                <Button
-                    android:id="@+id/SignUpAddressSearchBtn"
-                    android:layout_width="73sp"
-                    android:layout_height="38sp"
-                    android:layout_gravity="end"
-                    android:background="@drawable/stroke_sky_full_angle"
-                    android:fontFamily="@font/nanum_square_b"
-                    android:gravity="center"
-                    android:text="주소 찾기"
-                    android:textColor="#9E9E9E"
-                    android:textSize="16sp" />
-
-            </FrameLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10sp" />
-
-            <TextView
-                android:id="@+id/SignupAddressView"
+            <EditText
+                android:id="@+id/SignUpAddressText"
                 android:layout_width="350sp"
                 android:layout_height="55sp"
                 android:ems="10"
                 android:fontFamily="@font/nanum_square_r"
+                android:hint="우편번호"
                 android:inputType="text"
                 android:paddingLeft="10sp"
                 android:textColor="#000000"
@@ -227,12 +192,12 @@
                 android:layout_height="10sp" />
 
             <EditText
-                android:id="@+id/SignUpHomeText"
+                android:id="@+id/SignupAddressView"
                 android:layout_width="350sp"
                 android:layout_height="55sp"
                 android:ems="10"
                 android:fontFamily="@font/nanum_square_r"
-                android:hint="상세 주소"
+                android:hint="주소(동, 호가 있다면 모두 입력해주세요.)"
                 android:inputType="text"
                 android:paddingLeft="10sp"
                 android:textColor="#000000"
