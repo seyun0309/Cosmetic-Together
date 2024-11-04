@@ -1,5 +1,6 @@
 package Capston.CosmeticTogether.domain.form.controller;
 
+import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import Capston.CosmeticTogether.domain.form.dto.request.CreateFormRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.request.UpdateFormRequestDTO;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,12 +33,12 @@ public class FormController {
     //TODO 상품 고유번호 리턴
     @PostMapping
     @Operation(summary = "폼 생성 - 토큰 필요", description = "thumnail(썸네일 사진), request(폼 내용), images(상품 사진들)을 보내면 폼이 생성됩니다")
-    public ResponseEntity<String> createForm(@RequestPart(name = "thumbnail") MultipartFile thumbnail,
-                                             @RequestPart(name = "request") @Valid CreateFormRequestDTO createFormRequestDTO,
-                                             @RequestPart(name = "images") List<MultipartFile> images) {
+    public ResponseEntity<ResponseMessage> createForm(@RequestPart(name = "thumbnail") MultipartFile thumbnail,
+                                                      @RequestPart(name = "request") @Valid CreateFormRequestDTO createFormRequestDTO,
+                                                      @RequestPart(name = "images") List<MultipartFile> images) {
 
         formService.createForm(thumbnail, createFormRequestDTO, images);
-        return ResponseEntity.ok("폼이 생성되었습니다");
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "폼이 생성되었습니다"));
     }
 
     // 단일 폼 조회
@@ -89,7 +91,7 @@ public class FormController {
     // 작성자 폼 수정
     @PostMapping("/{formId}")
     @Operation(summary = "폼 수정 - 토큰 필요", description = "thumnail(썸네일 사진), request(폼 내용), images(상품 사진들)을 보내면 폼이 생성됩니다")
-    public ResponseEntity<String> updateForm(@PathVariable("formId") Long formId,
+    public ResponseEntity<ResponseMessage> updateForm(@PathVariable("formId") Long formId,
                                              @RequestPart(required = false, name = "thumbnail") MultipartFile thumbnail,
                                              @RequestPart(required = false, name = "request") @Valid UpdateFormRequestDTO updateFormRequestDTO) {
         String thumbnailURL = null;
@@ -98,14 +100,14 @@ public class FormController {
         }
 
         formService.updateForm(formId, thumbnailURL, updateFormRequestDTO);
-        return ResponseEntity.ok("해당 폼이 수정 되었습니다");
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "폼이 수정되었습니다"));
     }
 
     //작성자 폼 삭제
     @DeleteMapping("/{formId}")
     @Operation(summary = "폼 삭제 - 토큰 필요", description = "URL의 formId를 통해서 해당 폼을 삭제합니다")
-    public ResponseEntity<String> deleteForm(@PathVariable("formId") Long formId) {
+    public ResponseEntity<ResponseMessage> deleteForm(@PathVariable("formId") Long formId) {
         formService.deleteForm(formId);
-        return ResponseEntity.ok("해당 폼이 삭제 되었습니다");
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "폼이 삭제되었습니다"));
     }
 }

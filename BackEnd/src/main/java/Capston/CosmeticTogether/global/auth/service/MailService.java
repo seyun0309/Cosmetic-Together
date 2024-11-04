@@ -71,7 +71,7 @@ public class MailService {
         }
 
         if (findAuthCode.equals(authCode)) {
-            return new EmailAuthResponseDTO(true, "인증 성공에 성공했습니다.");
+            return new EmailAuthResponseDTO(true, "인증에 성공했습니다.");
 
         } else {
             return new EmailAuthResponseDTO(false, "인증번호가 일치하지 않습니다.");

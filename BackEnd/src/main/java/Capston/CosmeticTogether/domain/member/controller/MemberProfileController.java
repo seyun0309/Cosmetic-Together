@@ -1,6 +1,7 @@
 package Capston.CosmeticTogether.domain.member.controller;
 
 
+import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
@@ -30,13 +31,13 @@ public class MemberProfileController {
     // 비밀번호 체크하는 거
     @PostMapping("/check")
     @Operation(summary = "정보 수정 전 비밀번호 체크 - 토큰필요", description = "마이페이지에서 자신의 정보를 수정하기 전에 먼저 비밀번호를 체크합니다")
-    public ResponseEntity<String> checkPassword(@RequestBody PasswordCheckDTO passwordCheckDTO) {
+    public ResponseEntity<ResponseMessage> checkPassword(@RequestBody PasswordCheckDTO passwordCheckDTO) {
         boolean isChecked = memberProfileService.checkPassword(passwordCheckDTO);
 
         if(isChecked) {
-            return ResponseEntity.ok("비밀번호 인증이 완료되었습니다");
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "비밀번호 인증이 완료되었습니다"));
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 불일치합니다 다시 작성해주세요");
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), "비밀번호가 불일치합니다 다시 작성해주세요"));
         }
     }
 
@@ -51,11 +52,11 @@ public class MemberProfileController {
     // 사용자 정보 수정하는 거
     @GetMapping("/users")
     @Operation(summary = "사용자 정보 수정 - 토큰필요", description = "image1(프로필 사진), image2(배경사진), request(사용자 정보)로 서버에 데이터를 보내면 사용자 정보 수정이 완료됩니다")
-    public ResponseEntity<String> updateMemberProfile(@RequestPart(required = false, name = "image1") MultipartFile profileUrl,
+    public ResponseEntity<ResponseMessage> updateMemberProfile(@RequestPart(required = false, name = "image1") MultipartFile profileUrl,
                                                       @RequestPart(required = false, name = "image2") MultipartFile backgroundUrl,
                                                       @RequestPart(name = "request") @Valid MemberUpdateRequestDTO memberUpdateRequestDTO) {
         memberProfileService.updateMemberProfile(profileUrl, backgroundUrl, memberUpdateRequestDTO);
-        return ResponseEntity.ok("회원 정보가 수정되었습니다");
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "회원 정보가 수정되었습니다"));
     }
 
     //좋아요 게시글 조회
