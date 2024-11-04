@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.HTML;
 
 @Tag(name = "인증/인가", description = "회원가입, 닉네임 중복 검사, 로그인, 이메일 중복 검사 및 인증코드 발송, 이메일 인증코드 검증, 로그아웃")
 @RestController
