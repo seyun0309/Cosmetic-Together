@@ -56,7 +56,7 @@ class EmailVerificationActivity : AppCompatActivity() {
 
         viewModel.sendEmailResponse.observe(this, Observer { response -> // LiveData 관찰 / 값이 변경될 때마다 정의된 콜백 호출
             response?.let { // response가 null이 아닐 경우에만 블록 내 코드 실행 / let 블록 내에서는 response를 it으로 참조 가능
-                Toast.makeText(this, it.confirmation ?: "응답이 없습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, it.confirmation ?: "인증번호가 전송되었습니다.", Toast.LENGTH_SHORT).show()
             } ?: run { // response가 null인 경우
                 Toast.makeText(this, "오류 발생", Toast.LENGTH_SHORT).show()
             }
