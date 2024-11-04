@@ -68,13 +68,14 @@ public class AuthController {
 
     @PostMapping("/nickname")
     @Operation(summary = "닉네임 중복 검사 로직", description = "닉네임 중복 검사를 진행합니다.")
-    public ResponseEntity<String> checkNickNameDuplicate(@RequestBody @Valid DuplicateDTO.NickName duplicateNickNameDTO ) {
+    public ResponseEntity<ResponseMessage> checkNickNameDuplicate(@RequestBody @Valid DuplicateDTO.NickName duplicateNickNameDTO ) {
         boolean isDuplicate = authService.checkNickNameDuplicate(duplicateNickNameDTO.getNickName());
 
         if (isDuplicate) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 닉네임입니다");
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ResponseMessage(HttpStatus.CONFLICT.value(), "이미 존재하는 닉네임입니다"));
         } else {
-            return ResponseEntity.ok("사용 가능한 닉네임입니다");
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "사용 가능한 닉네임입니다"));
         }
     }
 
@@ -87,9 +88,9 @@ public class AuthController {
 
     @PatchMapping("/logout")
     @Operation(summary = "로그아웃 로직", description = "사용자의 Refresh Token을 무효화합니다.")
-    public ResponseEntity<String> logout() {
+    public ResponseEntity<ResponseMessage> logout() {
         authService.logout();
-        return ResponseEntity.ok("로그아웃이 정상적으로 되었습니다");
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "로그아웃이 정상적으로 되었습니다"));
     }
 
     @PatchMapping("/tokens")

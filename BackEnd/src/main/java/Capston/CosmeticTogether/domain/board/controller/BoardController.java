@@ -1,5 +1,6 @@
 package Capston.CosmeticTogether.domain.board.controller;
 
+import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.dto.request.CreateBoardRequestDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardSummaryResponseDTO;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +30,11 @@ public class BoardController {
     // 게시글 등록
     @PostMapping(name = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "[API] 게시글 작성 - 토큰 필요", description = "이미지 파일(images)과 게시글 내용(request)을 서버에 전송하여 게시글을 등록합니다 / 이미지는 선택사항, 게시글 내용은 필수")
-    public ResponseEntity<String> uploadBoard(@RequestPart(required = false, name = "images") List<MultipartFile> images,
+    public ResponseEntity<ResponseMessage> uploadBoard(@RequestPart(required = false, name = "images") List<MultipartFile> images,
                                               @RequestPart(name = "request") @Valid CreateBoardRequestDTO createBoardRequestDTO) {
 
         boardService.uploadBoard(images, createBoardRequestDTO);
-        return ResponseEntity.ok("게시글이 등록되었습니다");
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "게시글이 등록되었습니다"));
     }
 
     // 게시글 단일조회
@@ -85,19 +87,20 @@ public class BoardController {
     // 게시글 수정
     @PatchMapping("/{boardId}")
     @Operation(summary = "[API] 본인 게시글 수정 - 토큰 필요", description = "해당 게시글의 boardId를 URL 경로에 포함하고 이미지 파일(images)과 게시글 내용(request)을 서버에 전송하여 게시글 수정")
-    public ResponseEntity<String> updateBoard(@PathVariable("boardId") Long boardId,
+    public ResponseEntity<ResponseMessage> updateBoard(@PathVariable("boardId") Long boardId,
                                               @RequestPart(required = false, name = "images") List<MultipartFile> images,
                                               @RequestPart(required = false, name = "request") @Valid CreateBoardRequestDTO createBoardRequestDTO) {
 
         boardService.updateBoard(boardId, images, createBoardRequestDTO);
-        return ResponseEntity.ok("게시글이 수정되었습니다");
+
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "게시글이 수정되었습니다"));
     }
 
     // 게시글 삭제
     @DeleteMapping("/{boardId}")
     @Operation(summary = "[API] 본인 게시글 삭제 - 토큰 필요", description = "해당 게시글의 boardId를 URL 경로에 포함시켜 게시글 삭제")
-    public ResponseEntity<String> deleteBoard(@PathVariable("boardId") Long boardId) {
+    public ResponseEntity<ResponseMessage> deleteBoard(@PathVariable("boardId") Long boardId) {
         boardService.deleteBoard(boardId);
-        return ResponseEntity.ok("게시글이 삭제되었습니다");
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "게시글이 삭제되었습니다"));
     }
 }
