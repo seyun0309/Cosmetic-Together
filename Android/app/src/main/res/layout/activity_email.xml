@@ -161,7 +161,8 @@
                 android:fontFamily="@font/nanum_square_b"
                 android:gravity="center"
                 android:text="다음"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:enabled="false"/>
 
             <Space
                 android:layout_width="match_parent"

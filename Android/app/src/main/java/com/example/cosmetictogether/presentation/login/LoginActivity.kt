@@ -2,73 +2,64 @@ package com.example.cosmetictogether.presentation.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.example.cosmetictogether.R
-import androidx.databinding.DataBindingUtil
-import com.example.cosmetictogether.data.api.AuthService
-import com.example.cosmetictogether.data.api.LoginView
-import com.example.cosmetictogether.databinding.ActivityLoginBinding
+import com.example.cosmetictogether.presentation.signup.EmailVerificationActivity
+import com.example.cosmetictogether.presentation.signup.viewmodel.AuthViewModel
+import com.example.cosmetictogether.data.model.LoginResponse
 import com.example.cosmetictogether.presentation.home.HomeActivity
-import com.example.cosmetictogether.presentation.signup.view.EmailVerificationActivity
 
-class LoginActivity : AppCompatActivity(), LoginView {
+class LoginActivity : AppCompatActivity() {
+    private val viewModel: AuthViewModel by viewModels()
 
-    private lateinit var binding: ActivityLoginBinding
-    private val authService = AuthService()
+    private lateinit var loginIDEditText: EditText
+    private lateinit var loginPasswordEditText: EditText
+    private lateinit var loginButton: Button
+    private lateinit var signupButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        authService.setLoginView(this)
+        setContentView(R.layout.activity_login)
 
-        binding.loginButton.setOnClickListener {
-            val email = binding.loginIDEditText.text.toString().trim()
-            val password = binding.loginPasswordEditText.text.toString().trim()
+        loginIDEditText = findViewById(R.id.loginIDEditText)
+        loginPasswordEditText = findViewById(R.id.loginPasswordEditText)
+        loginButton = findViewById(R.id.loginButton)
+        signupButton = findViewById(R.id.signupButton)
 
-            if (validateInput(email, password)) {
-                authService.login(email, password)  // Query 파라미터로 전달
+        loginButton.setOnClickListener {
+            val email = loginIDEditText.text.toString()
+            val password = loginPasswordEditText.text.toString()
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                viewModel.login(email, password)
+            } else {
+                Toast.makeText(this, "이메일과 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
         }
 
-        binding.signupButton.setOnClickListener {
-            val intent = Intent(this, EmailVerificationActivity::class.java)
-            startActivity(intent)
+        signupButton.setOnClickListener {
+            // Navigate to email verification activity
+            startActivity(Intent(this, EmailVerificationActivity::class.java))
         }
+
+        viewModel.loginResponse.observe(this, Observer { response ->
+            handleLoginResponse(response)
+        })
     }
 
-    private fun validateInput(email: String, password: String): Boolean {
-        return when {
-            email.isEmpty() -> {
-                binding.loginIDEditText.error = "이메일을 입력해주세요."
-                false
+    private fun handleLoginResponse(response: LoginResponse?) {
+        response?.let {
+            if (it.accessToken.isNotEmpty()) {
+                startActivity(Intent(this, HomeActivity::class.java))
+            } else {
+                Toast.makeText(this, "로그인 실패: ${it.refresh}", Toast.LENGTH_SHORT).show()
             }
-            password.isEmpty() -> {
-                binding.loginPasswordEditText.error = "비밀번호를 입력해주세요."
-                false
-            }
-            else -> true
+        } ?: run {
+            Toast.makeText(this, "로그인 실패: 응답이 없습니다.", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    override fun onSignInSuccess(token: String) {
-        Log.d("LoginActivity", "로그인 성공: 사용자 token = $token")
-        saveToken(token) // JWT 토큰을 저장합니다.
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun saveToken(token: String) {
-        val sharedPreferences = getSharedPreferences("auth_prefs", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("X-AUTH-TOKEN", token) // 토큰을 X-AUTH-TOKEN으로 저장
-        editor.apply()
-    }
-
-    override fun onSignInFailure() {
-        Log.d("SignInActivity", "로그인 실패")
-        Toast.makeText(this, "로그인에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
     }
 }
