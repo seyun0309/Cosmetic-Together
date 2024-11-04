@@ -176,7 +176,7 @@
                 android:layout_height="10sp" />
 
             <EditText
-                android:id="@+id/SignUpAddressText"
+                android:id="@+id/SignupAddressText"
                 android:layout_width="350sp"
                 android:layout_height="55sp"
                 android:ems="10"
@@ -192,12 +192,12 @@
                 android:layout_height="10sp" />
 
             <EditText
-                android:id="@+id/SignupAddressView"
+                android:id="@+id/SignupAddressText2"
                 android:layout_width="350sp"
                 android:layout_height="55sp"
                 android:ems="10"
                 android:fontFamily="@font/nanum_square_r"
-                android:hint="주소(동, 호가 있다면 모두 입력해주세요.)"
+                android:hint="주소 (동, 호가 있다면 모두 입력해주세요.)"
                 android:inputType="text"
                 android:paddingLeft="10sp"
                 android:textColor="#000000"

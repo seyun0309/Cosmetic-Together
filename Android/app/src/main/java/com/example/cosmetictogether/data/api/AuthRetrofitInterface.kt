@@ -7,6 +7,9 @@ import com.example.cosmetictogether.data.model.VerificationRequest
 import com.example.cosmetictogether.data.model.SendEmailResponse
 import com.example.cosmetictogether.data.model.SendVerifiedResponse
 import com.example.cosmetictogether.data.model.SignUpRequest
+import com.example.cosmetictogether.data.model.SignUpResponse
+import com.example.cosmetictogether.data.model.nicknameRequest
+import com.example.cosmetictogether.data.model.nicknameResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -22,5 +25,8 @@ interface AuthRetrofitInterface {
     fun checkVerificationCode(@Body request: VerificationRequest): Call<SendVerifiedResponse>
 
     @POST("/api/v1/signup")
-    fun signUp(@Body signUpRequest: SignUpRequest): Call<String>
+    fun signUp(@Body signUpRequest: SignUpRequest): Call<SignUpResponse>
+
+    @POST("/api/v1/nickname")
+    fun nicknameCheck(@Body request: nicknameRequest): Call<nicknameResponse>
 }

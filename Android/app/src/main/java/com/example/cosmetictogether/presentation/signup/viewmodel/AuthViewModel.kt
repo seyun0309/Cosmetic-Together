@@ -1,5 +1,6 @@
 package com.example.cosmetictogether.presentation.signup.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,12 +27,22 @@ class AuthViewModel : ViewModel() {
     private val _sendVerifiedResponse = MutableLiveData<SendVerifiedResponse?>()
     val sendVerifiedResponse: LiveData<SendVerifiedResponse?> get() = _sendVerifiedResponse
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String, context: Context) {
         val request = LoginRequest(email, password)
         RetrofitClient.apiService.login(request).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
                     _loginResponse.value = response.body()
+
+                    response.body()?.let { loginResponse ->
+                        // Assuming loginResponse contains accessToken and refreshToken
+                        val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+                        with(sharedPref.edit()) {
+                            putString("access_token", loginResponse.accessToken)
+                            putString("refresh_token", loginResponse.refreshToken)
+                            apply()
+                        }
+                    }
                 } else {
                     _loginResponse.value = null // Handle login failure
                 }
