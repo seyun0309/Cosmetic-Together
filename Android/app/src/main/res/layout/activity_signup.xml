@@ -26,7 +26,7 @@
                 android:scaleType="fitCenter"
                 android:backgroundTint="#00FF0000"
                 android:layout_marginStart="10sp"
-                android:src="@drawable/arrow" />
+                android:src="@drawable/baseline_arrow_back_24" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,6 +82,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="10sp" />
 
+            <EditText
+                android:id="@+id/EmailText"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:ems="10"
+                android:fontFamily="@font/nanum_square_r"
+                android:text=""
+                android:inputType="text"
+                android:paddingLeft="10sp"
+                android:textColor="#000000"
+                android:textColorHint="#9E9E9E" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,6 +114,18 @@
                     android:paddingLeft="10sp"
                     android:textColor="#000000"
                     android:textColorHint="#9E9E9E" />
+
+                <Button
+                    android:id="@+id/NickNameCheckBtn"
+                    android:layout_width="73sp"
+                    android:layout_height="38sp"
+                    android:layout_gravity="end"
+                    android:background="@drawable/stroke_sky_full_angle"
+                    android:fontFamily="@font/nanum_square_b"
+                    android:gravity="center"
+                    android:text="확인"
+                    android:textColor="#9E9E9E"
+                    android:textSize="16sp" />
 
             </FrameLayout>
 
@@ -129,7 +157,7 @@
                 android:layout_gravity="center">
 
                 <EditText
-                    android:id="@+id/SignupPasswordText2"
+                    android:id="@+id/SignUpPasswordText2"
                     android:layout_width="350sp"
                     android:layout_height="55sp"
                     android:ems="10"

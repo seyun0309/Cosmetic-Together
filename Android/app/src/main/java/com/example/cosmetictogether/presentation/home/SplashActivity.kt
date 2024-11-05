@@ -1,6 +1,5 @@
 package com.example.cosmetictogether.presentation.home
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +23,6 @@ class SplashActivity : AppCompatActivity() {
 
             finish()
 
-        }, 3000) // 시간 0.5초 이후 실행
+        }, 3000) // 시간 3초 이후 실행
     }
 }

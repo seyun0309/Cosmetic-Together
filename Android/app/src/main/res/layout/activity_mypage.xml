@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="myPageInfoResponse"
+            type="com.example.cosmetictogether.data.model.MyPageInfoResponse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/nanum_square_r"
-                android:text="@{MyPageInfoResponse.nickname}"
+                android:text="@{myPageInfoResponse.nickname}"
                 android:textColor="@color/black"
                 android:textSize="28sp"
                 app:layout_constraintTop_toBottomOf="@+id/imgLogo"

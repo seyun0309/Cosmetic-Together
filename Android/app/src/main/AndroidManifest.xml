@@ -33,7 +33,7 @@
             android:name=".presentation.home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.signup.EmailVerificationActivity"
+            android:name=".presentation.signup.view.EmailVerificationActivity"
             android:exported="false" />
     </application>
 
