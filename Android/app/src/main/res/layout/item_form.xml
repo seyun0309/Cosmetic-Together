@@ -25,7 +25,6 @@
                 android:id="@+id/formImageView"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:scaleType="centerCrop"
                 android:src="@drawable/baseline_child_care_24" />
 
             <LinearLayout

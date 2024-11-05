@@ -19,8 +19,7 @@ data class EmailRequest(
 )
 
 data class SendEmailResponse(
-    @SerializedName("Confirmation : ")
-    val confirmation: String?
+    @SerializedName("Confirmation : ") val confirmation: String?
 )
 
 data class VerificationRequest(
@@ -47,11 +46,11 @@ data class SignUpResponse(
     @SerializedName("email") val email: String
 )
 
-data class nicknameRequest(
+data class NicknameCheckRequest(
     val nickname: String
 )
 
-data class nicknameResponse(
-    @SerializedName("Confirmation : ")
-    val confirmation: String?
+data class NicknameCheckResponse(
+    @SerializedName("status") val status: Int,
+    @SerializedName("message") val message: String
 )
