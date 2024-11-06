@@ -4,6 +4,7 @@
     <data>
     </data>
 
+    <!--폼 상세 보기 틀-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,7 +22,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <include layout="@layout/fragment_form_header" />
+                <include layout="@layout/item_form_header" />
 
                 <View
                     android:layout_width="match_parent"
@@ -29,7 +30,7 @@
                     android:background="#E0E0E0"
                     android:layout_marginVertical="8dp" />
 
-                <include layout="@layout/fragment_form_info" />
+                <include layout="@layout/item_form_info" />
 
                 <View
                     android:layout_width="match_parent"
@@ -37,7 +38,7 @@
                     android:background="#E0E0E0"
                     android:layout_marginVertical="8dp" />
 
-                <include layout="@layout/fragment_form_select" />
+                <include layout="@layout/item_form_select" />
 
                 <View
                     android:layout_width="match_parent"
@@ -45,7 +46,7 @@
                     android:background="#E0E0E0"
                     android:layout_marginVertical="8dp" />
 
-                <include layout="@layout/fragment_form_delivery" />
+                <include layout="@layout/item_form_delivery" />
 
                 <View
                     android:layout_width="match_parent"
@@ -53,7 +54,7 @@
                     android:background="#E0E0E0"
                     android:layout_marginVertical="8dp" />
 
-                <include layout="@layout/fragment_form_order" />
+                <include layout="@layout/item_form_order" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
