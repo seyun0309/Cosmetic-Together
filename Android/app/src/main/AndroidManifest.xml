@@ -33,6 +33,12 @@
             android:name=".presentation.home.HomeActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.form.view.FormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.view.MyPageActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.signup.view.EmailVerificationActivity"
             android:exported="false" />
     </application>
