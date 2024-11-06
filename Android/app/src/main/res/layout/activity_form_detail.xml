@@ -1,50 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
     </data>
-    <!--글 바텀 네비게이션 바-->
+
+    <!--폼 디테일 틀-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+            android:id="@+id/formDetailAppBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60sp"
             tools:ignore="MissingConstraints">
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#CEDDFE"
-                app:contentInsetStart="0dp">
+                app:contentInsetStart="0sp"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <ImageButton
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:backgroundTint="#00FF0000"
+                    android:layout_marginStart="10sp"
+                    android:src="@drawable/baseline_arrow_back_24" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:layout_gravity="center"
-                    android:text="화함"
+                    android:padding="10sp"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:fontFamily="@font/nanum_square_eb" />
+                    android:fontFamily="@font/nanum_square_eb"
+                    android:text="화함" />
+
             </androidx.appcompat.widget.Toolbar>
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <FrameLayout
-            android:id="@+id/postFragmentContainer"
+            android:id="@+id/formFragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+            app:layout_constraintTop_toBottomOf="@+id/formDetailAppBarLayout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

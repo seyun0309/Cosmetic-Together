@@ -7,12 +7,14 @@
 
     </data>
 
+    <!--폼 바텀 네비게이션 바-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints">
@@ -32,55 +34,17 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:fontFamily="@font/nanum_square_eb" />
-
             </androidx.appcompat.widget.Toolbar>
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/formTabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#CEDDFE"
-                app:tabGravity="fill"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/black"
-                app:tabTextColor="@android:color/darker_gray">
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/tab_latest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="최신" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/tab_following"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="팔로잉" />
-            </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        0<androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/formRecyclerView"
+        <FrameLayout
+            android:id="@+id/formFragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="8dp"
-            android:clipToPadding="false"
-            app:layout_constraintTop_toBottomOf="@+id/formTabLayout"
-            app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="2"
-            tools:ignore="NotSibling" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="#CEDDFE"
-            app:itemIconTint="@color/black"
-            app:menu="@menu/bottom_navigation_menu"
-            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
