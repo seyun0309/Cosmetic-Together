@@ -21,7 +21,7 @@
         android:icon="@drawable/baseline_circle_notifications_24" />
 
     <item
-        android:id="@+id/action_chat"
-        android:title="chat"
+        android:id="@+id/action_mypage"
+        android:title="mypage"
         android:icon="@drawable/baseline_chat_24" />
 </menu>

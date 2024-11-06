@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="myPageInfoResponse"
-            type="com.example.cosmetictogether.data.model.MyPageInfoResponse" />
+            name="viewModel"
+            type="com.example.cosmetictogether.presentation.mypage.viewmodel.MyPageViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +35,7 @@
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/baseline_account_box_24"
+                app:imageUrl="@{viewModel.profileUrl}"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <!-- 사용자 이름을 ViewModel의 데이터를 바인딩 -->
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/nanum_square_r"
-                android:text="@{myPageInfoResponse.nickname}"
+                android:text="@{viewModel.nickName}"
                 android:textColor="@color/black"
                 android:textSize="28sp"
                 app:layout_constraintTop_toBottomOf="@+id/imgLogo"
@@ -53,7 +53,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="33sp" />
+                android:layout_height="20sp" />
 
             <Button
                 android:id="@+id/profileEditButton"
