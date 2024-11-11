@@ -2,7 +2,6 @@ package com.example.cosmetictogether.presentation.mypage.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cosmetictogether.databinding.ActivityMypageBinding
@@ -17,7 +16,6 @@ class MyPageActivity : AppCompatActivity() {
     private fun getToken(): String {
         val sharedPreferences = getSharedPreferences("auth_prefs", MODE_PRIVATE)
         val token = sharedPreferences.getString("access_token", null) ?: ""
-        Log.d("MyPageActivity", "가져온 토큰: $token")
         return token
     }
 
@@ -30,6 +28,8 @@ class MyPageActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         val token = getToken()
+
+        //마이페이지 화면에서 사용자 프로필 사진, 이름 띄우는 거
         viewModel.loadUserData(token)
 
         binding.logOutButton.setOnClickListener {

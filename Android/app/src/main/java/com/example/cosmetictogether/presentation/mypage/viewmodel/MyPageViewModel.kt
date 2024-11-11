@@ -1,14 +1,11 @@
 package com.example.cosmetictogether.presentation.mypage.viewmodel
 
-import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cosmetictogether.data.api.MyPageRetrofitInterface
 import com.example.cosmetictogether.data.api.RetrofitClient
 import com.example.cosmetictogether.data.model.MyPageInfoResponse
-import com.example.cosmetictogether.presentation.login.LoginActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
