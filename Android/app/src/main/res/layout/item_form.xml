@@ -4,7 +4,9 @@
 
     <!--폼 틀 아이템-->
     <data>
-
+        <variable
+            name="formItem"
+            type="com.example.cosmetictogether.data.model.FormSummaryResponse" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -23,10 +25,11 @@
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/formImageView"
+                android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:src="@drawable/baseline_child_care_24" />
+                android:src="@drawable/baseline_child_care_24"
+                app:imageUrl="@{formItem.thumbnail}" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,12 +38,13 @@
                 android:layout_marginTop="8dp">
 
                 <ImageView
-                    android:id="@+id/profileImageView"
+                    android:id="@+id/organizer_url"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/baseline_account_box_24"
                     android:layout_marginEnd="8dp"
                     android:scaleType="centerCrop"
+                    app:imageUrl="@{formItem.organizer_url}"
                     app:cornerRadius="16dp" />
 
                 <LinearLayout
@@ -50,19 +54,19 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:id="@+id/usernameTextView"
+                        android:id="@+id/organizerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="강인서"
                         android:textColor="@color/black"
                         android:textSize="14sp"
+                        android:text="@{formItem.organizerName}"
                         android:fontFamily="@font/nanum_square_b" />
 
                     <TextView
-                        android:id="@+id/titleTextView"
+                        android:id="@+id/title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="아르기닌 에디션"
+                        android:text="@{formItem.title}"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:fontFamily="@font/nanum_square_r" />
