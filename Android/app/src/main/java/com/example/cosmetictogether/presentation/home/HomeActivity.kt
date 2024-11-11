@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.cosmetictogether.R
-import com.example.cosmetictogether.presentation.login.LoginActivity
+import com.example.cosmetictogether.presentation.form.view.FormActivity
+import com.example.cosmetictogether.presentation.form.view.FormCreateActivity
+import com.example.cosmetictogether.presentation.mypage.view.MyPageActivity
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var previousButton: Button
@@ -22,7 +21,7 @@ class HomeActivity : AppCompatActivity() {
         previousButton = findViewById(R.id.previousButton) // 버튼 ID와 연결
 
         previousButton.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this, FormActivity::class.java))
         }
     }
 }
