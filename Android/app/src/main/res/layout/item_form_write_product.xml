@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp"
-    android:background="@drawable/stroke_gray_angle"
+    android:background="@android:color/white"
     android:layout_marginBottom="8dp">
 
     <ImageView
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content" />
 
     <ImageButton
-        android:id="@+id/btnDeleteDeliveryMethod"
+        android:id="@+id/btnDeleteProductMethod"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:background="?attr/selectableItemBackground"

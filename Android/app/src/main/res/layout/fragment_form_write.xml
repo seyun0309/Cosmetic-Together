@@ -1,6 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -8,13 +9,121 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="폼 기본 정보 입력"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- 폼 썸네일 사진 입력창 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="폼 썸네일"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <ImageView
+                android:id="@+id/formImageView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@android:color/darker_gray"
+                android:scaleType="center"
+                android:layout_marginBottom="8dp"
+                tools:srcCompat="@drawable/baseline_image_24" />
+
+            <Button
+                android:id="@+id/selectImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이미지 선택"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp" />
+
+            <!-- 폼 제목 입력 창 -->
+            <EditText
+                android:id="@+id/formTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="폼 제목"
+                android:layout_marginBottom="8dp" />
+
+            <!-- 폼 설명 입력 창 -->
+            <EditText
+                android:id="@+id/formDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="폼 설명"
+                android:layout_marginBottom="8dp" />
+
+            <!-- 판매 시작 날짜와 종료 날짜 입력 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/saleStartDate"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:focusable="false"
+                    android:hint="판매 시작 날짜"
+                    android:inputType="date" />
+
+                <ImageButton
+                    android:id="@+id/startDateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    android:contentDescription="달력 열기"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/saleEndDate"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:focusable="false"
+                    android:hint="판매 종료 날짜"
+                    android:inputType="date" />
+
+                <ImageButton
+                    android:id="@+id/endDateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    android:contentDescription="달력 열기"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
+            </LinearLayout>
+        </LinearLayout>
+
         <!-- 상품 정보 입력 Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@drawable/stroke_gray"
+            android:background="@android:color/white"
             android:layout_marginBottom="16dp">
 
             <TextView
@@ -26,12 +135,14 @@
                 android:layout_marginBottom="8dp" />
 
             <EditText
+                android:id="@+id/productName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="상품명"
                 android:layout_marginBottom="8dp" />
 
             <EditText
+                android:id="@+id/price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="가격"
@@ -39,6 +150,7 @@
                 android:layout_marginBottom="8dp" />
 
             <EditText
+                android:id="@+id/stock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="재고"
@@ -46,6 +158,7 @@
                 android:layout_marginBottom="8dp" />
 
             <EditText
+                android:id="@+id/purchaseLimit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="구매 개수 제한"
@@ -53,6 +166,7 @@
                 android:layout_marginBottom="8dp" />
 
             <Button
+                android:id="@+id/addProductButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="상품 등록"
@@ -66,7 +180,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@drawable/stroke_gray"
+            android:background="@android:color/white"
             android:layout_marginBottom="16dp">
 
             <TextView
@@ -79,6 +193,7 @@
 
             <!-- RecyclerView for Product Items -->
             <androidx.recyclerview.widget.RecyclerView
+                tools:listitem="@layout/item_form_write_product"
                 android:id="@+id/productRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -90,7 +205,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@drawable/stroke_gray"
+            android:background="@android:color/white"
             android:layout_marginBottom="16dp">
 
             <TextView
@@ -109,12 +224,14 @@
                 android:layout_marginBottom="16dp" />
 
             <EditText
+                android:id="@+id/deliveryOption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="배송 방법"
                 android:layout_marginBottom="8dp" />
 
             <EditText
+                android:id="@+id/deliveryCost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="배송비"
@@ -122,6 +239,7 @@
                 android:layout_marginBottom="8dp" />
 
             <Button
+                android:id="@+id/addDeliveryButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="배송 방법 등록"
@@ -135,7 +253,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@drawable/stroke_gray"
+            android:background="@android:color/white"
             android:layout_marginBottom="16dp">
 
             <TextView
@@ -148,7 +266,8 @@
 
             <!-- RecyclerView for Delivery Method Items -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/deliveryMethodRecyclerView"
+                tools:listitem="@layout/item_form_write_delivery"
+                android:id="@+id/deliveryRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -159,7 +278,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@drawable/stroke_gray"
+            android:background="@android:color/white"
             android:layout_marginBottom="16dp">
 
             <TextView
@@ -183,7 +302,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@drawable/stroke_gray"
+            android:background="@android:color/white"
             android:layout_marginBottom="16dp">
 
             <TextView
