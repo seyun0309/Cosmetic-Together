@@ -20,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 
 @Tag(name = "인증/인가", description = "회원가입, 닉네임 중복 검사, 로그인, 이메일 중복 검사 및 인증코드 발송, 이메일 인증코드 검증, 로그아웃")
 @RestController
@@ -61,7 +63,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입 로직", description = "사용자 이름, 이메일, 비밀번호를 입력하면 검증 후 회원가입을 진행합니다.")
-    public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO signUpRequestDTO) {
+    public ResponseEntity<SignUpResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO signUpRequestDTO) throws IOException {
         SignUpResponseDTO responseDTO = authService.signUp(signUpRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
