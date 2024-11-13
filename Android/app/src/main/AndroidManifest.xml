@@ -44,6 +44,9 @@
         <activity
             android:name=".presentation.signup.view.EmailVerificationActivity"
             android:exported="false" />
+        <activity
+            android:name=".presentation.form.view.FormDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
