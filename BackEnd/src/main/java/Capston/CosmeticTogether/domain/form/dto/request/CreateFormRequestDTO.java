@@ -25,10 +25,10 @@ public class CreateFormRequestDTO {
     private String form_description;
 
     @NotNull
-    private LocalDateTime startDate;
+    private String startDate;
 
     @NotNull
-    private LocalDateTime endDate;
+    private String endDate;
 
     @NotEmpty
     private List<String> productName;
@@ -47,4 +47,7 @@ public class CreateFormRequestDTO {
 
     @NotEmpty
     private List<String> deliveryCost;
+
+    @NotEmpty
+    private String deliveryInstructions;
 }
