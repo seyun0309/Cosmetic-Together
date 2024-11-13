@@ -15,6 +15,7 @@ import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.MyPageOverviewResponseDTO;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
 import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
 import Capston.CosmeticTogether.global.enums.Role;
@@ -44,6 +45,17 @@ public class MemberProfileService {
     private final BoardRepository boardRepository;
     private final FormRepository formRepository;
     private final MemberRepository memberRepository;
+
+    public MyPageOverviewResponseDTO getMyPageOverView() {
+        // 1. 로그인 사용자 가져오기
+        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        // 2. 매핑해서 리턴
+        return MyPageOverviewResponseDTO.builder()
+                .profileUrl(loginMember.getProfileUrl())
+                .nickName(loginMember.getNickname())
+                .build();
+    }
 
     public boolean checkPassword(PasswordCheckDTO passwordCheckDTO) {
         // 1. 로그인 사용자 가져오기
@@ -183,7 +195,6 @@ public class MemberProfileService {
         }
         return response;
     }
-
 
     public List<FormResponseDTO> getMyForm() {
         // 1. 로그인 사용자 정보 가져오기
