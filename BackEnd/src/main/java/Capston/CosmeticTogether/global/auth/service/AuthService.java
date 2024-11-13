@@ -1,5 +1,6 @@
 package Capston.CosmeticTogether.global.auth.service;
 
+import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
 import Capston.CosmeticTogether.global.auth.dto.kakao.KakaoProfile;
@@ -24,13 +25,20 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,6 +49,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final S3ImageService s3ImageService;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -129,8 +138,18 @@ public class AuthService {
                 .build();
     }
     @Transactional
-    public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
+    public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) throws IOException {
         String hashedPassword = passwordEncoder.encode(signUpRequestDTO.getPassword());
+
+        // 기본 이미지 파일을 `MultipartFile`로 변환
+        String defaultImagePath = "src/main/resources/static/img/profileImg.png"; // 기본 이미지 경로
+        MultipartFile defaultImageFile;
+
+        try (InputStream inputStream = Files.newInputStream(Paths.get(defaultImagePath))) {
+            defaultImageFile = new MockMultipartFile("file", "default_profile.png",
+                    "image/png", StreamUtils.copyToByteArray(inputStream));
+        }
+
         Member member = Member.builder()
                 .userName(signUpRequestDTO.getUserName())
                 .email(signUpRequestDTO.getEmail())
@@ -138,6 +157,7 @@ public class AuthService {
                 .phone(signUpRequestDTO.getPhone())
                 .nickname(signUpRequestDTO.getNickname())
                 .address(signUpRequestDTO.getAddress())
+                .profileUrl(s3ImageService.upload(defaultImageFile))
                 .role(Role.USER)
                 .authType(AuthType.REGULAR)
                 .build();
