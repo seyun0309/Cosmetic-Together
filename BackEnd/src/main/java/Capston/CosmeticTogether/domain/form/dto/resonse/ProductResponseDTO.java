@@ -10,6 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class ProductResponseDTO {
+    private Long productId;
     private String productName;
     private String price;
     private String product_url;
