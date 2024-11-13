@@ -24,8 +24,8 @@ class DeliveryAdapter : ListAdapter<Delivery, DeliveryAdapter.DeliveryViewHolder
 
     inner class DeliveryViewHolder(private val binding: ItemFormWriteDeliveryBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(delivery: Delivery) {
-            binding.tvDeliveryMethod.text = delivery.option
-            binding.tvDeliveryCost.text = "${delivery.cost}원"
+            binding.tvDeliveryMethod.text = delivery.deliveryOption
+            binding.tvDeliveryCost.text = "${delivery.deliveryCost}원"
 
             binding.btnDeleteDeliveryMethod.setOnClickListener {
                 onDeleteClick?.invoke(delivery) // 삭제 리스너 호출
@@ -35,7 +35,7 @@ class DeliveryAdapter : ListAdapter<Delivery, DeliveryAdapter.DeliveryViewHolder
 
     class DeliveryDiffCallback : DiffUtil.ItemCallback<Delivery>() {
         override fun areItemsTheSame(oldItem: Delivery, newItem: Delivery): Boolean {
-            return oldItem.option == newItem.option
+            return oldItem.deliveryOption == newItem.deliveryOption
         }
 
         override fun areContentsTheSame(oldItem: Delivery, newItem: Delivery): Boolean {
