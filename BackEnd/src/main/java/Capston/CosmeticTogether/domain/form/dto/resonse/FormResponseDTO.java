@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class FormResponseDTO {
+    private Long formId;
     private String thumbnail;
     private String title;
     private String organizerName;
