@@ -12,6 +12,9 @@ import java.util.List;
 public class DetailFormResponseDTO {
     private String thumbnail;
     private String organizerName;
+    private String phone;
+    private String address;
+    private String email;
     private String organizer_profileUrl;
     private String title;
     private String form_description;

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class FormService {
     private final S3ImageService s3ImageService;
 
     @Transactional
-    public void createForm(MultipartFile thumbnail, CreateFormRequestDTO createFormRequestDTO, List<MultipartFile> images) {
+    public CreateFormResponseDTO createForm(MultipartFile thumbnail, CreateFormRequestDTO createFormRequestDTO, List<MultipartFile> images) {
 
         // 1. 사용자 정보 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -61,6 +62,18 @@ public class FormService {
         // 3. 폼 저장
         String thumbnailURL = s3ImageService.upload(thumbnail);
 
+        // "2024-11-10" 형태의 문자열을 LocalDateTime으로 변환
+        String startDateString = createFormRequestDTO.getStartDate();
+        String endDateString = createFormRequestDTO.getEndDate();
+
+        // 날짜 문자열을 LocalDate로 변환 후, LocalDateTime으로 설정 (시간을 00:00:00으로 설정)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(startDateString, formatter);
+        LocalDate endDate = LocalDate.parse(endDateString, formatter);
+
+        // 시간 정보를 00:00:00으로 설정
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atStartOfDay();
 
         Form form = Form.builder()
                 .organizer(loginMember)
@@ -68,12 +81,12 @@ public class FormService {
                 .formDescription(createFormRequestDTO.getForm_description())
                 .formUrl(thumbnailURL)
                 .formStatus(FormStatus.ACTIVE)
-                .startDate(createFormRequestDTO.getStartDate())
-                .endDate(createFormRequestDTO.getEndDate())
+                .startDate(startDateTime)
+                .endDate(endDateTime)
+                .deliveryInstructions(createFormRequestDTO.getDeliveryInstructions())
                 .build();
         formRepository.save(form);
 
-        List<Delivery> deliveryList = new ArrayList<>();
         for(int i=0; i<createFormRequestDTO.getDeliveryOption().size(); i++) {
             Delivery delivery = Delivery.builder()
                     .deliveryOption(createFormRequestDTO.getDeliveryOption().get(i))
@@ -81,17 +94,15 @@ public class FormService {
                     .form(form)
                     .build();
 
-            deliveryList.add(delivery);
+            deliveryRepository.save(delivery);
         }
-
-        deliveryRepository.saveAll(deliveryList);
 
         // 4. 제품 저장
         List<String> productNames = createFormRequestDTO.getProductName();
         List<Integer> prices = createFormRequestDTO.getPrice();
         List<Integer> stocks = createFormRequestDTO.getStock();
         List<Integer> maxPurchaseLimit = createFormRequestDTO.getMaxPurchaseLimit();
-
+        List<Long> productIds = new ArrayList<>();
 
         for (int i = 0; i < productNames.size(); i++) {
 
@@ -117,7 +128,14 @@ public class FormService {
                     .build();
 
             productRepository.save(product);
+            productIds.add(product.getId());
         }
+
+        // 6. CreateFormResponseDTO 생성 및 반환
+        return CreateFormResponseDTO.builder()
+                .formId(form.getId())
+                .productId(productIds)
+                .build();
     }
 
     public DetailFormResponseDTO getForm(Long formId) {
@@ -164,11 +182,12 @@ public class FormService {
         // 7. 매핑해서 리턴
         List<ProductResponseDTO> products = form.getProduct().stream()
                 .map(product -> ProductResponseDTO.builder()
+                        .productId(product.getId())
                         .productName(product.getProductName())
-                        .price(product.getPrice() + "원")
+                        .price(String.valueOf(product.getPrice()))
                         .product_url(product.getProductUrl())
-                        .maxPurchaseLimit(product.getMaxPurchaseLimit() + "개")
-                        .stock(product.getStock() + "개")
+                        .maxPurchaseLimit(String.valueOf(product.getMaxPurchaseLimit()))
+                        .stock(String.valueOf(product.getStock()))
                         .productStatuses(product.getProductStatus().getDescription())
                         .build())
                 .collect(Collectors.toList());
@@ -176,13 +195,16 @@ public class FormService {
         List<DeliveryResponseDTO> deliveries = form.getDeliveries().stream()
                 .map(delivery -> DeliveryResponseDTO.builder()
                         .deliveryOption(delivery.getDeliveryOption())
-                        .deliveryCost(delivery.getDeliveryCost() + "원")
+                        .deliveryCost(String.valueOf(delivery.getDeliveryCost()))
                         .build())
                 .collect(Collectors.toList());
 
         return DetailFormResponseDTO.builder()
                 .thumbnail(form.getFormUrl())
                 .organizerName(form.getOrganizer().getNickname())
+                .phone(form.getOrganizer().getPhone())
+                .address(form.getOrganizer().getAddress())
+                .email(form.getOrganizer().getEmail())
                 .organizer_profileUrl(form.getOrganizer().getProfileUrl())
                 .title(form.getTitle())
                 .form_description(form.getFormDescription())
@@ -229,6 +251,7 @@ public class FormService {
 
             // 5. 매핑
             FormResponseDTO formResponseDTO = FormResponseDTO.builder()
+                    .formId(form.getId())
                     .title(form.getTitle())
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
@@ -285,6 +308,7 @@ public class FormService {
             }
 
             FormResponseDTO formResponseDTO = FormResponseDTO.builder()
+                    .formId(form.getId())
                     .title(form.getTitle())
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())
@@ -332,6 +356,7 @@ public class FormService {
 
             // 5. 매핑
             FormResponseDTO formResponseDTO = FormResponseDTO.builder()
+                    .formId(form.getId())
                     .title(form.getTitle())
                     .thumbnail(form.getFormUrl())
                     .organizerName(form.getOrganizer().getNickname())

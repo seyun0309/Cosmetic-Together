@@ -4,6 +4,7 @@ import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import Capston.CosmeticTogether.domain.form.dto.request.CreateFormRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.request.UpdateFormRequestDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.CreateFormResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.DetailFormResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.UpdateFormInfoResponseDTO;
@@ -33,12 +34,12 @@ public class FormController {
     //TODO 상품 고유번호 리턴
     @PostMapping
     @Operation(summary = "폼 생성 - 토큰 필요", description = "thumnail(썸네일 사진), request(폼 내용), images(상품 사진들)을 보내면 폼이 생성됩니다")
-    public ResponseEntity<ResponseMessage> createForm(@RequestPart(name = "thumbnail") MultipartFile thumbnail,
-                                                      @RequestPart(name = "request") @Valid CreateFormRequestDTO createFormRequestDTO,
-                                                      @RequestPart(name = "images") List<MultipartFile> images) {
+    public ResponseEntity<ResponseMessage> createForm(@RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail,
+                                                            @RequestPart(name = "request") @Valid CreateFormRequestDTO createFormRequestDTO,
+                                                            @RequestPart(name = "images") List<MultipartFile> images) {
 
-        formService.createForm(thumbnail, createFormRequestDTO, images);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "폼이 생성되었습니다"));
+        CreateFormResponseDTO response = formService.createForm(thumbnail, createFormRequestDTO, images);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "폼 생성 완료"));
     }
 
     // 단일 폼 조회
