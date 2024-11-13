@@ -68,7 +68,7 @@ public class Member extends BaseEntity {
     private String refreshToken;
 
     // 초기 데이터 삽입시 사용하는 생성자
-    public Member(String userName, String email, String password, String phone, String nickName, String address, Role role, AuthType authType) {
+    public Member(String userName, String email, String password, String phone, String nickName, String address, Role role, AuthType authType, String profileUrl) {
         this.userName = userName;
         this.email = email;
         this.password = password;
@@ -77,6 +77,7 @@ public class Member extends BaseEntity {
         this.address = address;
         this.role = role;
         this.authType = authType;
+        this.profileUrl = profileUrl;
     }
 
     public void updateMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO, Role role) {
