@@ -31,15 +31,40 @@ data class CreateFormResponse(
     @SerializedName("productId") val productId: List<Long>
 )
 
+data class DetailFormResponse(
+    @SerializedName("thumbnail") val thumbnail: String,
+    @SerializedName("organizerName") val organizerName: String,
+    @SerializedName("phone") val phone: String,
+    @SerializedName("address") val address: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("organizer_profileUrl") val organizerProfileUrl: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("form_description") val formDescription: String,
+    @SerializedName("salesPeriod") val salesPeriod: String,
+    @SerializedName("favoriteCount") val favoriteCount: Int,
+    @SerializedName("products") val products: List<ResponseProduct>,
+    @SerializedName("deliveries") val deliveries: List<Delivery>
+)
+
 data class Product(
     val imageUri: Uri?,
-    val name: String,
+    val productName: String,
     val price: Int,
     val stock: Int,
-    val purchaseLimit: Int
+    val maxPurchaseLimit: Int
+)
+
+
+data class ResponseProduct(
+    val productId: Long,
+    val product_url: String,
+    val productName: String,
+    val price: Int,
+    val stock: Int,
+    val maxPurchaseLimit: Int
 )
 
 data class Delivery(
-    val option: String,
-    val cost: Int
+    val deliveryOption: String,
+    val deliveryCost: Int
 )
