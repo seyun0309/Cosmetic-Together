@@ -50,6 +50,9 @@ public class Form extends BaseEntity {
     @OneToMany(mappedBy = "form")
     private List<Delivery> deliveries;
 
+    @Column(nullable = false)
+    private String deliveryInstructions;
+
     @OneToMany(mappedBy = "form")
     private List<Favorites> favorites;
 
