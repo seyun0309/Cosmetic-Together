@@ -7,6 +7,7 @@ import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.MyPageOverviewResponseDTO;
 import Capston.CosmeticTogether.domain.member.service.MemberProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,13 @@ import java.util.List;
 @RequestMapping("/api/v1/mypage")
 public class MemberProfileController {
     private final MemberProfileService memberProfileService;
+
+    @GetMapping()
+    @Operation(summary = "마이페이지 첫 화면에 필요한 정보 - 토큰 필요", description = "마이페이지 첫 화면에 넣을 사용자 프로필 사진, 닉네임 리턴")
+    public ResponseEntity<MyPageOverviewResponseDTO> getMyPageOverview() {
+        MyPageOverviewResponseDTO response = memberProfileService.getMyPageOverView();
+        return ResponseEntity.ok(response);
+    }
 
     // 비밀번호 체크하는 거
     @PostMapping("/check")
