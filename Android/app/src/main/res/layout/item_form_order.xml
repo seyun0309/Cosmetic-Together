@@ -1,6 +1,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModel" />
+        <variable
+            name="form"
+            type="com.example.cosmetictogether.data.model.DetailFormResponse" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,19 +28,19 @@
             android:id="@+id/buyerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="이름: 홍길동" />
+            android:text='@{`이름: ` + form.organizerName}' />
 
         <TextView
             android:id="@+id/buyerContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="연락처: 010-1234-5678" />
+            android:text='@{`연락처: ` + form.phone}'  />
 
         <TextView
             android:id="@+id/buyerEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="메일: user@example.com" />
+            android:text='@{`이메일: ` + form.email}' />
 
         <View
             android:layout_width="match_parent"
@@ -52,25 +61,19 @@
             android:id="@+id/shippingName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="홍길동" />
+            android:text='@{`이름: ` + form.organizerName}' />
 
         <TextView
             android:id="@+id/shippingContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="010-1234-5678" />
-
-        <TextView
-            android:id="@+id/shippingPostalCode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="12345" />
+            android:text='@{`연락처: ` + form.phone}' />
 
         <TextView
             android:id="@+id/shippingAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="서울시 강남구 역삼동 10-10" />
+            android:text='@{`주소: ` + form.address}' />
 
     </LinearLayout>
 </layout>

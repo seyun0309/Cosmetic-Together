@@ -26,7 +26,7 @@ class ProductAdapter : ListAdapter<Product, ProductAdapter.ProductViewHolder>(Pr
 
     inner class ProductViewHolder(private val binding: ItemFormWriteProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
-            binding.tvProductName.text = product.name
+            binding.tvProductName.text = product.productName
             binding.tvProductPrice.text = "${product.price}원"
             binding.tvProductStock.text = "재고: ${product.stock}개"
 
@@ -50,7 +50,7 @@ class ProductAdapter : ListAdapter<Product, ProductAdapter.ProductViewHolder>(Pr
 
     class ProductDiffCallback : DiffUtil.ItemCallback<Product>() {
         override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
-            return oldItem.name == newItem.name
+            return oldItem.productName == newItem.productName
         }
 
         override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {

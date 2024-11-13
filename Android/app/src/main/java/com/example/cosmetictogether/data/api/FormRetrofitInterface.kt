@@ -2,6 +2,7 @@ package com.example.cosmetictogether.data.api
 
 import com.example.cosmetictogether.data.model.CreateFormRequest
 import com.example.cosmetictogether.data.model.CreateFormResponse
+import com.example.cosmetictogether.data.model.DetailFormResponse
 import com.example.cosmetictogether.data.model.FormSummaryResponse
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -10,6 +11,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface FormRetrofitInterface {
     @GET("/api/v1/form/recent")
@@ -26,4 +28,13 @@ interface FormRetrofitInterface {
         @Part("request") request: CreateFormRequest,
         @Part images: List<MultipartBody.Part>
     ): Call<CreateFormResponse>
+
+    @GET("/api/v1/form/{formId}")
+    fun getFormDetail(@Path("formId") formId: Long) : Call<DetailFormResponse>
+//
+//    @POST("/api/v1/order{formId}")
+//    fun createOrder(
+//        @Path("formId") formId: Long
+//
+//    ) :
 }

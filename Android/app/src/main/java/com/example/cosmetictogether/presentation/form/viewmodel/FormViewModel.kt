@@ -39,6 +39,7 @@ class FormViewModel: ViewModel() {
     private val formApi: FormRetrofitInterface =
         RetrofitClient.getInstance().create(FormRetrofitInterface::class.java)
 
+    // 폼 초기화면 리스트 조회
     fun loadFormSummaryData() {
         formApi.getFormRecent().enqueue(object : Callback<List<FormSummaryResponse>> {
             override fun onResponse(call: Call<List<FormSummaryResponse>>, response: Response<List<FormSummaryResponse>>) {

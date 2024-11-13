@@ -57,7 +57,7 @@ class FormCreateViewModel: ViewModel() {
 
     fun updateProduct(updatedProduct: Product) {
         val updatedList = _productList.value?.toMutableList() ?: mutableListOf()
-        val index = updatedList.indexOfFirst { it.name == updatedProduct.name }
+        val index = updatedList.indexOfFirst { it.productName == updatedProduct.productName }
         if (index != -1) {
             updatedList[index] = updatedProduct
             _productList.value = updatedList

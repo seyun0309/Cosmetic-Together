@@ -37,6 +37,7 @@ class FormActivity : AppCompatActivity() {
 
         viewModel.loadFormSummaryData()
 
+        // 폼 작성 버튼 클릭
         binding.createFormBtn.setOnClickListener {
             startActivity(Intent(this, FormCreateActivity::class.java))
         }
@@ -45,6 +46,14 @@ class FormActivity : AppCompatActivity() {
         viewModel.formData.observe(this, Observer { formList ->
             formAdapter.submitList(formList) // ListAdapter에서는 submitList 사용 가능
         })
+
+        //폼 세부 조회
+        formAdapter.setOnItemClickListener { formId ->
+            // 선택된 formId를 Intent로 전달하여 FormDetailActivity로 이동
+            val intent = Intent(this, FormDetailActivity::class.java)
+            intent.putExtra("formId", formId)
+            startActivity(intent)
+        }
 
         // BottomNavigationView의 항목 클릭 이벤트 설정
         binding.bottomNavigationView.setOnItemSelectedListener { item ->

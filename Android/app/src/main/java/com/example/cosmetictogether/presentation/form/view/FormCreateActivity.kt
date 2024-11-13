@@ -170,10 +170,10 @@ class FormCreateActivity: AppCompatActivity() {
         // 상품 수정 버튼 클릭 시 EditText에 값 설정
         productAdapter.onEditClick = { product ->
             editingProduct = product
-            productName.setText(product.name)
+            productName.setText(product.productName)
             price.setText(product.price.toString())
             stock.setText(product.stock.toString())
-            purchaseLimit.setText(product.purchaseLimit.toString())
+            purchaseLimit.setText(product.maxPurchaseLimit.toString())
             addProductButton.text = "수정하기" // 버튼 텍스트 수정
         }
 
@@ -194,7 +194,7 @@ class FormCreateActivity: AppCompatActivity() {
                 viewModel.addProduct(Product(productUri, productName, productPrice, productStock, limit))
             } else {
                 // 기존 상품 수정
-                val updatedProduct = editingProduct!!.copy(name = productName, price = productPrice, stock = productStock, purchaseLimit = limit)
+                val updatedProduct = editingProduct!!.copy(productName = productName, price = productPrice, stock = productStock, maxPurchaseLimit = limit)
                 viewModel.updateProduct(updatedProduct)
                 addProductButton.text = "상품 등록"
                 editingProduct = null

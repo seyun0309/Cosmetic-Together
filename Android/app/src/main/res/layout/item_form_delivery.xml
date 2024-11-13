@@ -2,18 +2,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModel" />
+        <variable
+            name="delivery"
+            type="com.example.cosmetictogether.data.model.Delivery" />
+    </data>
+
     <LinearLayout
+        android:id="@+id/layoutDeliveryContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/shippingMethodTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="배송 방법 선택"
-            android:textSize="18sp"
-            android:textStyle="bold" />
 
         <RadioGroup
             android:layout_width="wrap_content"
@@ -21,6 +23,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/layoutContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -30,12 +33,13 @@
                     android:id="@+id/shippingMethodStandard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/black" />
+                    android:buttonTint="@color/black"
+                    android:onClick="@{() -> viewmodel.setDeliveryPrice(delivery.deliveryCost)}"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="일반 배송"
+                    android:text="@{delivery.deliveryOption}"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
 
@@ -46,38 +50,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4,000원"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <RadioButton
-                    android:id="@+id/shippingMethodExpress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/black" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="빠른 배송"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/black" />
-
-                <Space
-                    android:layout_width="16dp"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="8,000원"
+                    android:text="@{delivery.deliveryCost}"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
             </LinearLayout>
