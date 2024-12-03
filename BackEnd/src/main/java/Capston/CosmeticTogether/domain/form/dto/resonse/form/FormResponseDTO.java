@@ -1,4 +1,4 @@
-package Capston.CosmeticTogether.domain.form.dto.resonse;
+package Capston.CosmeticTogether.domain.form.dto.resonse.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
