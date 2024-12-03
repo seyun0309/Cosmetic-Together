@@ -1,5 +1,7 @@
-package Capston.CosmeticTogether.domain.form.dto.resonse;
+package Capston.CosmeticTogether.domain.form.dto.resonse.form;
 
+import Capston.CosmeticTogether.domain.form.dto.resonse.DeliveryResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.ProductResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class DetailFormResponseDTO {
+    private Long organizerId;
     private String thumbnail;
     private String organizerName;
     private String phone;
@@ -20,6 +23,9 @@ public class DetailFormResponseDTO {
     private String form_description;
     private String salesPeriod;
     private Long favoriteCount;
+    private String buyerName;
+    private String buyerPhone;
+    private String buyerEmail;
     private List<ProductResponseDTO> products;
     private List<DeliveryResponseDTO> deliveries;
 }
