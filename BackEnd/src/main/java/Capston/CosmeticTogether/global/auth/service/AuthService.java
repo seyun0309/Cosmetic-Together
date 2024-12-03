@@ -141,15 +141,6 @@ public class AuthService {
     public SignUpResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) throws IOException {
         String hashedPassword = passwordEncoder.encode(signUpRequestDTO.getPassword());
 
-        // 기본 이미지 파일을 `MultipartFile`로 변환
-        String defaultImagePath = "src/main/resources/static/img/profileImg.png"; // 기본 이미지 경로
-        MultipartFile defaultImageFile;
-
-        try (InputStream inputStream = Files.newInputStream(Paths.get(defaultImagePath))) {
-            defaultImageFile = new MockMultipartFile("file", "default_profile.png",
-                    "image/png", StreamUtils.copyToByteArray(inputStream));
-        }
-
         Member member = Member.builder()
                 .userName(signUpRequestDTO.getUserName())
                 .email(signUpRequestDTO.getEmail())
@@ -157,7 +148,7 @@ public class AuthService {
                 .phone(signUpRequestDTO.getPhone())
                 .nickname(signUpRequestDTO.getNickname())
                 .address(signUpRequestDTO.getAddress())
-                .profileUrl(s3ImageService.upload(defaultImageFile))
+                .profileUrl("https://cosmetic-together-bucket.s3.ap-northeast-2.amazonaws.com/profileImg.png")
                 .role(Role.USER)
                 .authType(AuthType.REGULAR)
                 .build();
