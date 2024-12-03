@@ -10,6 +10,10 @@ import Capston.CosmeticTogether.domain.form.domain.Product;
 import Capston.CosmeticTogether.domain.form.dto.request.CreateFormRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.request.UpdateFormRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.*;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.CreateFormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.DetailFormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.UpdateFormInfoResponseDTO;
 import Capston.CosmeticTogether.domain.form.repository.DeliveryRepository;
 import Capston.CosmeticTogether.domain.form.repository.FormRepository;
 import Capston.CosmeticTogether.domain.form.repository.OrderRepository;
@@ -50,6 +54,15 @@ public class FormService {
 
     @Transactional
     public CreateFormResponseDTO createForm(MultipartFile thumbnail, CreateFormRequestDTO createFormRequestDTO, List<MultipartFile> images) {
+        // 0. 입력값 검증
+        if (thumbnail == null || thumbnail.isEmpty()) {
+            throw new BusinessException("폼 썸네일을 등록해야 합니다", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (images == null || images.isEmpty()) {
+            throw new BusinessException("상품 이미지가 비어있습니다", ErrorCode.INVALID_INPUT_VALUE);
+        }
+
+        validateCreateFormRequestDTO(createFormRequestDTO);
 
         // 1. 사용자 정보 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -67,7 +80,7 @@ public class FormService {
         String endDateString = createFormRequestDTO.getEndDate();
 
         // 날짜 문자열을 LocalDate로 변환 후, LocalDateTime으로 설정 (시간을 00:00:00으로 설정)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         LocalDate startDate = LocalDate.parse(startDateString, formatter);
         LocalDate endDate = LocalDate.parse(endDateString, formatter);
 
@@ -142,6 +155,8 @@ public class FormService {
         // 1. formId 유효성 체크
         Form form = formRepository.findDeleteAtIsNullById(formId).orElseThrow(() -> new BusinessException(ErrorCode.FORM_NOT_FOUND));
 
+        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
         // 2. 매핑해서 리턴
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -194,12 +209,14 @@ public class FormService {
 
         List<DeliveryResponseDTO> deliveries = form.getDeliveries().stream()
                 .map(delivery -> DeliveryResponseDTO.builder()
+                        .deliveryId(delivery.getId())
                         .deliveryOption(delivery.getDeliveryOption())
                         .deliveryCost(String.valueOf(delivery.getDeliveryCost()))
                         .build())
                 .collect(Collectors.toList());
 
         return DetailFormResponseDTO.builder()
+                .organizerId(form.getOrganizer().getId())
                 .thumbnail(form.getFormUrl())
                 .organizerName(form.getOrganizer().getNickname())
                 .phone(form.getOrganizer().getPhone())
@@ -210,6 +227,9 @@ public class FormService {
                 .form_description(form.getFormDescription())
                 .salesPeriod(salesPeriod)
                 .favoriteCount(favoriteCount)
+                .buyerName(loginMember.getUserName())
+                .buyerPhone(loginMember.getPhone())
+                .buyerEmail(loginMember.getEmail())
                 .products(products)
                 .deliveries(deliveries)
                 .build();
@@ -479,6 +499,42 @@ public class FormService {
             formRepository.save(form);
         } else {
             throw new BusinessException("해당 폼의 작성자가 아닙니다", ErrorCode.NOT_WRITER_OF_FORM);
+        }
+    }
+
+    private void validateCreateFormRequestDTO(CreateFormRequestDTO createFormRequestDTO) {
+        if (createFormRequestDTO.getTitle() == null || createFormRequestDTO.getTitle().isBlank()) {
+            throw new BusinessException("폼 제목을 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getForm_description() == null || createFormRequestDTO.getForm_description().isBlank()) {
+            throw new BusinessException("폼 설명을 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getStartDate() == null || createFormRequestDTO.getStartDate().isBlank()) {
+            throw new BusinessException("판매 시작 날짜를 지정해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getEndDate() == null || createFormRequestDTO.getEndDate().isBlank()) {
+            throw new BusinessException("판매 종료 날짜를 지정해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getProductName() == null || createFormRequestDTO.getProductName().isEmpty()) {
+            throw new BusinessException("상품명을 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getPrice() == null || createFormRequestDTO.getPrice().isEmpty()) {
+            throw new BusinessException("상품 가격을 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getStock() == null || createFormRequestDTO.getStock().isEmpty()) {
+            throw new BusinessException("상품 재고를 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getMaxPurchaseLimit() == null || createFormRequestDTO.getMaxPurchaseLimit().isEmpty()) {
+            throw new BusinessException("상품의 최대 수량을 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getDeliveryOption() == null || createFormRequestDTO.getDeliveryOption().isEmpty()) {
+            throw new BusinessException("배송명을 작성해주세요 (예. 반값택배)", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getDeliveryCost() == null || createFormRequestDTO.getDeliveryCost().isEmpty()) {
+            throw new BusinessException("배송 가격을 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (createFormRequestDTO.getDeliveryInstructions() == null || createFormRequestDTO.getDeliveryInstructions().isBlank()) {
+            throw new BusinessException("배송 안내를 작성해주세요", ErrorCode.INVALID_INPUT_VALUE);
         }
     }
 }

@@ -42,6 +42,14 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private int totalPrice;
 
+    @ManyToOne
+    @JoinColumn(name = "delivery_id", nullable = false)
+    private Delivery delivery;
+
+    @ManyToOne
+    @JoinColumn(name = "form_id", nullable = false)
+    private Form form;
+
     public void saveProducts(List<OrderProduct> orderProducts) {
         this.orderProducts = orderProducts;
     }

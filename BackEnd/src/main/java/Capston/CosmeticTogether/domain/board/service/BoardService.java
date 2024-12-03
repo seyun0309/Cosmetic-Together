@@ -131,6 +131,7 @@ public class BoardService {
             String postTime = formatTime(board.getCreatedAt());
 
             BoardSummaryResponseDTO boardSummaryResponseDTO = BoardSummaryResponseDTO.builder()
+                    .boardId(board.getId())
                     .writerNickName(board.getMember().getNickname())
                     .profileUrl(board.getMember().getProfileUrl())
                     .description(board.getDescription())

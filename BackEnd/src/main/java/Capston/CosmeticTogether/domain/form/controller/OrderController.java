@@ -3,6 +3,12 @@ package Capston.CosmeticTogether.domain.form.controller;
 
 import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.form.dto.request.OrderRequestDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.MyFormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.order.OrderDetailResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.order.OrderResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.order.SellerOrderListDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.order.SellerOrderResponseDTO;
 import Capston.CosmeticTogether.domain.form.service.OrderService;
 
 
@@ -14,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "주문", description = "주문 등록, 주문 삭제")
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +32,6 @@ public class OrderController {
     private final OrderService orderService;
 
     // 주문 생성
-    // TODO 주문 고유번호 리턴
     @PostMapping("/{formId}")
     @Operation(summary = "주문 등록 - 토큰 필요", description = "URL의 formId와 주문 정보를 보내면 주문 등록이 됩니다")
     public ResponseEntity<ResponseMessage> createOrder(@PathVariable("formId") Long formId, @RequestBody OrderRequestDTO orderRequestDTO) {
@@ -38,5 +45,37 @@ public class OrderController {
     public ResponseEntity<ResponseMessage> deleteOrder(@PathVariable("orderId") Long orderId) {
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "주문이 삭제되었습니다"));
+    }
+
+    // 주문한 폼 조회
+    @GetMapping("/my-order")
+    @Operation(summary = "주문 작성한 폼 조회 - 토큰 필요", description = "사용자가 주문한 폼을 조회합니다")
+    public ResponseEntity<List<OrderResponseDTO>> getOrderForm() {
+        List<OrderResponseDTO> response = orderService.getOrderForm();
+        return ResponseEntity.ok(response);
+    }
+
+    // 주문서 조회
+    @GetMapping("/{orderId}")
+    @Operation(summary = "주문서 조회 - 토큰 필요", description = "사용자가 주문한 폼을 조회합니다")
+    public ResponseEntity<OrderDetailResponseDTO> getOrder(@PathVariable("orderId") Long orderId) {
+        OrderDetailResponseDTO response = orderService.getOrder(orderId);
+        return ResponseEntity.ok(response);
+    }
+
+    // 작성 폼 조회
+    @GetMapping("/my-form")
+    @Operation(summary = "내가 작성한 폼 조회 - 토큰필요", description = "토큰을 통해 해당 사용자가 작성한 폼을 조회합니다")
+    public ResponseEntity<List<MyFormResponseDTO>> getMyForm() {
+        List<MyFormResponseDTO> response = orderService.getMyForm();
+        return ResponseEntity.ok(response);
+    }
+
+    // 판매내역 - 주문서 리스트 조회
+    @GetMapping("/my-form/{formId}")
+    @Operation(summary = "판매자 기준 주문서 리스트 조회 - 토큰 필요", description = "판매자 기준 해당 폼에 들어온 주문 리스트를 조회합니다")
+    public ResponseEntity<SellerOrderResponseDTO> getSalesOrders(@PathVariable("formId") Long formId) {
+        SellerOrderResponseDTO response = orderService.getSalesOrders(formId);
+        return ResponseEntity.ok(response);
     }
 }

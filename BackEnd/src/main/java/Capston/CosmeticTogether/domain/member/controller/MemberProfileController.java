@@ -3,7 +3,7 @@ package Capston.CosmeticTogether.domain.member.controller;
 
 import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
@@ -89,15 +89,4 @@ public class MemberProfileController {
         List<BoardDetailResponseDTO> response = memberProfileService.getMyBoard();
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/forms")
-    @Operation(summary = "내가 작성한 폼 조회 - 토큰필요", description = "토큰을 통해 해당 사용자가 작성한 폼을 조회합니다")
-    public ResponseEntity<List<FormResponseDTO>> getMyForm() {
-        List<FormResponseDTO> response = memberProfileService.getMyForm();
-        return ResponseEntity.ok(response);
-    }
-
-    //TODO 주문건
-
-    //TODO 주문 들어온 건
 }

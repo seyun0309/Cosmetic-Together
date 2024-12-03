@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class DeliveryResponseDTO {
+    private Long deliveryId;
     private String deliveryOption;
     private String deliveryCost;
 }

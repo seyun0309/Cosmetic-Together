@@ -56,6 +56,9 @@ public class Form extends BaseEntity {
     @OneToMany(mappedBy = "form")
     private List<Favorites> favorites;
 
+    @OneToMany(mappedBy = "form")
+    private List<Order> orders;
+
     // 업데이트 메서드
     public void update(String title, String form_description, String formUrl, LocalDateTime startDate, LocalDateTime endDate) {
         if (title != null) {

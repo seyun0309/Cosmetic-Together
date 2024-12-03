@@ -53,6 +53,9 @@ public enum ErrorCode {
     ALREADY_FOLLOW(400, "FW002", "이미 팔로우하였습니다."),
     NOT_FOLLOWING(400, "FW003", "팔로우 한 상태가 아닙니다"),
 
+    // Delivery
+    NOT_FOUND_DELIVERY(400, "D001", "존재하는 배송 방법이 아닙니다"),
+
     //S3(Image)
     EMPTY_FILE_EXCEPTION(400, "S001", "파일이 비어있습니다"),
     IO_EXCEPTION_ON_IMAGE_UPLOAD(500, "S002", "이미지 업로드 중에 IO 예외 발생"),
@@ -61,8 +64,10 @@ public enum ErrorCode {
     PUT_OBJECT_EXCEPTION(500, "S005", "S3에 저장할 때 문제가 발생하였습니다"),
     IO_EXCEPTION_ON_IMAGE_DELETE(500, "S006", "파일을 삭제 중에 입출력 예외 발생"),
 
+    //Comment
     COMMENT_NOT_FOUND(400, "C001", "존재하는 댓글이 아닙니다"),
-    NOT_COMMENTER_OF_BOARD(400, "C002", "댓글 작성자가 아닙니다")
+    NOT_COMMENTER_OF_BOARD(400, "C002", "댓글 작성자가 아닙니다"),
+
     ;
 
     private final String code;
