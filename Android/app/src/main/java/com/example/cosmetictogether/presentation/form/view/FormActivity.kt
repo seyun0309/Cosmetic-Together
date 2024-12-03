@@ -16,12 +16,6 @@ class FormActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFormBinding
     private val viewModel: FormViewModel by viewModels()
 
-    private fun getToken(): String {
-        val sharedPreferences = getSharedPreferences("auth_prefs", MODE_PRIVATE)
-        val token = sharedPreferences.getString("access_token", null) ?: ""
-        return token
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

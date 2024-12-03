@@ -47,6 +47,21 @@
         <activity
             android:name=".presentation.form.view.FormDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".presentation.order.view.OrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.order.view.OrderDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.form.view.MyFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.order.view.MyFormOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.order.view.MyFormOrderDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

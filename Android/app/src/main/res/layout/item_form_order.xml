@@ -28,19 +28,25 @@
             android:id="@+id/buyerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text='@{`이름: ` + form.organizerName}' />
+            android:text='@{`이름: ` + form.buyerName}'
+            android:textSize="15sp"
+            android:padding="7dp"/>
 
         <TextView
             android:id="@+id/buyerContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text='@{`연락처: ` + form.phone}'  />
+            android:text='@{`연락처: ` + form.buyerPhone}'
+            android:textSize="15sp"
+            android:padding="7dp"/>
 
         <TextView
             android:id="@+id/buyerEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text='@{`이메일: ` + form.email}' />
+            android:text='@{`이메일: ` + form.buyerEmail}'
+            android:textSize="15sp"
+            android:padding="7dp"/>
 
         <View
             android:layout_width="match_parent"
@@ -57,23 +63,26 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
+        <EditText
             android:id="@+id/shippingName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text='@{`이름: ` + form.organizerName}' />
+            android:textSize="15sp"
+            android:hint="수령자 이름" />
 
-        <TextView
+        <EditText
             android:id="@+id/shippingContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text='@{`연락처: ` + form.phone}' />
+            android:textSize="15sp"
+            android:hint="수령자 연락처" />
 
-        <TextView
+        <EditText
             android:id="@+id/shippingAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text='@{`주소: ` + form.address}' />
+            android:textSize="15sp"
+            android:hint="수령자 주소" />
 
     </LinearLayout>
 </layout>

@@ -5,8 +5,10 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cosmetictogether.databinding.ActivityMypageBinding
+import com.example.cosmetictogether.presentation.form.view.MyFormActivity
 import com.example.cosmetictogether.presentation.login.LoginActivity
 import com.example.cosmetictogether.presentation.mypage.viewmodel.MyPageViewModel
+import com.example.cosmetictogether.presentation.order.view.OrderActivity
 
 class MyPageActivity : AppCompatActivity() {
 
@@ -45,6 +47,18 @@ class MyPageActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK // 모든 Activity 스택을 제거
             startActivity(intent)
             finish()
+        }
+
+        // 판매 내역 버튼 클릭시
+        binding.salesHistoryButton.setOnClickListener {
+            val intent = Intent(this, MyFormActivity::class.java)
+            startActivity(intent)
+        }
+
+        // 구매 내역 버튼 클릭시
+        binding.orderListButton.setOnClickListener {
+            val intent = Intent(this, OrderActivity::class.java)
+            startActivity(intent)
         }
     }
 }

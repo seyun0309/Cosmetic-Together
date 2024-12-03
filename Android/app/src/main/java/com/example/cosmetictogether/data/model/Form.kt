@@ -32,6 +32,7 @@ data class CreateFormResponse(
 )
 
 data class DetailFormResponse(
+    @SerializedName("organizerId") val organizerId: Long,
     @SerializedName("thumbnail") val thumbnail: String,
     @SerializedName("organizerName") val organizerName: String,
     @SerializedName("phone") val phone: String,
@@ -42,8 +43,28 @@ data class DetailFormResponse(
     @SerializedName("form_description") val formDescription: String,
     @SerializedName("salesPeriod") val salesPeriod: String,
     @SerializedName("favoriteCount") val favoriteCount: Int,
+    @SerializedName("buyerName") val buyerName: String,
+    @SerializedName("buyerPhone") val buyerPhone: String,
+    @SerializedName("buyerEmail") val buyerEmail: String,
     @SerializedName("products") val products: List<ResponseProduct>,
-    @SerializedName("deliveries") val deliveries: List<Delivery>
+    @SerializedName("deliveries") val deliveries: List<ResponseDelivery>
+)
+
+data class CreateOrderRequest(
+    @SerializedName("recipientName") val recipientName: String,
+    @SerializedName("recipientPhone") val recipientPhone: String,
+    @SerializedName("recipientAddress") val recipientAddress: String,
+    @SerializedName("productsId") val productsId: List<Long>,
+    @SerializedName("orderQuantity") val orderQuantity: List<Int>,
+    @SerializedName("deliveryId") val deliveryId: Long,
+    @SerializedName("totalPrice") val totalPrice: Int
+)
+
+data class MyFormResponse(
+    @SerializedName("formId") val formId: Long,
+    @SerializedName("thumbnail") val thumbnail: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("salesPeriod") val salesPeriod: String
 )
 
 data class Product(
@@ -67,4 +88,15 @@ data class ResponseProduct(
 data class Delivery(
     val deliveryOption: String,
     val deliveryCost: Int
+)
+
+data class ResponseDelivery(
+    val deliveryId: Long,
+    val deliveryOption: String,
+    val deliveryCost: Int
+)
+
+data class APIResponse(
+    val status: String,
+    val message: String
 )

@@ -112,18 +112,33 @@
                 android:layout_height="10sp" />
 
             <Button
-                android:id="@+id/writeFormButton"
+                android:id="@+id/salesHistoryButton"
                 android:layout_width="350sp"
                 android:layout_height="55sp"
                 android:background="@color/white"
                 android:fontFamily="@font/nanum_square_b"
                 android:gravity="center"
-                android:text="작성한 폼"
+                android:text="판매 내역"
                 android:textSize="16sp" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="10sp" />
+
+            <Button
+                android:id="@+id/orderListButton"
+                android:layout_width="350sp"
+                android:layout_height="55sp"
+                android:background="@color/white"
+                android:fontFamily="@font/nanum_square_b"
+                android:gravity="center"
+                android:text="구매 내역"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
+
 
             <Button
                 android:id="@+id/logOutButton"
