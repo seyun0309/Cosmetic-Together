@@ -4,10 +4,10 @@ import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import Capston.CosmeticTogether.domain.form.dto.request.CreateFormRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.request.UpdateFormRequestDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.CreateFormResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.DetailFormResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.UpdateFormInfoResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.CreateFormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.DetailFormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.UpdateFormInfoResponseDTO;
 import Capston.CosmeticTogether.domain.form.service.FormService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +31,6 @@ public class FormController {
     private final S3ImageService s3ImageService;
 
     // 작성자 폼 등록
-    //TODO 상품 고유번호 리턴
     @PostMapping
     @Operation(summary = "폼 생성 - 토큰 필요", description = "thumnail(썸네일 사진), request(폼 내용), images(상품 사진들)을 보내면 폼이 생성됩니다")
     public ResponseEntity<ResponseMessage> createForm(@RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail,
@@ -44,7 +43,7 @@ public class FormController {
 
     // 단일 폼 조회
     @GetMapping("/{formId}")
-    @Operation(summary = "폼 세부 조회", description = "URL의 formId를 통해서 폼의 세부 조회를 진행합니다")
+    @Operation(summary = "폼 세부 조회 - 토큰 필요", description = "URL의 formId를 통해서 폼의 세부 조회를 진행합니다")
     public ResponseEntity<DetailFormResponseDTO> getForm(@PathVariable("formId") Long formId) {
         DetailFormResponseDTO response = formService.getForm(formId);
         return ResponseEntity.ok(response);
