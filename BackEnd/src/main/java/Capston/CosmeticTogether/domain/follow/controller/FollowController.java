@@ -1,6 +1,7 @@
 package Capston.CosmeticTogether.domain.follow.controller;
 
 import Capston.CosmeticTogether.ResponseMessage;
+import Capston.CosmeticTogether.domain.follow.dto.response.FollowResponseDTO;
 import Capston.CosmeticTogether.domain.follow.dto.response.GetFollowAndFollowingMemberDTO;
 import Capston.CosmeticTogether.domain.follow.service.FollowService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,16 +24,13 @@ public class FollowController {
 
     @PostMapping("/follow/{followingId}")
     @Operation(summary = "[API] 상대방 팔로우 하기 - 토큰 필요", description = "상대방 id를 URL 경로에 포함시켜 전달하면 팔로우가 됩니다")
-    public ResponseEntity<ResponseMessage> followMember(@PathVariable("followingId") Long followingId) {
-        String followingMemberNickName = followService.followMember(followingId);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), followingMemberNickName + " 님을 팔로우하였습니다"));
-    }
-
-    @PostMapping("/unfollow/{unfollowingId}")
-    @Operation(summary = "[API] 상대방 언팔로우 하기 - 토큰 필요", description = "상대방 id를 URL 경로에 포함시켜 언팔로우가 됩니다")
-    public ResponseEntity<ResponseMessage> unfollowMember(@PathVariable("unfollowingId") Long unfollowingId) {
-        String unfollowingMemberNickName = followService.unfollowMember(unfollowingId);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), unfollowingMemberNickName + " 님을 팔로우 취소하였습니다"));
+    public ResponseEntity<ResponseMessage> followOrUnFollow(@PathVariable("followingId") Long followingId) {
+        FollowResponseDTO response = followService.likeOrUnlikeBoard(followingId);
+        if(response.isValid()) {
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), response.getFollowingNickName() + "님을 팔로우하였습니다"));
+        } else {
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), response.getFollowingNickName() + "님을 언팔로우하였습니다"));
+        }
     }
 
     @GetMapping("/followers")
