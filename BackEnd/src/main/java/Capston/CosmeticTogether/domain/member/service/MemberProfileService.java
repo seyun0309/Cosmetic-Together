@@ -8,7 +8,7 @@ import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import Capston.CosmeticTogether.domain.favorites.repository.FavoritesRepository;
 import Capston.CosmeticTogether.domain.form.domain.Form;
-import Capston.CosmeticTogether.domain.form.dto.resonse.FormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
 import Capston.CosmeticTogether.domain.form.repository.FormRepository;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
@@ -193,30 +193,6 @@ public class MemberProfileService {
 
             response.add(getBoardResponseDTO);
         }
-        return response;
-    }
-
-    public List<FormResponseDTO> getMyForm() {
-        // 1. 로그인 사용자 정보 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        // 2. 해당 사용자가 작성한 폼 리스트 가져오기
-        List<Form> formList = formRepository.findByMemberId(loginMember.getId());
-
-        // 3. 매핑해서 리턴
-        List<FormResponseDTO> response = new ArrayList<>();
-
-        for(Form form : formList) {
-            FormResponseDTO formResponseDTO = FormResponseDTO.builder()
-                    .thumbnail(form.getFormUrl())
-                    .organizerName(form.getOrganizer().getNickname())
-                    .organizer_url(form.getOrganizer().getProfileUrl())
-                    .formStatus(form.getFormStatus().getDescription())
-                    .build();
-
-            response.add(formResponseDTO);
-        }
-
         return response;
     }
 
