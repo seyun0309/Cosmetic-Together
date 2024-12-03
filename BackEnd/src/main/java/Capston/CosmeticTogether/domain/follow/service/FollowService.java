@@ -2,6 +2,7 @@ package Capston.CosmeticTogether.domain.follow.service;
 
 
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
+import Capston.CosmeticTogether.domain.follow.dto.response.FollowResponseDTO;
 import Capston.CosmeticTogether.domain.follow.dto.response.GetFollowAndFollowingMemberDTO;
 import Capston.CosmeticTogether.domain.follow.repository.FollowRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,47 +29,38 @@ public class FollowService {
     private final MemberService memberService;
 
     @Transactional
-    public String followMember(Long followingId) {
+    public FollowResponseDTO likeOrUnlikeBoard(Long followingId) {
+
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        // 자기자신을 팔로잉 하는지 검사
-        if(followingId.equals(loginMember.getId())) {
-            throw new BusinessException("자기 자신을 팔로우하는건 불가능합니다", ErrorCode.SELF_FOLLOW);
+        // 자신을 팔로우하려는 경우 예외 처리
+        if (loginMember.getId().equals(followingId)) {
+            throw new BusinessException("자기 자신을 팔로우할 수 없습니다", ErrorCode.SELF_FOLLOW);
         }
 
         // DB에 있는 id인지 검사
         Member followingMember = memberRepository.findById(followingId).orElseThrow(() -> new BusinessException("해당 사용자가 존재하지 않습니다", ErrorCode.MEMBER_NOT_FOUND));
 
-        // 기존에 팔로잉 된 거였는지 검사
-        Optional<Follow> checkFollow = followRepository.findByFollowerIdAndFollowingId(followingId, loginMember.getId());
-        if(checkFollow.isPresent()) {
-            throw new BusinessException("이미 팔로우하였습니다", ErrorCode.ALREADY_FOLLOW);
-        }
+        // 팔로우 여부 확인
+        Follow checkFollow = followRepository.findByFollowerIdAndFollowingId(followingId, loginMember.getId());
 
-        // 정상적으로 팔로잉 진행
-        Follow follow = new Follow(followingMember, loginMember);
-        followRepository.save(follow);
-
-        return followingMember.getNickname();
-    }
-
-    @Transactional
-    public String unfollowMember(Long unfollowingId) {
-        // 1. 로그인 한 사용자 가져오기 / 언팔로우 대상자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        Member followingMember = memberRepository.findById(unfollowingId).orElseThrow(() -> new BusinessException("존재하는 사용자가 아닙니다", ErrorCode.MEMBER_NOT_FOUND));
-
-        // 2. DB에 있는 id인지 검사
-        Optional<Follow> checkFollow = followRepository.findByFollowerIdAndFollowingId(unfollowingId, loginMember.getId());
-        if(checkFollow.isPresent()) {
-            Follow follow = checkFollow.get();
-
-            // 3. 언팔로잉 진행
-            followRepository.delete(follow);
+        if (checkFollow != null) {
+            if(checkFollow.isValid()) {
+                checkFollow.setValid(false);
+                return new FollowResponseDTO(false, followingMember.getNickname());
+            } else {
+                checkFollow.setValid(true);
+                return new FollowResponseDTO(false, followingMember.getNickname());
+            }
         } else {
-            throw new BusinessException("팔로우 한 사용자가 아닙니다", ErrorCode.NOT_FOLLOWING);
+            // 팔로우 처리
+            Follow follow = Follow.builder()
+                    .follower(followingMember)
+                    .following(loginMember)
+                    .build();
+            followRepository.save(follow);
+            return new FollowResponseDTO(true, followingMember.getNickname());
         }
-        return followingMember.getNickname();
     }
 
     public List<GetFollowAndFollowingMemberDTO> getFollowers() {
