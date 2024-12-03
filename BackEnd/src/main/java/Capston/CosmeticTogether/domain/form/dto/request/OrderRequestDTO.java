@@ -17,18 +17,6 @@ import java.util.List;
 public class OrderRequestDTO {
 
     @NotBlank
-    private String buyerName;
-
-    @NotBlank
-    private String buyerPhone;
-
-    @NotBlank
-    private String buyerEmail;
-
-    @NotBlank
-    private String buyerAddress;
-
-    @NotBlank
     private String recipientName;
 
     @NotBlank
@@ -42,6 +30,9 @@ public class OrderRequestDTO {
 
     @NotEmpty
     private List<Integer> orderQuantity;
+
+    @NotEmpty
+    private Long deliveryId;
 
     @NotBlank
     private int totalPrice;
