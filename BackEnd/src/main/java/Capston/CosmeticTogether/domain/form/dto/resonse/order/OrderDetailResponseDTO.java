@@ -21,4 +21,8 @@ public class OrderDetailResponseDTO {
     private List<OrderProductsResponseDTO> orderProducts;
     private String deliveryOption;
     private String deliveryCost;
+    private String orderStatus;
+    private String organizerName;
+    private String bankName;
+    private String accountNumber;
 }
