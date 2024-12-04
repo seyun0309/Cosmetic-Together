@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class BoardDetailResponseDTO {
+    private Long boardId;
     private String writerNickName;
     private String profileUrl;
     private String description;
