@@ -11,6 +11,7 @@ import lombok.Getter;
 public class OrderResponseDTO {
     private Long formId;
     private Long orderId;
+    private String orderStatus;
     private String orderDate;
     private String thumbnail;
     private String title;
