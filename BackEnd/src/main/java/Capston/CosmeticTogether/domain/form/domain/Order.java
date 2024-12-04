@@ -1,12 +1,10 @@
 package Capston.CosmeticTogether.domain.form.domain;
 
 
-import Capston.CosmeticTogether.domain.form.domain.Form;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.global.common.BaseEntity;
+import Capston.CosmeticTogether.global.enums.OrderStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,7 +48,15 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "form_id", nullable = false)
     private Form form;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     public void saveProducts(List<OrderProduct> orderProducts) {
         this.orderProducts = orderProducts;
+    }
+
+    public void updateOrderStatus(OrderStatus status) {
+        this.orderStatus = status;
     }
 }
