@@ -386,6 +386,63 @@
                         android:layout_marginBottom="8dp" />
                 </LinearLayout>
 
+                <!-- 입금 선택 Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="@android:color/white"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/tvBankLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="은행 선택"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerBank"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvBankLabel"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:entries="@array/bank_list"
+                        style="@style/Widget.AppCompat.Spinner.Underlined" />
+
+                    <!-- 계좌번호 입력 -->
+                    <TextView
+                        android:id="@+id/tvAccountNumberLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="계좌번호"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        app:layout_constraintTop_toBottomOf="@id/spinnerBank"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <EditText
+                        android:id="@+id/etAccountNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:inputType="number"
+                        android:hint="계좌번호 입력"
+                        android:padding="10dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvAccountNumberLabel"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </LinearLayout>
+
                 <!-- 판매자 준수사항 동의서 Section -->
                 <LinearLayout
                     android:layout_width="match_parent"
