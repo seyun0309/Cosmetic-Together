@@ -99,6 +99,7 @@ public class FormService {
                 .deliveryInstructions(createFormRequestDTO.getDeliveryInstructions())
                 .bankName(createFormRequestDTO.getBankName())
                 .accountNumber(createFormRequestDTO.getAccountNumber())
+                .instagram(createFormRequestDTO.getInstagram())
                 .build();
         formRepository.save(form);
 
@@ -221,6 +222,7 @@ public class FormService {
                 .organizerId(form.getOrganizer().getId())
                 .thumbnail(form.getFormUrl())
                 .organizerName(form.getOrganizer().getNickname())
+                .instagram(form.getInstagram())
                 .phone(form.getOrganizer().getPhone())
                 .address(form.getOrganizer().getAddress())
                 .email(form.getOrganizer().getEmail())
