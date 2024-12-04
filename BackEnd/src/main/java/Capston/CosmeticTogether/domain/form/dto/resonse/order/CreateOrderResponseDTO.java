@@ -8,12 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class OrderResponseDTO {
-    private Long formId;
+public class CreateOrderResponseDTO {
     private Long orderId;
-    private String orderStatus;
-    private String orderDate;
-    private String thumbnail;
-    private String title;
-    private String totalPrice;
 }

@@ -97,6 +97,8 @@ public class FormService {
                 .startDate(startDateTime)
                 .endDate(endDateTime)
                 .deliveryInstructions(createFormRequestDTO.getDeliveryInstructions())
+                .bankName(createFormRequestDTO.getBankName())
+                .accountNumber(createFormRequestDTO.getAccountNumber())
                 .build();
         formRepository.save(form);
 

@@ -50,4 +50,10 @@ public class CreateFormRequestDTO {
 
     @NotEmpty
     private String deliveryInstructions;
+
+    @NotNull
+    private String bankName;
+
+    @NotNull
+    private String accountNumber;
 }

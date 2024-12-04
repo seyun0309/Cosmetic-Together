@@ -3,12 +3,9 @@ package Capston.CosmeticTogether.domain.form.controller;
 
 import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.form.dto.request.OrderRequestDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.request.UpdateOrderStatusRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.MyFormResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.order.OrderDetailResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.order.OrderResponseDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.order.SellerOrderListDTO;
-import Capston.CosmeticTogether.domain.form.dto.resonse.order.SellerOrderResponseDTO;
+import Capston.CosmeticTogether.domain.form.dto.resonse.order.*;
 import Capston.CosmeticTogether.domain.form.service.OrderService;
 
 
@@ -34,10 +31,27 @@ public class OrderController {
     // 주문 생성
     @PostMapping("/{formId}")
     @Operation(summary = "주문 등록 - 토큰 필요", description = "URL의 formId와 주문 정보를 보내면 주문 등록이 됩니다")
-    public ResponseEntity<ResponseMessage> createOrder(@PathVariable("formId") Long formId, @RequestBody OrderRequestDTO orderRequestDTO) {
-        orderService.createOrder(formId, orderRequestDTO);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "주문이 완료되었습니다"));
+    public ResponseEntity<CreateOrderResponseDTO> createOrder(@PathVariable("formId") Long formId, @RequestBody OrderRequestDTO orderRequestDTO) {
+        CreateOrderResponseDTO response = orderService.createOrder(formId, orderRequestDTO);
+        return ResponseEntity.ok(response);
     }
+
+    // 주문 후 판매자 계좌 내용 출력
+    @GetMapping("/account/{orderId}")
+    @Operation(summary = "주문 후 판매자의 계좌 내용 출력", description = "판매자 계좌 내용 출력")
+    public ResponseEntity<AccountResponseDTO> getAccount(@PathVariable("orderId") Long orderId) {
+        AccountResponseDTO response = orderService.getAccount(orderId);
+        return ResponseEntity.ok(response);
+    }
+
+    // 주문 상태 변경
+    @PostMapping("/status/{orderId}")
+    @Operation(summary = "주문 상태 변경", description = "판매자 해당 주문의 상태를 변경합니다")
+    public ResponseEntity<ResponseMessage> updateOrderStatus(@PathVariable("orderId") Long orderId, @RequestBody UpdateOrderStatusRequestDTO updateOrderStatusRequestDTO) {
+        orderService.updateOrderStatus(orderId, updateOrderStatusRequestDTO);
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "주문 상태가 변경되었습니다"));
+    }
+
 
     // 주문 삭제
     @DeleteMapping("/{orderId}")

@@ -2,6 +2,7 @@ package Capston.CosmeticTogether.domain.form.service;
 
 import Capston.CosmeticTogether.domain.form.domain.*;
 import Capston.CosmeticTogether.domain.form.dto.request.OrderRequestDTO;
+import Capston.CosmeticTogether.domain.form.dto.request.UpdateOrderStatusRequestDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.MyFormResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.order.*;
@@ -10,6 +11,7 @@ import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.service.MemberService;
 import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
 import Capston.CosmeticTogether.global.enums.ErrorCode;
+import Capston.CosmeticTogether.global.enums.OrderStatus;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,7 +39,7 @@ public class OrderService {
     private final OrderProductRepository orderProductRepository;
 
     @Transactional
-    public void createOrder(Long formId, OrderRequestDTO orderRequestDTO) {
+    public CreateOrderResponseDTO createOrder(Long formId, OrderRequestDTO orderRequestDTO) {
         // 1. 사용자 정보 가져오기
         Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -59,6 +62,7 @@ public class OrderService {
                 .totalPrice(orderRequestDTO.getTotalPrice())
                 .delivery(delivery)
                 .form(form)
+                .orderStatus(OrderStatus.COMPLETED)
                 .build();
 
         orderRepository.save(order);
@@ -94,6 +98,23 @@ public class OrderService {
             orderProductList.add(orderProduct);
         }
         order.saveProducts(orderProductList);
+
+        return CreateOrderResponseDTO.builder()
+                .orderId(order.getId())
+                .build();
+    }
+
+    public AccountResponseDTO getAccount(Long orderId) {
+        // 1. 유효한 orderId인지 확인
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new BusinessException("존재하는 주문이 아닙니다", ErrorCode.ORDER_NOT_FOUND));
+
+        // 매핑해서 리턴
+        return AccountResponseDTO.builder()
+                .organizerName(order.getForm().getOrganizer().getUserName())
+                .bankName(order.getForm().getBankName())
+                .accountNumber(order.getForm().getAccountNumber())
+                .build();
+
     }
 
     @Transactional
@@ -136,6 +157,7 @@ public class OrderService {
             OrderResponseDTO dto = OrderResponseDTO.builder()
                     .formId(order.getForm().getId())
                     .orderId(order.getId())
+                    .orderStatus(order.getOrderStatus().getDescription())
                     .orderDate(orderDate)
                     .thumbnail(order.getForm().getFormUrl())
                     .title(order.getForm().getTitle())
@@ -187,6 +209,10 @@ public class OrderService {
                 .orderProducts(orderProducts)
                 .deliveryOption(order.getDelivery().getDeliveryOption())
                 .deliveryCost(deliveryCost)
+                .orderStatus(order.getOrderStatus().getDescription())
+                .organizerName(order.getForm().getOrganizer().getUserName())
+                .bankName(order.getForm().getBankName())
+                .accountNumber(order.getForm().getAccountNumber())
                 .build();
     }
 
@@ -255,5 +281,22 @@ public class OrderService {
                 .totalSales(currencyFormat.format(totalSales))
                 .orders(orders)
                 .build();
+    }
+
+    public void updateOrderStatus(Long orderId, UpdateOrderStatusRequestDTO updateOrderStatusRequestDTO) {
+        // 1. 유효한 orderId인지 확인
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 2. 주문 상태 변경
+        // 2. description으로 OrderStatus 찾기
+        String statusDescription = updateOrderStatusRequestDTO.getOrderStatus();
+        OrderStatus newStatus = Arrays.stream(OrderStatus.values())
+                .filter(status -> status.getDescription().equals(statusDescription))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("주문 상태를 변경해주세요", ErrorCode.INVALID_INPUT_VALUE));
+
+        // 상태 변경
+        order.updateOrderStatus(newStatus);
+        orderRepository.save(order);
     }
 }
