@@ -183,6 +183,7 @@ public class MemberProfileService {
             String postTime = formatTime(board.getCreatedAt());
 
             BoardDetailResponseDTO getBoardResponseDTO = BoardDetailResponseDTO.builder()
+                    .boardId(board.getId())
                     .writerNickName(board.getMember().getNickname())
                     .profileUrl(board.getMember().getProfileUrl())
                     .description(board.getDescription())
