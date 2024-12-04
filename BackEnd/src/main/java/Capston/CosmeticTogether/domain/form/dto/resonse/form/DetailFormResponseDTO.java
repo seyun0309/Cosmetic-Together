@@ -15,6 +15,7 @@ public class DetailFormResponseDTO {
     private Long organizerId;
     private String thumbnail;
     private String organizerName;
+    private String instagram;
     private String phone;
     private String address;
     private String email;

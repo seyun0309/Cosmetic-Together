@@ -56,4 +56,7 @@ public class CreateFormRequestDTO {
 
     @NotNull
     private String accountNumber;
+
+    @NotNull
+    private String instagram;
 }
