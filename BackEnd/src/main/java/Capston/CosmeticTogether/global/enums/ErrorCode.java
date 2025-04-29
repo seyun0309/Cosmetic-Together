@@ -68,6 +68,9 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(400, "C001", "존재하는 댓글이 아닙니다"),
     NOT_COMMENTER_OF_BOARD(400, "C002", "댓글 작성자가 아닙니다"),
 
+    //ChatMessage
+    CHATROOM_NOT_FOUND(400, "CM001", "존재하는 채팅방이 아닙니다"),
+
     ;
 
     private final String code;
