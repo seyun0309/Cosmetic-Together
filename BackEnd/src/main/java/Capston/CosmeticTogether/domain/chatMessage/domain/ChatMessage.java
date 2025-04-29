@@ -1,4 +1,4 @@
-package Capston.CosmeticTogether.domain.message.domain;
+package Capston.CosmeticTogether.domain.chatMessage.domain;
 
 
 import Capston.CosmeticTogether.domain.member.domain.Member;
@@ -16,16 +16,17 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "message")
-public class message extends BaseEntity {
+public class ChatMessage extends BaseEntity {
 
-    @JoinColumn(nullable = false)
     @ManyToOne
-    private Member firstMember;
-
     @JoinColumn(nullable = false)
-    @ManyToOne
-    private Member SecondMember;
+    private ChatRoom chatRoom;
 
-    @Column
-    private String messageText;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Member sender;
+
+    @Column(nullable = false)
+    private String content;
+
 }
