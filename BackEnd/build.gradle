@@ -60,23 +60,17 @@ dependencies {
 	//AWS S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-	// Redis
+	//Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//Mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-	//Firebase
-//	implementation 'com.google.firebase:firebase-admin:9.1.1'
-
 	//WebSocket
-//	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-//	implementation 'org.webjars:webjars-locator-core'
-//	implementation 'org.webjars:sockjs-client:1.5.1'
-//	implementation 'org.webjars:stomp-websocket:2.3.4'
-//	implementation 'org.webjars:bootstrap:5.2.3'
-//	implementation 'org.webjars:jquery:3.6.4'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+	//메세지 -> JSON
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 tasks.named('test') {
