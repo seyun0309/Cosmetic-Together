@@ -7,7 +7,7 @@
 
 ## ✨ 프로젝트 설명
 
-<img src = "https://github.com/user-attachments/assets/7980364a-e190-4893-842c-6a26958a8c1a" width = "300">
+<img src = "https://github.com/user-attachments/assets/7980364a-e190-4893-842c-6a26958a8c1a" width = "600">
 
 최근 화장품 업계는 **특전(굿즈)**과 함께 묶음 판매가 많아지면서,<br>
 특전을 모으려는 사용자와 **화장품만 저렴하게 구매하려는 사용자** 간의 니즈가 갈리고 있습니다.<br>
