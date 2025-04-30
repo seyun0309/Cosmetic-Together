@@ -13,7 +13,7 @@
 **특전만 모으려는 사용자**와 **화장품만 저렴하게 구매하려는 사용자** 간의 니즈가 갈리고 있습니다.
 
 <br>
-<img src = "https://github.com/user-attachments/assets/3c39b964-9a25-491c-a7d4-53325a58fc85" width = "700">
+<img src = "https://github.com/user-attachments/assets/3c39b964-9a25-491c-a7d4-53325a58fc85" width = "700"><br>
 기존 SNS에서는 관련 정보를 찾기 어려웠고, 위치폼 같은 폼 플랫폼은 정보 공유가 어렵다는 한계가 있습니다.
 
 **화함**은 이러한 문제를 해결하기 위해  
