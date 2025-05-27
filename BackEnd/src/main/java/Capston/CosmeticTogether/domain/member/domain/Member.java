@@ -58,11 +58,11 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "follower")
     @JsonIgnore
-    private List<Follow> followerList;
+    private List<Follow> followingList;
 
     @OneToMany(mappedBy = "following")
     @JsonIgnore
-    private List<Follow> followingList;
+    private List<Follow> followerList;
 
     @Setter
     private String refreshToken;
@@ -89,5 +89,9 @@ public class Member extends BaseEntity {
         this.profileUrl = memberUpdateRequestDTO.getProfile_url();
         this.backgroundUrl = memberUpdateRequestDTO.getBackground_url();
         this.role = role;
+    }
+
+    public void updateAddress(String address) {
+        this.address = address;
     }
 }
