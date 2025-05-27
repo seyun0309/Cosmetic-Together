@@ -3,9 +3,11 @@ package Capston.CosmeticTogether.global.auth.service;
 
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
+import Capston.CosmeticTogether.global.auth.dto.response.ReissuedTokenResponseDTO;
 import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
 import Capston.CosmeticTogether.global.auth.dto.token.GeneratedTokenDTO;
 import Capston.CosmeticTogether.global.config.JwtProperties;
+import Capston.CosmeticTogether.global.enums.ErrorCode;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
@@ -32,6 +34,7 @@ import static Capston.CosmeticTogether.global.enums.ErrorCode.MISMATCH_REFRESH_T
 public class JwtProvider {
     private final JwtProperties jwtConfig;
     private final MemberRepository memberRepository;
+    private final RedisUtil redisUtil;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     private final HttpServletRequest request;
 
@@ -55,6 +58,11 @@ public class JwtProvider {
         String refreshToken = generateToken(securityMemberDTO, REFRESH_TOKEN_PERIOD);
         String nickName = securityMemberDTO.getNickName();
 
+        redisUtil.setDataExpire(accessToken, "login", ACCESS_TOKEN_PERIOD);
+
+        redisUtil.deleteData(securityMemberDTO.getEmail());
+        redisUtil.setDataExpire(securityMemberDTO.getEmail(), refreshToken, REFRESH_TOKEN_PERIOD);
+
         saveRefreshToken(securityMemberDTO.getId(), refreshToken);
 
         return GeneratedTokenDTO.builder()
@@ -77,38 +85,47 @@ public class JwtProvider {
     }
 
     @Transactional
-    public GeneratedTokenDTO reissueToken(String refreshToken) {
-        GeneratedTokenDTO generatedTokenDTO;
-        String reissuedRefreshToken;
-        String reissuedAccessToken;
+    public ReissuedTokenResponseDTO reissueToken(String refreshToken) {
+        // 리프레시 토큰 통해서 사용자 로그인 아이디 추출
+        String email = getLoginIdFromToken(refreshToken);
+
+        // 로그인 아이디 통해서 레디스에 저장되어 있는 사용자 리프레시 토큰 추출
+        String redisToken = redisUtil.getData(email);
+
+        // 헤더로 받은 리프레시 토큰 | 레디스에 있는 리프레시 토큰 비교
+        if (!refreshToken.equals(redisToken)) { // 토큰 유효성(탈취) 검사
+            redisUtil.deleteData(email); // 불일치시 해당 사용자 리프레시 토큰 레디스에서 삭제
+            throw new BusinessException(ErrorCode.TOKEN_REISSUE_FORBIDDEN); // 재로그인 유도
+        }
+
+        // 리프레시 토큰 유효성 검사
         Claims claims = verifyToken(refreshToken);
+
         SecurityMemberDTO securityMemberDTO = SecurityMemberDTO.fromClaims(claims);
 
-        Optional<Member> findMember = memberRepository.findById(securityMemberDTO.getId());
+        Member member = memberRepository.findById(securityMemberDTO.getId())
+                .orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
 
-        if (findMember.isEmpty()) {
-            throw new BusinessException(MEMBER_NOT_FOUND);
-        }
-
-        Member member = findMember.get();
-
-        if (member.getRefreshToken() == null) {
+        if (!refreshToken.equals(member.getRefreshToken())) {
             throw new BusinessException(MISMATCH_REFRESH_TOKEN);
         }
 
-        if (!member.getRefreshToken().equals(refreshToken)) {
-            throw new BusinessException(MISMATCH_REFRESH_TOKEN);
-        }
-
-        reissuedRefreshToken = generateToken(securityMemberDTO, REFRESH_TOKEN_PERIOD);
-        reissuedAccessToken = generateToken(securityMemberDTO, ACCESS_TOKEN_PERIOD);
+        String reissuedRefreshToken = generateToken(securityMemberDTO, REFRESH_TOKEN_PERIOD);
+        String reissuedAccessToken = generateToken(securityMemberDTO, ACCESS_TOKEN_PERIOD);
         member.setRefreshToken(refreshToken);
 
         memberRepository.save(member);
 
-        generatedTokenDTO = GeneratedTokenDTO.builder().accessToken(reissuedAccessToken).refreshToken(reissuedRefreshToken).build();
+        redisUtil.deleteData(email);
 
-        return generatedTokenDTO;
+        // Redis 등록
+        redisUtil.setDataExpire(reissuedAccessToken, "login", ACCESS_TOKEN_PERIOD);
+        redisUtil.setDataExpire(securityMemberDTO.getEmail(), reissuedRefreshToken, REFRESH_TOKEN_PERIOD);
+
+        return ReissuedTokenResponseDTO.builder()
+                .accessToken(reissuedAccessToken)
+                .refreshToken(reissuedRefreshToken)
+                .build();
     }
 
     public Claims verifyToken(String token) {
@@ -130,15 +147,15 @@ public class JwtProvider {
         findMember.ifPresent(member -> memberRepository.updateRefreshToken(member.getId(), refreshToken));
     }
 
-    public long extractIdFromTokenInHeader() {
+    public String extractIdFromTokenInHeader() {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            return extractIdFromToken(token);
+            return header.substring(7);
         } else {
             throw new IllegalArgumentException("Token not found in header.");
         }
     }
+
     public long extractIdFromToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
@@ -147,5 +164,24 @@ public class JwtProvider {
         } catch (JwtException | IllegalArgumentException | NullPointerException e) {
             throw new IllegalArgumentException("Error extracting ID from token.");
         }
+    }
+
+    public String getLoginIdFromToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
+            return claims.getBody().get("email", String.class); // 커스텀 클레임에서 꺼냄
+        } catch (JwtException | IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException("Error extracting loginId from token.");
+        }
+    }
+
+    public long getRemainingExpiration(String token) {
+        Date expiration = Jwts.parser()
+                .setSigningKey(signingKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+
+        return expiration.getTime() - System.currentTimeMillis();
     }
 }
