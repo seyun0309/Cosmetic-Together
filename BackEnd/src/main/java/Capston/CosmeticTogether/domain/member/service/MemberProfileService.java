@@ -3,13 +3,13 @@ package Capston.CosmeticTogether.domain.member.service;
 
 import Capston.CosmeticTogether.domain.board.domain.Board;
 import Capston.CosmeticTogether.domain.board.domain.BoardImage;
-import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
+import Capston.CosmeticTogether.domain.board.dto.response.BoardSummaryResponseDTO;
 import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
+import Capston.CosmeticTogether.domain.comment.repository.CommentRepository;
 import Capston.CosmeticTogether.domain.favorites.repository.FavoritesRepository;
 import Capston.CosmeticTogether.domain.form.domain.Form;
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
-import Capston.CosmeticTogether.domain.form.repository.FormRepository;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
@@ -17,11 +17,10 @@ import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponse
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MyPageOverviewResponseDTO;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
-import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
+import Capston.CosmeticTogether.global.auth.service.AuthUtil;
 import Capston.CosmeticTogether.global.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,12 +42,13 @@ public class MemberProfileService {
     private final LikesRepository likesRepository;
     private final FavoritesRepository favoritesRepository;
     private final BoardRepository boardRepository;
-    private final FormRepository formRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
+    private final AuthUtil authUtil;
 
     public MyPageOverviewResponseDTO getMyPageOverView() {
         // 1. 로그인 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 매핑해서 리턴
         return MyPageOverviewResponseDTO.builder()
@@ -59,7 +59,7 @@ public class MemberProfileService {
 
     public boolean checkPassword(PasswordCheckDTO passwordCheckDTO) {
         // 1. 로그인 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 로그인 사용자와 passwordCheckDTO 비교해서 boolean 값 리턴
         return passwordEncoder.matches(passwordCheckDTO.getPassword(), loginMember.getPassword());
@@ -67,24 +67,21 @@ public class MemberProfileService {
 
     public MemberProfileResponseDTO getMemberProfile() {
         // 1. 로그인 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 사용자 정보 매핑해서 리턴
         return MemberProfileResponseDTO.builder()
-                .userName(loginMember.getUserName())
+                .nickname(loginMember.getNickname())
                 .email(loginMember.getEmail())
                 .phone(loginMember.getPhone())
                 .address(loginMember.getAddress())
-                .status_msg(loginMember.getStatusMsg())
-                .profile_url(loginMember.getProfileUrl())
-                .background_url(loginMember.getBackgroundUrl())
                 .build();
     }
 
     @Transactional
     public void updateMemberProfile(MultipartFile profileUrl, MultipartFile backgroundUrl, MemberUpdateRequestDTO memberUpdateRequestDTO) {
         // 1. 로그인 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 정보 수정
 
@@ -108,39 +105,44 @@ public class MemberProfileService {
         memberRepository.save(loginMember);
     }
 
-    public List<BoardDetailResponseDTO> getLikedBoard() {
+    public List<BoardSummaryResponseDTO> getLikedBoard() {
         // 1. 로그인 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 좋아요한 게시물 리스트 가져오기
         List<Board> boardList = likesRepository.findLikedBoardsByMemberId(loginMember.getId());
 
         // 3. 매핑해서 리턴
-        List<BoardDetailResponseDTO> response = new ArrayList<>();
+        List<BoardSummaryResponseDTO> response = new ArrayList<>();
 
         for(Board board : boardList) {
             long likeCount = likesRepository.countLikesByBoardId(board.getId());
+            long commentCount = commentRepository.countByBoard(board);
 
             List<String> imageUrls = board.getBoardImages().stream()
                     .map(BoardImage::getBoardUrl)
                     .collect(Collectors.toList());
 
-            BoardDetailResponseDTO getBoardResponseDTO = BoardDetailResponseDTO.builder()
+            String postTime = formatTime(board.getCreatedAt());
+
+            BoardSummaryResponseDTO boardSummaryResponseDTO = BoardSummaryResponseDTO.builder()
+                    .boardId(board.getId())
                     .writerNickName(board.getMember().getNickname())
                     .profileUrl(board.getMember().getProfileUrl())
                     .description(board.getDescription())
                     .boardUrl(imageUrls)
                     .likeCount(likeCount)
+                    .postTime(postTime)
+                    .commentCount(commentCount)
                     .build();
-
-            response.add(getBoardResponseDTO);
+            response.add(boardSummaryResponseDTO);
         }
         return response;
     }
 
     public List<FormResponseDTO> getFavoriteForm() {
         // 1. 로그인 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 찜한 폼 리스트 가져오기
         List<Form> formList = favoritesRepository.findFavoritesFormsByMemberId(loginMember.getId());
@@ -162,18 +164,18 @@ public class MemberProfileService {
         return response;
     }
 
-    public List<BoardDetailResponseDTO> getMyBoard() {
+    public List<BoardSummaryResponseDTO> getMyBoard() {
         // 1. 로그인 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 사용자가 작성한 게시글 리스트 가져오기
         List<Board> boardList = boardRepository.findByMemberId(loginMember.getId());
 
         // 3. 매핑해서 리턴
-        List<BoardDetailResponseDTO> response = new ArrayList<>();
+        List<BoardSummaryResponseDTO> response = new ArrayList<>();
         for(Board board : boardList) {
             long likeCount = likesRepository.countLikesByBoardId(board.getId());
-
+            long commentCount = commentRepository.countByBoard(board);
 
             List<String> imageUrls = board.getBoardImages().stream()
                     .map(BoardImage::getBoardUrl)
@@ -182,7 +184,7 @@ public class MemberProfileService {
             // 4. 작성시간 포맷팅
             String postTime = formatTime(board.getCreatedAt());
 
-            BoardDetailResponseDTO getBoardResponseDTO = BoardDetailResponseDTO.builder()
+            BoardSummaryResponseDTO dto = BoardSummaryResponseDTO.builder()
                     .boardId(board.getId())
                     .writerNickName(board.getMember().getNickname())
                     .profileUrl(board.getMember().getProfileUrl())
@@ -190,9 +192,10 @@ public class MemberProfileService {
                     .boardUrl(imageUrls)
                     .likeCount(likeCount)
                     .postTime(postTime)
+                    .commentCount(commentCount)
                     .build();
 
-            response.add(getBoardResponseDTO);
+            response.add(dto);
         }
         return response;
     }
@@ -212,5 +215,17 @@ public class MemberProfileService {
         } else {
             return "방금";
         }
+    }
+
+    public void updateUserAddress(String address) {
+        // 1. 로그인 사용자 조회
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
+        // 2. 주소 변경
+        loginMember.updateAddress(address);
+
+        // 3. 다시 저장
+        memberRepository.save(loginMember);
+
     }
 }
