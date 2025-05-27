@@ -21,10 +21,7 @@ import Capston.CosmeticTogether.domain.form.repository.ProductRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.service.MemberService;
 import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
-import Capston.CosmeticTogether.global.enums.ErrorCode;
-import Capston.CosmeticTogether.global.enums.FormStatus;
-import Capston.CosmeticTogether.global.enums.ProductStatus;
-import Capston.CosmeticTogether.global.enums.Role;
+import Capston.CosmeticTogether.global.enums.*;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,9 +90,10 @@ public class FormService {
                 .title(createFormRequestDTO.getTitle())
                 .formDescription(createFormRequestDTO.getForm_description())
                 .formUrl(thumbnailURL)
-                .formStatus(FormStatus.ACTIVE)
                 .startDate(startDateTime)
                 .endDate(endDateTime)
+                .formType(FormType.formCode(createFormRequestDTO.getFormType()))
+                .formStatus(FormStatus.ACTIVE)
                 .deliveryInstructions(createFormRequestDTO.getDeliveryInstructions())
                 .bankName(createFormRequestDTO.getBankName())
                 .accountNumber(createFormRequestDTO.getAccountNumber())
@@ -231,6 +229,7 @@ public class FormService {
                 .form_description(form.getFormDescription())
                 .salesPeriod(salesPeriod)
                 .favoriteCount(favoriteCount)
+                .formType(form.getFormType().getDescription())
                 .buyerName(loginMember.getUserName())
                 .buyerPhone(loginMember.getPhone())
                 .buyerEmail(loginMember.getEmail())
