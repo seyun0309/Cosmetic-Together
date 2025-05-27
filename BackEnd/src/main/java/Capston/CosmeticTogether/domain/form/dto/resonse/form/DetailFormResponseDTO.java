@@ -27,6 +27,7 @@ public class DetailFormResponseDTO {
     private String buyerName;
     private String buyerPhone;
     private String buyerEmail;
+    private String formType;
     private List<ProductResponseDTO> products;
     private List<DeliveryResponseDTO> deliveries;
 }
