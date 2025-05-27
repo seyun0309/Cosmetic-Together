@@ -22,4 +22,8 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     // 특정 사용자가 좋아요한 게시물 리스트를 가져오는 쿼리
     @Query("SELECT l.board FROM Likes l WHERE l.member.id = :memberId AND l.isValid = true AND l.board.deletedAt IS NULL")
     List<Board> findLikedBoardsByMemberId(@Param("memberId") Long memberId);
+
+    // 게시글 좋아요 여부 확인
+    @Query("SELECT l FROM Likes l WHERE l.board.id = :boardId AND l.member.id = :memberId AND l.isValid = true")
+    Likes findByBoardIdAndMemberId(Long boardId, Long memberId);
 }
