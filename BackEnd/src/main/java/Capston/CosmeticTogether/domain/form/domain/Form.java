@@ -4,7 +4,9 @@ import Capston.CosmeticTogether.domain.favorites.domain.Favorites;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.global.common.BaseEntity;
 import Capston.CosmeticTogether.global.enums.FormStatus;
+import Capston.CosmeticTogether.global.enums.FormType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -35,6 +37,11 @@ public class Form extends BaseEntity {
     @OneToMany(mappedBy = "form")
     @OrderBy("id ASC")
     private List<Product> product;
+
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FormType formType;
 
     @Setter
     @Enumerated(EnumType.STRING)
