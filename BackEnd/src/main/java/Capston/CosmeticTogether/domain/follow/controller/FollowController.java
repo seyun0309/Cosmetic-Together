@@ -22,10 +22,10 @@ import java.util.List;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/follow/{followingId}")
-    @Operation(summary = "[API] 상대방 팔로우 하기 - 토큰 필요", description = "상대방 id를 URL 경로에 포함시켜 전달하면 팔로우가 됩니다")
-    public ResponseEntity<ResponseMessage> followOrUnFollow(@PathVariable("followingId") Long followingId) {
-        FollowResponseDTO response = followService.likeOrUnlikeBoard(followingId);
+    @PostMapping("/follow/{boardId}")
+    @Operation(summary = "[API] 상대방 팔로우 하기 - 토큰 필요", description = "게시글 ID를 URL 경로에 포함시켜 전달하면 작성자를 팔로우 또는 언팔로우 진행")
+    public ResponseEntity<ResponseMessage> followOrUnFollow(@PathVariable("boardId") Long boardId) {
+        FollowResponseDTO response = followService.likeOrUnlikeBoard(boardId);
         if(response.isValid()) {
             return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), response.getFollowingNickName() + "님을 팔로우하였습니다"));
         } else {
