@@ -9,7 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class CommentResponseDTO {
+    private String profileUrl;
     private String commenter;
-    private String commenterURL;
     private String commentAt;
+    private String comment;
 }
