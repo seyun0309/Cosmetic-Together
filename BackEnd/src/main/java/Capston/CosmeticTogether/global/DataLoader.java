@@ -65,11 +65,11 @@ public class DataLoader implements ApplicationRunner {
         String encodedPassword = passwordEncoder.encode("1234");
 
         List<Member> members = Arrays.asList(
-                new Member("김지상", "wltkd1097@naver.com", encodedPassword, "010-3192-7313", "김지상", "충청북도 충주시 연수동 1379-3", Role.USER, AuthType.REGULAR, "https://cosmetic-together-bucket.s3.ap-northeast-2.amazonaws.com/380d0c00-0default_profile.png"),
-                new Member("강인서", "ilusixn26@naver.com", encodedPassword, "010-8372-0162", "강인서", "경기도 기흥구 구갈동", Role.USER, AuthType.REGULAR, "https://cosmetic-together-bucket.s3.ap-northeast-2.amazonaws.com/380d0c00-0default_profile.png"),
-                new Member("이윤지", "nkje2001@naver.com", encodedPassword, "010-6123-9182", "이윤지", "서울특별시 성동구 성수동", Role.USER, AuthType.REGULAR, "https://cosmetic-together-bucket.s3.ap-northeast-2.amazonaws.com/380d0c00-0default_profile.png"),
-                new Member("이하나", "alske0192@naver.com", encodedPassword, "010-1726-6412", "이하나", "부산광역시 해운대구 우동 1418-5 ", Role.USER, AuthType.REGULAR, "https://cosmetic-together-bucket.s3.ap-northeast-2.amazonaws.com/380d0c00-0default_profile.png"),
-                new Member("김민정", "hiand_09@naver.com", encodedPassword, "010-0129-2812", "김민정", "대구광역시 중구 동성로2가 162", Role.USER, AuthType.REGULAR, "https://cosmetic-together-bucket.s3.ap-northeast-2.amazonaws.com/380d0c00-0default_profile.png")
+                new Member("김지상", "wltkd1097@naver.com", encodedPassword, "010-3192-7313", "김지상", "충청북도 충주시 연수동 1379-3", Role.USER, AuthType.REGULAR, "https://deptmanagement-s3-bucket.s3.ap-northeast-2.amazonaws.com/11820363.png"),
+                new Member("강인서", "ilusixn26@naver.com", encodedPassword, "010-8372-0162", "강인서", "경기도 기흥구 구갈동", Role.USER, AuthType.REGULAR, "https://deptmanagement-s3-bucket.s3.ap-northeast-2.amazonaws.com/11820363.png"),
+                new Member("이윤지", "nkje2001@naver.com", encodedPassword, "010-6123-9182", "이윤지", "서울특별시 성동구 성수동", Role.USER, AuthType.REGULAR, "https://deptmanagement-s3-bucket.s3.ap-northeast-2.amazonaws.com/11820363.png"),
+                new Member("이하나", "alske0192@naver.com", encodedPassword, "010-1726-6412", "이하나", "부산광역시 해운대구 우동 1418-5 ", Role.USER, AuthType.REGULAR, "https://deptmanagement-s3-bucket.s3.ap-northeast-2.amazonaws.com/11820363.png"),
+                new Member("김민정", "hiand_09@naver.com", encodedPassword, "010-0129-2812", "김민정", "대구광역시 중구 동성로2가 162", Role.USER, AuthType.REGULAR, "https://deptmanagement-s3-bucket.s3.ap-northeast-2.amazonaws.com/11820363.png")
         );
         memberRepository.saveAll(members);
     }
