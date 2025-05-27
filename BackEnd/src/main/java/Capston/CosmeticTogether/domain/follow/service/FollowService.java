@@ -1,6 +1,8 @@
 package Capston.CosmeticTogether.domain.follow.service;
 
 
+import Capston.CosmeticTogether.domain.board.domain.Board;
+import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
 import Capston.CosmeticTogether.domain.follow.dto.response.FollowResponseDTO;
 import Capston.CosmeticTogether.domain.follow.dto.response.GetFollowAndFollowingMemberDTO;
@@ -9,6 +11,7 @@ import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
 import Capston.CosmeticTogether.domain.member.service.MemberService;
 import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
+import Capston.CosmeticTogether.global.auth.service.AuthUtil;
 import Capston.CosmeticTogether.global.enums.ErrorCode;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +30,17 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final AuthUtil authUtil;
+    private final BoardRepository boardRepository;
 
     @Transactional
-    public FollowResponseDTO likeOrUnlikeBoard(Long followingId) {
+    public FollowResponseDTO likeOrUnlikeBoard(Long boardId) {
 
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorCode.BOARD_NOT_FOUND));
+
+        Long followingId = board.getMember().getId();
 
         // 자신을 팔로우하려는 경우 예외 처리
         if (loginMember.getId().equals(followingId)) {
@@ -42,7 +51,7 @@ public class FollowService {
         Member followingMember = memberRepository.findById(followingId).orElseThrow(() -> new BusinessException("해당 사용자가 존재하지 않습니다", ErrorCode.MEMBER_NOT_FOUND));
 
         // 팔로우 여부 확인
-        Follow checkFollow = followRepository.findByFollowerIdAndFollowingId(followingId, loginMember.getId());
+        Follow checkFollow = followRepository.findByFollowerIdAndFollowingId(loginMember.getId(), followingId);
 
         if (checkFollow != null) {
             if(checkFollow.isValid()) {
@@ -55,8 +64,9 @@ public class FollowService {
         } else {
             // 팔로우 처리
             Follow follow = Follow.builder()
-                    .follower(followingMember)
-                    .following(loginMember)
+                    .follower(loginMember)
+                    .following(followingMember)
+                    .isValid(true)
                     .build();
             followRepository.save(follow);
             return new FollowResponseDTO(true, followingMember.getNickname());
