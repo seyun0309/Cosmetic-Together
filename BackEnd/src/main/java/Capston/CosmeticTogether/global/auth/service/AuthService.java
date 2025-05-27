@@ -43,7 +43,8 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private final S3ImageService s3ImageService;
+    private final AuthUtil authUtil;
+    private final RedisUtil redisUtil;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -189,10 +190,8 @@ public class AuthService {
 
     @Transactional
     public void logout() {
-        long currentUserId = jwtProvider.extractIdFromTokenInHeader();
-        Member member = memberRepository.findById(currentUserId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-
-        member.setRefreshToken(null);
-        memberRepository.save(member);
+        String token = authUtil.extractTokenAfterTokenValidation();
+        long expiration = jwtProvider.getRemainingExpiration(token);
+        redisUtil.setDataExpire(token, "logout", expiration);
     }
 }
