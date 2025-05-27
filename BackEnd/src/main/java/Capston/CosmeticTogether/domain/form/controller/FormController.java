@@ -37,7 +37,7 @@ public class FormController {
                                                             @RequestPart(name = "request") @Valid CreateFormRequestDTO createFormRequestDTO,
                                                             @RequestPart(name = "images") List<MultipartFile> images) {
 
-        CreateFormResponseDTO response = formService.createForm(thumbnail, createFormRequestDTO, images);
+        formService.createForm(thumbnail, createFormRequestDTO, images);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "폼 생성 완료"));
     }
 
