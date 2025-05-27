@@ -2,8 +2,9 @@ package Capston.CosmeticTogether.domain.member.controller;
 
 
 import Capston.CosmeticTogether.ResponseMessage;
-import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
+import Capston.CosmeticTogether.domain.board.dto.response.BoardSummaryResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
+import Capston.CosmeticTogether.domain.member.dto.request.AddressUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
@@ -67,11 +68,19 @@ public class MemberProfileController {
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "회원 정보가 수정되었습니다"));
     }
 
+    // 주소 변경
+    @PostMapping("/address")
+    @Operation(summary = "주소 수정 - 토큰필요", description = "주소를 수정합니다")
+    public ResponseEntity<ResponseMessage> updateUserAddress(@RequestBody AddressUpdateRequestDTO addressUpdateRequestDTO) {
+        memberProfileService.updateUserAddress(addressUpdateRequestDTO.getAddress());
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "주소가 수정되었습니다"));
+    }
+
     //좋아요 게시글 조회
     @GetMapping("/liked-board")
     @Operation(summary = "사용자가 좋아요 한 게시글 조회 - 토큰필요", description = "사용자가 좋아요를 한 게시글들을 조회합니다")
-    public ResponseEntity<List<BoardDetailResponseDTO>> getLikedBoard() {
-        List<BoardDetailResponseDTO> response = memberProfileService.getLikedBoard();
+    public ResponseEntity<List<BoardSummaryResponseDTO>> getLikedBoard() {
+        List<BoardSummaryResponseDTO> response = memberProfileService.getLikedBoard();
         return ResponseEntity.ok(response);
     }
 
@@ -85,8 +94,8 @@ public class MemberProfileController {
 
     @GetMapping("/posts")
     @Operation(summary = "내가 작성한 게시글 조회 - 토큰필요", description = "토큰을 통해 해당 사용자가 작성한 게시글을 조회합니다")
-    public ResponseEntity<List<BoardDetailResponseDTO>> getMyBoard() {
-        List<BoardDetailResponseDTO> response = memberProfileService.getMyBoard();
+    public ResponseEntity<List<BoardSummaryResponseDTO>> getMyBoard() {
+        List<BoardSummaryResponseDTO> response = memberProfileService.getMyBoard();
         return ResponseEntity.ok(response);
     }
 }
