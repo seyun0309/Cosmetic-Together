@@ -28,6 +28,7 @@ public class CommentController {
         commentService.createComment(createCommentRequestDTO);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "댓글이 등록되었습니다"));
     }
+
 //
 //    // 댓글 수정시
 //    @PostMapping("/{commentId}")
