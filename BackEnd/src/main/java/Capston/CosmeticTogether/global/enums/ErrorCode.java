@@ -28,6 +28,10 @@ public enum ErrorCode {
     // Token
     MISMATCH_REFRESH_TOKEN(401, "T001", "유효하지 않은 리프레시 토큰입니다"),
     NO_PERMISSION(401, "T002", "요청에 대한 권한이 없습니다"),
+    EXPIRED_REFRESH_TOKEN(401, "T003", "유효시간이 만료된 리프레시 토큰입니다"),
+    LOGGED_OUT_ACCESS_TOKEN(401, "T004", "로그아웃된 토큰입니다"),
+    INVALID_ACCESS_TOKEN(404, "T005", "유효하지 않은 액세스 토큰입니다"),
+    TOKEN_REISSUE_FORBIDDEN(401, "T006", "재사용된 리프레시 토큰입니다. 다시 로그인해주세요"),
 
     // Board
     BOARD_NOT_FOUND(400, "B001", "존재하는 않는 게시글입니다"),
