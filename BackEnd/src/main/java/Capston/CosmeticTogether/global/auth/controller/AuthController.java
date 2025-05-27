@@ -6,9 +6,9 @@ import Capston.CosmeticTogether.global.auth.dto.MailAuthenticationDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.DuplicateDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.LoginRequestDTO;
 import Capston.CosmeticTogether.global.auth.dto.request.SignUpRequestDTO;
+import Capston.CosmeticTogether.global.auth.dto.response.ReissuedTokenResponseDTO;
 import Capston.CosmeticTogether.global.auth.dto.response.SignUpResponseDTO;
 import Capston.CosmeticTogether.global.auth.dto.token.GeneratedTokenDTO;
-import Capston.CosmeticTogether.global.auth.dto.token.TokenModifyDTO;
 import Capston.CosmeticTogether.global.auth.service.AuthService;
 import Capston.CosmeticTogether.global.auth.service.JwtProvider;
 import Capston.CosmeticTogether.global.auth.service.MailService;
@@ -97,7 +97,7 @@ public class AuthController {
 
     @PatchMapping("/tokens")
     @Operation(summary = "토큰 재발급", description = "Access Token과 남은 기간에 따라 Refresh Token을 재발급 합니다.")
-    public GeneratedTokenDTO tokenModify(@Valid @RequestBody TokenModifyDTO tokenModifyRequest) {
-        return jwtProvider.reissueToken(tokenModifyRequest.getRefreshToken());
+    public ReissuedTokenResponseDTO tokenModify(@RequestHeader("Refresh-Token") String refreshToken) {
+        return jwtProvider.reissueToken(refreshToken);
     }
 }
