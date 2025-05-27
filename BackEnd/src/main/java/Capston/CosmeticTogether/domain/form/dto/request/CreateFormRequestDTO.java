@@ -30,6 +30,9 @@ public class CreateFormRequestDTO {
     @NotNull
     private String endDate;
 
+    @NotBlank
+    private String formType;
+
     @NotEmpty
     private List<String> productName;
 
