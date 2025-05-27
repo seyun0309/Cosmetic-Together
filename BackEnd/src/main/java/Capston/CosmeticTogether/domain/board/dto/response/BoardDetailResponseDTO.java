@@ -1,6 +1,7 @@
 package Capston.CosmeticTogether.domain.board.dto.response;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,8 @@ public class BoardDetailResponseDTO {
     private String profileUrl;
     private String description;
     private List<String> boardUrl;
-    private Long likeCount;
+    private boolean liked;
+    private boolean following;
     private String postTime;
     private List<CommentResponseDTO> comments;
 }
