@@ -12,10 +12,13 @@ import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.comment.domain.Comment;
 import Capston.CosmeticTogether.domain.comment.repository.CommentRepository;
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
+import Capston.CosmeticTogether.domain.follow.repository.FollowRepository;
+import Capston.CosmeticTogether.domain.likes.domain.Likes;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.service.MemberService;
 import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
+import Capston.CosmeticTogether.global.auth.service.AuthUtil;
 import Capston.CosmeticTogether.global.enums.ErrorCode;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +45,13 @@ public class BoardService {
     private final LikesRepository likesRepository;
     private final S3ImageService s3ImageService;
     private final CommentRepository commentRepository;
+    private final AuthUtil authUtil;
+    private final FollowRepository followRepository;
 
     @Transactional
     public void uploadBoard(List<MultipartFile> images, CreateBoardRequestDTO createBoardRequestDTO) {
         // 1. 로그인 한 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 게시글 저장
         Board board = Board.builder()
@@ -77,36 +83,49 @@ public class BoardService {
     }
 
     public BoardDetailResponseDTO getBoard(Long boardId) {
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
         // 1. boardId로 board 가져오기
         Board board = boardRepository.findDeleteAtIsNullById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
         List<Comment> comments = commentRepository.findByBoard(board);
 
-        long likeCount = likesRepository.countLikesByBoardId(board.getId());
+        Likes likes = likesRepository.findByBoardIdAndMemberId(board.getId(), loginMember.getId());
+        boolean isLiked = likes != null;
 
         // 2. 작성자 추출
         Member writer = board.getMember();
+        boolean isFollowing = followRepository.findByFollowerAndFollowingAndIsValidTrue(loginMember, writer).isPresent();
 
         // 3. BoardImage 리스트에서 이미지 URL 추출
         List<String> imageUrls = board.getBoardImages().stream()
                 .map(BoardImage::getBoardUrl)
                 .collect(Collectors.toList());
 
-        // 4. 작성시간 포맷팅
-        String postTime = formatTime(board.getCreatedAt());
+        // 4. 게시글 만들어진 시간 포맷
+        String postTime = formatDetailTime(board.getModifiedAt());
 
         // 5. 매핑해서 리턴
         List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
         for(Comment comment : comments) {
-            CommentResponseDTO commentResponseDTO = new CommentResponseDTO(comment.getCommenter().getNickname(), comment.getCommenter().getProfileUrl(), formatTime(comment.getCreatedAt()));
-            commentResponseDTOList.add(commentResponseDTO);
+            String commentTime = formatTime(comment.getCreatedAt());
+
+            CommentResponseDTO response = CommentResponseDTO.builder()
+                    .profileUrl(comment.getCommenter().getProfileUrl())
+                    .commenter(comment.getCommenter().getNickname())
+                    .commentAt(commentTime)
+                    .comment(comment.getContent())
+                    .build();
+            commentResponseDTOList.add(response);
         }
 
         return BoardDetailResponseDTO.builder()
+                .boardId(board.getId())
                 .writerNickName(writer.getNickname())
                 .profileUrl(board.getMember().getProfileUrl())
                 .description(board.getDescription())
                 .boardUrl(imageUrls)
-                .likeCount(likeCount)
+                .liked(isLiked)
+                .following(isFollowing)
                 .postTime(postTime)
                 .comments(commentResponseDTOList)
                 .build();
@@ -147,13 +166,13 @@ public class BoardService {
 
     public List<BoardSummaryResponseDTO> getFollowingMemberBoard() {
         // 1. 로그인한 사용자 정보 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 로그인한 사용자가 팔로우한 사람들의 목록 가져오기
-        List<Member> followingMembers = new ArrayList<>();
-        for (Follow follow : loginMember.getFollowingList()) {
-            followingMembers.add(follow.getFollower()); // Follow 엔티티에서 following 필드를 가져옴
-        }
+        List<Member> followingMembers = loginMember.getFollowingList().stream()
+                .filter(Follow::isValid) // 👉 유효한 팔로우만 필터링
+                .map(Follow::getFollowing)
+                .collect(Collectors.toList());
 
         // 3. 팔로우한 사람들의 게시글 조회
         List<Board> followingBoards = boardRepository.findByFollowingMembers(followingMembers);
@@ -174,6 +193,7 @@ public class BoardService {
             String postTime = formatTime(board.getCreatedAt());
 
             BoardSummaryResponseDTO dto = BoardSummaryResponseDTO.builder()
+                    .boardId(board.getId())
                     .writerNickName(board.getMember().getNickname())
                     .profileUrl(board.getMember().getProfileUrl())
                     .description(board.getDescription())
@@ -295,11 +315,16 @@ public class BoardService {
 
         // 하루 전에 생성된 경우
         if (daysBetween >= 1) {
-            return daysBetween + "일";
+            return daysBetween + "일 전";
         } else if (hoursBetween >= 1) {
-            return hoursBetween + "시";
+            return hoursBetween + "시간 전";
         } else {
             return "방금";
         }
+    }
+
+    public static String formatDetailTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm yyyy. M. d.");
+        return dateTime.format(formatter);
     }
 }
