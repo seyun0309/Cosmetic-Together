@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface FormRepository extends JpaRepository<Form, Long> {
 
-    @Query("SELECT f FROM Form f WHERE f.organizer IN :followingMembers ORDER BY f.createdAt DESC")
+    @Query("SELECT f FROM Form f WHERE f.organizer IN :followingMembers AND f.deletedAt IS NULL ORDER BY f.createdAt DESC")
     List<Form> findByFollowingMembers(@Param("followingMembers") List<Member> followingMembers);
 
     @Query("SELECT f FROM Form f WHERE f.deletedAt IS NULL ORDER BY f.createdAt DESC")
