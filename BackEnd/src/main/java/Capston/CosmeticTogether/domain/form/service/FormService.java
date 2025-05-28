@@ -2,8 +2,10 @@ package Capston.CosmeticTogether.domain.form.service;
 
 
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
+import Capston.CosmeticTogether.domain.favorites.domain.Favorites;
 import Capston.CosmeticTogether.domain.favorites.repository.FavoritesRepository;
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
+import Capston.CosmeticTogether.domain.follow.repository.FollowRepository;
 import Capston.CosmeticTogether.domain.form.domain.Delivery;
 import Capston.CosmeticTogether.domain.form.domain.Form;
 import Capston.CosmeticTogether.domain.form.domain.Product;
@@ -20,12 +22,11 @@ import Capston.CosmeticTogether.domain.form.repository.OrderRepository;
 import Capston.CosmeticTogether.domain.form.repository.ProductRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.service.MemberService;
-import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
+import Capston.CosmeticTogether.global.auth.service.AuthUtil;
 import Capston.CosmeticTogether.global.enums.*;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,11 +44,12 @@ import java.util.stream.Collectors;
 public class FormService {
     private final FormRepository formRepository;
     private final ProductRepository productRepository;
-    private final MemberService memberService;
     private final FavoritesRepository favoritesRepository;
     private final OrderRepository orderRepository;
     private final DeliveryRepository deliveryRepository;
     private final S3ImageService s3ImageService;
+    private final AuthUtil authUtil;
+    private final FollowRepository followRepository;
 
     @Transactional
     public CreateFormResponseDTO createForm(MultipartFile thumbnail, CreateFormRequestDTO createFormRequestDTO, List<MultipartFile> images) {
@@ -62,7 +64,7 @@ public class FormService {
         validateCreateFormRequestDTO(createFormRequestDTO);
 
         // 1. 사용자 정보 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 일반 사용자만 폼 등록 가능 / 카카오인 경우엔 추가 정보 기입 필요
         if(loginMember.getRole() == Role.GUEST) {
@@ -92,12 +94,10 @@ public class FormService {
                 .formUrl(thumbnailURL)
                 .startDate(startDateTime)
                 .endDate(endDateTime)
-                .formType(FormType.formCode(createFormRequestDTO.getFormType()))
                 .formStatus(FormStatus.ACTIVE)
                 .deliveryInstructions(createFormRequestDTO.getDeliveryInstructions())
                 .bankName(createFormRequestDTO.getBankName())
                 .accountNumber(createFormRequestDTO.getAccountNumber())
-                .instagram(createFormRequestDTO.getInstagram())
                 .build();
         formRepository.save(form);
 
@@ -153,47 +153,53 @@ public class FormService {
     }
 
     public DetailFormResponseDTO getForm(Long formId) {
-        // 1. formId 유효성 체크
+        // 1. 로그인 사용자 가져오기
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
+        // 2. form id로 form 가져오기
         Form form = formRepository.findDeleteAtIsNullById(formId).orElseThrow(() -> new BusinessException(ErrorCode.FORM_NOT_FOUND));
+        Member writer = form.getOrganizer();
 
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        boolean isFollowing = followRepository.findByFollowerAndFollowingAndIsValidTrue(loginMember, writer).isPresent();
 
-        // 2. 매핑해서 리턴
+
+        // 3. 매핑해서 리턴
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // 3. 판매기간 포맷팅
+        // 판매기간 포맷팅
         String formattedStartDate = form.getStartDate().format(formatter);
         String formattedEndDate = form.getEndDate().format(formatter);
         String salesPeriod = formattedStartDate + " ~ " + formattedEndDate;
 
-        // 4. 제품 상태 확인 및 업데이트 로직
+        // 5. 제품 상태 확인 및 업데이트 로직
         boolean allOutOfStock = true;
 
         for (Product product : form.getProduct()) {
-            // 4-1. 해당 제품의 주문 수량 계산
+            // 5-1. 해당 제품의 주문 수량 계산
             Integer totalOrderedQuantity = orderRepository.sumQuantityByProductId(product.getId());
 
             if (totalOrderedQuantity == null) {
                 totalOrderedQuantity = 0;
             }
 
-            // 4-2. 주문 수량과 재고 비교
+            // 5-2. 주문 수량과 재고 비교
             if (totalOrderedQuantity >= product.getStock()) {
-                // 4-3. 재고가 소진되었을 경우, productStatus를 OUTSTOCK으로 변경
+                // 5-3. 재고가 소진되었을 경우, productStatus를 OUTSTOCK으로 변경
                 product.setProductStatus(ProductStatus.OUTSTOCK);
             } else {
-                // 4-4. 재고가 남아있는 경우, 전체 품절 여부를 false로 설정
+                // 5-4. 재고가 남아있는 경우, 전체 품절 여부를 false로 설정
                 allOutOfStock = false;
             }
         }
 
-        // 5. 모든 제품 품절 및 판매기간 지난 경우 formStatus 마감으로 설정
+        // 6. 모든 제품 품절 및 판매기간 지난 경우 formStatus 마감으로 설정
         if (allOutOfStock || (form.getStartDate().isAfter(LocalDateTime.now()) || form.getEndDate().isBefore(LocalDateTime.now()))) {
             form.setFormStatus(FormStatus.CLOSED);
         }
 
-        // 6. 찜 개수 카운트
-        Long favoriteCount = favoritesRepository.countFavoritesByFormId(form.getId());
+        // 7. 사용자가 해당 폼 찜 유무 확인 및 팔로우 확인
+        Favorites favorites = favoritesRepository.findByFormIdAndMemberId(form.getId(), loginMember.getId());
+        boolean isFavorite = favorites != null;
 
         // 7. 매핑해서 리턴
         List<ProductResponseDTO> products = form.getProduct().stream()
@@ -228,8 +234,8 @@ public class FormService {
                 .title(form.getTitle())
                 .form_description(form.getFormDescription())
                 .salesPeriod(salesPeriod)
-                .favoriteCount(favoriteCount)
-                .formType(form.getFormType().getDescription())
+                .favorite(isFavorite)
+                .following(isFollowing)
                 .buyerName(loginMember.getUserName())
                 .buyerPhone(loginMember.getPhone())
                 .buyerEmail(loginMember.getEmail())
@@ -288,13 +294,13 @@ public class FormService {
 
     public List<FormResponseDTO> getFollowingForms() {
         // 1. 사용자 정보 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 사용자의 팔로잉 목록 가져오기
-        List<Member> followingMembers = new ArrayList<>();
-        for (Follow follow : loginMember.getFollowingList()) {
-            followingMembers.add(follow.getFollower()); // Follow 엔티티에서 following 필드를 가져옴
-        }
+        List<Member> followingMembers = loginMember.getFollowingList().stream()
+                .filter(Follow::isValid)
+                .map(Follow::getFollowing)
+                .collect(Collectors.toList());
 
         // 2. 팔로잉 폼 가져오기(최신순으로)
         List<Form> followingForms = formRepository.findByFollowingMembers(followingMembers);
@@ -393,7 +399,7 @@ public class FormService {
 
     public UpdateFormInfoResponseDTO getFormInfo(Long formId) {
         // 1. 사용자 정보 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. formId 유효성 검사
         Form form = formRepository.findDeleteAtIsNullById(formId).orElseThrow(() -> new BusinessException("존재하지 않는 폼입니다", ErrorCode.FORM_NOT_FOUND));
@@ -459,7 +465,7 @@ public class FormService {
     @Transactional
     public void updateForm(Long formId, String thumbnail, UpdateFormRequestDTO updateFormRequestDTO) {
         // 1. 사용자 정보 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. formId 유효성 검사
         Form form = formRepository.findById(formId).orElseThrow(() -> new BusinessException("존재하지 않는 폼입니다", ErrorCode.FORM_NOT_FOUND));
@@ -494,7 +500,7 @@ public class FormService {
         Form form = formRepository.findById(formId).orElseThrow(() -> new BusinessException("존재하는 폼이 아닙니다", ErrorCode.FORM_NOT_FOUND));
 
         // 2. 로그인한 사용자랑 폼 작성자가 같은지 확인
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 3. 논리적 삭제 진행
         if(loginMember.equals(form.getOrganizer())) {
