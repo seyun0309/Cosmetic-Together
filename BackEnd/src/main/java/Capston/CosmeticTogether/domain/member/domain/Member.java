@@ -94,4 +94,12 @@ public class Member extends BaseEntity {
     public void updateAddress(String address) {
         this.address = address;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updatePassword(String hashedPassword) {
+        this.password = hashedPassword;
+    }
 }
