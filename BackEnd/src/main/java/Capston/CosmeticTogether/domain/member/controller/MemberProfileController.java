@@ -6,6 +6,8 @@ import Capston.CosmeticTogether.domain.board.dto.response.BoardSummaryResponseDT
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.AddressUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
+import Capston.CosmeticTogether.domain.member.dto.request.NicknameUpdateRequestDTO;
+import Capston.CosmeticTogether.domain.member.dto.request.PasswordUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MyPageOverviewResponseDTO;
@@ -74,6 +76,22 @@ public class MemberProfileController {
     public ResponseEntity<ResponseMessage> updateUserAddress(@RequestBody AddressUpdateRequestDTO addressUpdateRequestDTO) {
         memberProfileService.updateUserAddress(addressUpdateRequestDTO.getAddress());
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "주소가 수정되었습니다"));
+    }
+
+    // 닉네임 변경
+    @PostMapping("/nickname")
+    @Operation(summary = "닉네임 수정 - 토큰필요", description = "닉네임을 수정합니다")
+    public ResponseEntity<ResponseMessage> updateUserNickname(@RequestBody NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
+        memberProfileService.updateUserNickname(nicknameUpdateRequestDTO.getNickName());
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "닉네임이 수정되었습니다"));
+    }
+
+    // 비밀번호 변경
+    @PostMapping("/password")
+    @Operation(summary = "비밀번호 수정 - 토큰필요", description = "비밀번호를 수정합니다")
+    public ResponseEntity<ResponseMessage> updateUserNickname(@RequestBody PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
+        memberProfileService.updateUserPassword(passwordUpdateRequestDTO.getPassword());
+        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "비밀번호가 수정되었습니다"));
     }
 
     //좋아요 게시글 조회
