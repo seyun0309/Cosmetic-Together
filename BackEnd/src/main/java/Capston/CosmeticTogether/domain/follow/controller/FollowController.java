@@ -22,10 +22,21 @@ import java.util.List;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/follow/{boardId}")
+    @PostMapping("/follow/board/{boardId}")
     @Operation(summary = "[API] 상대방 팔로우 하기 - 토큰 필요", description = "게시글 ID를 URL 경로에 포함시켜 전달하면 작성자를 팔로우 또는 언팔로우 진행")
-    public ResponseEntity<ResponseMessage> followOrUnFollow(@PathVariable("boardId") Long boardId) {
-        FollowResponseDTO response = followService.likeOrUnlikeBoard(boardId);
+    public ResponseEntity<ResponseMessage> followOrUnFollowByBoardId(@PathVariable("boardId") Long boardId) {
+        FollowResponseDTO response = followService.likeOrUnlikeBoardByBoardId(boardId);
+        if(response.isValid()) {
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), response.getFollowingNickName() + "님을 팔로우하였습니다"));
+        } else {
+            return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), response.getFollowingNickName() + "님을 언팔로우하였습니다"));
+        }
+    }
+
+    @PostMapping("/follow/form/{formId}")
+    @Operation(summary = "[API] 상대방 팔로우 하기 - 토큰 필요", description = "게시글 ID를 URL 경로에 포함시켜 전달하면 작성자를 팔로우 또는 언팔로우 진행")
+    public ResponseEntity<ResponseMessage> followOrUnFollowByFormId(@PathVariable("formId") Long formId) {
+        FollowResponseDTO response = followService.likeOrUnlikeBoardByFormId(formId);
         if(response.isValid()) {
             return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), response.getFollowingNickName() + "님을 팔로우하였습니다"));
         } else {
