@@ -5,10 +5,7 @@ import Capston.CosmeticTogether.domain.form.domain.Form;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 
@@ -29,9 +26,6 @@ public class Favorites extends BaseEntity {
     private Form form;
 
     @Column(nullable = false)
+    @Setter
     private boolean isValid;
-
-    public void setValid(boolean b) {
-        this.isValid = b;
-    }
 }
