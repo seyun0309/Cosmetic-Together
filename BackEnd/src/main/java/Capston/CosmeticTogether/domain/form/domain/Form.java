@@ -38,10 +38,10 @@ public class Form extends BaseEntity {
     @OrderBy("id ASC")
     private List<Product> product;
 
-    @Setter
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private FormType formType;
+//    @Setter
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false)
+//    private FormType formType;
 
     @Setter
     @Enumerated(EnumType.STRING)
@@ -59,9 +59,6 @@ public class Form extends BaseEntity {
 
     @Column(nullable = false)
     private String deliveryInstructions;
-
-    @OneToMany(mappedBy = "form")
-    private List<Favorites> favorites;
 
     @OneToMany(mappedBy = "form")
     private List<Order> orders;
