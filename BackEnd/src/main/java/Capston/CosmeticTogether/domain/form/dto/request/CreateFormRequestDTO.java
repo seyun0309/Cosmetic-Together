@@ -30,8 +30,8 @@ public class CreateFormRequestDTO {
     @NotNull
     private String endDate;
 
-    @NotBlank
-    private String formType;
+//    @NotBlank
+//    private String formType;
 
     @NotEmpty
     private List<String> productName;
@@ -59,7 +59,4 @@ public class CreateFormRequestDTO {
 
     @NotNull
     private String accountNumber;
-
-    @NotNull
-    private String instagram;
 }
