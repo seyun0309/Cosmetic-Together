@@ -23,11 +23,12 @@ public class DetailFormResponseDTO {
     private String title;
     private String form_description;
     private String salesPeriod;
-    private Long favoriteCount;
     private String buyerName;
     private String buyerPhone;
     private String buyerEmail;
     private String formType;
+    private boolean favorite;
+    private boolean following;
     private List<ProductResponseDTO> products;
     private List<DeliveryResponseDTO> deliveries;
 }
