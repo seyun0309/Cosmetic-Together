@@ -244,7 +244,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
 
         // 2. 로그인한 사용자랑 게시글의 작성자가 같은지 확인
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         if(!loginMember.equals(board.getMember())) {
             throw new BusinessException(ErrorCode.NOT_WRITER_OF_POST);
@@ -266,7 +266,7 @@ public class BoardService {
         // 1. 유효한 boardId인지 확인
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
         // 2. 로그인한 사용자랑 게시글의 작성자가 같은지 확인
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         if(loginMember.equals(board.getMember())) {
             // 3. 수정
@@ -295,7 +295,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
 
         // 2. 로그인한 사용자랑 게시글 작성자가 같은지 확인
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         if(loginMember.equals(board.getMember())) {
             // 3. 삭제 처리(논리적 삭제로 진행)
