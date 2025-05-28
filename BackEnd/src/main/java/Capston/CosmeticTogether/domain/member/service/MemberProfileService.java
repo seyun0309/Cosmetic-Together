@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberProfileService {
-    private final MemberService memberService;
     private final S3ImageService s3ImageService;
     private final PasswordEncoder passwordEncoder;
     private final LikesRepository likesRepository;
@@ -153,7 +152,9 @@ public class MemberProfileService {
             long favoritesCount = favoritesRepository.countFavoritesByFormId(form.getId());
 
             FormResponseDTO formResponseDTO = FormResponseDTO.builder()
+                    .formId(form.getId())
                     .thumbnail(form.getFormUrl())
+                    .title(form.getTitle())
                     .organizerName(form.getOrganizer().getNickname())
                     .organizer_url(form.getOrganizer().getProfileUrl())
                     .formStatus(form.getFormStatus().getDescription())
@@ -226,6 +227,28 @@ public class MemberProfileService {
 
         // 3. 다시 저장
         memberRepository.save(loginMember);
+    }
 
+    public void updateUserNickname(String nickName) {
+        // 1. 로그인 사용자 조회
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
+        // 2. 닉네임 변경
+        loginMember.updateNickname(nickName);
+
+        // 3. 다시 저장
+        memberRepository.save(loginMember);
+    }
+
+    public void updateUserPassword(String password) {
+        // 1. 로그인 사용자 조회
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
+        // 2. 닉네임 변경
+        String hashedPassword = passwordEncoder.encode(password);
+        loginMember.updatePassword(hashedPassword);
+
+        // 3. 다시 저장
+        memberRepository.save(loginMember);
     }
 }
