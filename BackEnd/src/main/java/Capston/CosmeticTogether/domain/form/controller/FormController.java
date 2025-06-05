@@ -69,14 +69,7 @@ public class FormController {
     @GetMapping()
     @Operation(summary = "[API] 키워드 통한 폼 검색", description = "사용자가 키워드를 검색창에 넣으면 키워드가 포함된 폼을 불러옵니다")
     public ResponseEntity<List<FormResponseDTO>> searchFormByKeyword(@RequestParam("keyword") String keyword) {
-        List<FormResponseDTO> response;
-
-        if(keyword == null) {
-            response = formService.getRecentForms();
-        } else {
-            response = formService.searchFormByKeyword(keyword);
-        }
-
+        List<FormResponseDTO> response = formService.searchFormByKeyword(keyword);
         return ResponseEntity.ok(response);
     }
 
