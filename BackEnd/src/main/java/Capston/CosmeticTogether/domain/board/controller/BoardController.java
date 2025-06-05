@@ -2,6 +2,7 @@ package Capston.CosmeticTogether.domain.board.controller;
 
 import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.dto.request.CreateBoardRequestDTO;
+import Capston.CosmeticTogether.domain.board.dto.request.UpdateBoardRequestDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardSummaryResponseDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.UpdateBoardResponseDTO;
@@ -65,14 +66,8 @@ public class BoardController {
     // 키워드 조회
     @GetMapping()
     @Operation(summary = "[API] 키워드 통한 게시글 검색", description = "사용자가 키워드를 검색창에 넣으면 키워드가 포함된 게시글을 불러옵니다")
-    public ResponseEntity<List<BoardSummaryResponseDTO>> searchBoardByKeyword(@RequestParam(value = "keyword", required = false) String keyword) {
-        List<BoardSummaryResponseDTO> response;
-
-        if(keyword == null) {
-            response = boardService.getRecentBoard();
-        } else {
-            response = boardService.searchBoardByKeyword(keyword);
-        }
+    public ResponseEntity<List<BoardSummaryResponseDTO>> searchBoardByKeyword(@RequestParam(value = "keyword") String keyword) {
+        List<BoardSummaryResponseDTO> response = boardService.searchBoardByKeyword(keyword);
         return ResponseEntity.ok(response);
     }
 
@@ -85,13 +80,13 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PatchMapping("/{boardId}")
+    @PostMapping("/{boardId}")
     @Operation(summary = "[API] 본인 게시글 수정 - 토큰 필요", description = "해당 게시글의 boardId를 URL 경로에 포함하고 이미지 파일(images)과 게시글 내용(request)을 서버에 전송하여 게시글 수정")
     public ResponseEntity<ResponseMessage> updateBoard(@PathVariable("boardId") Long boardId,
                                               @RequestPart(required = false, name = "images") List<MultipartFile> images,
-                                              @RequestPart(required = false, name = "request") @Valid CreateBoardRequestDTO createBoardRequestDTO) {
+                                              @RequestPart(required = false, name = "request") @Valid UpdateBoardRequestDTO updateBoardRequestDTO) {
 
-        boardService.updateBoard(boardId, images, createBoardRequestDTO);
+        boardService.updateBoard(boardId, images, updateBoardRequestDTO);
 
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "게시글이 수정되었습니다"));
     }
