@@ -8,17 +8,19 @@ import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.board.service.S3ImageService;
 import Capston.CosmeticTogether.domain.comment.repository.CommentRepository;
 import Capston.CosmeticTogether.domain.favorites.repository.FavoritesRepository;
+import Capston.CosmeticTogether.domain.follow.domain.Follow;
+import Capston.CosmeticTogether.domain.follow.repository.FollowRepository;
 import Capston.CosmeticTogether.domain.form.domain.Form;
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
-import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.GetFollowerListDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.GetFollowingListDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MyPageOverviewResponseDTO;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
 import Capston.CosmeticTogether.global.auth.service.AuthUtil;
-import Capston.CosmeticTogether.global.enums.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,16 +46,65 @@ public class MemberProfileService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final AuthUtil authUtil;
+    private final FollowRepository followRepository;
 
     public MyPageOverviewResponseDTO getMyPageOverView() {
         // 1. 로그인 사용자 가져오기
         Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
-        // 2. 매핑해서 리턴
+        // 2. 팔로잉, 팔로워 수 가져오기
+        long followingCount = loginMember.getFollowingList().stream()
+                .filter(Follow::isValid)
+                .count();
+
+        long followerCount = loginMember.getFollowerList().stream()
+                .filter(Follow::isValid)
+                .count();
+
+        // 3. 매핑해서 리턴
         return MyPageOverviewResponseDTO.builder()
                 .profileUrl(loginMember.getProfileUrl())
                 .nickName(loginMember.getNickname())
+                .followingCount(followingCount)
+                .followerCount(followerCount)
                 .build();
+    }
+
+    public List<GetFollowerListDTO> getFollowers() {
+        // 1. 로그인 한 사용자 가져오기
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
+        // 2. 팔로워 리스트 가져오기
+        return loginMember.getFollowerList().stream()
+                .map(follow -> GetFollowerListDTO.builder()
+                        .loginMemberName(loginMember.getNickname())
+                        .followerMemberId(follow.getFollower().getId())
+                        .nickname(follow.getFollower().getNickname())
+                        .profileUrl(follow.getFollower().getProfileUrl())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<GetFollowingListDTO> getFollowings() {
+        // 1. 로그인 한 사용자 가져오기
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
+
+        // 2. 팔로잉 리스트 가져오기
+        return loginMember.getFollowingList().stream()
+                .map(following -> {
+                    boolean isFollowing = followRepository
+                            .findByFollowerAndFollowingAndIsValidTrue(loginMember, following.getFollowing())
+                            .isPresent();
+
+                    return GetFollowingListDTO.builder()
+                            .loginMemberName(loginMember.getNickname())
+                            .followingMemberId(following.getFollowing().getId())
+                            .nickname(following.getFollowing().getNickname())
+                            .profileUrl(following.getFollowing().getProfileUrl())
+                            .following(isFollowing)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     public boolean checkPassword(PasswordCheckDTO passwordCheckDTO) {
@@ -78,28 +129,18 @@ public class MemberProfileService {
     }
 
     @Transactional
-    public void updateMemberProfile(MultipartFile profileUrl, MultipartFile backgroundUrl, MemberUpdateRequestDTO memberUpdateRequestDTO) {
+    public void updateMemberProfile(MultipartFile img) {
         // 1. 로그인 사용자 가져오기
         Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
         // 2. 정보 수정
 
-        //2.1 이미지가 원래 없었다면 그냥 넣기
-        if(loginMember.getProfileUrl().isEmpty()) {
-            s3ImageService.upload(profileUrl);
-            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
-        } else {
-            // 2.2 이미지가 원래 있었다면 기존 이미지 삭제하고 진행
-            s3ImageService.deleteImageFromS3(loginMember.getProfileUrl());
-            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
-        }
-        if(loginMember.getBackgroundUrl().isEmpty()) {
-            s3ImageService.upload(backgroundUrl);
-            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
-        } else {
-            s3ImageService.deleteImageFromS3(loginMember.getBackgroundUrl());
-            loginMember.updateMemberInfo(memberUpdateRequestDTO, Role.USER);
-        }
+        // 2.1 기존 프로필 이미지 삭제
+        s3ImageService.deleteImageFromS3(loginMember.getProfileUrl());
+
+        // 2.2 새로운 프로필 이미지로 업데이트
+        String imgUrl = s3ImageService.upload(img);
+        loginMember.updateProfileUrl(imgUrl);
 
         memberRepository.save(loginMember);
     }
@@ -210,9 +251,9 @@ public class MemberProfileService {
 
         // 하루 전에 생성된 경우
         if (daysBetween >= 1) {
-            return daysBetween + "일";
+            return daysBetween + "일 전";
         } else if (hoursBetween >= 1) {
-            return hoursBetween + "시";
+            return hoursBetween + "시간 전";
         } else {
             return "방금";
         }
