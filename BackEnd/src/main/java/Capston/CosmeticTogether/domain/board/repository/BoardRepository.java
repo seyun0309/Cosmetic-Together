@@ -24,9 +24,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("SELECT b FROM Board b WHERE b.deletedAt IS NULL ORDER BY b.createdAt DESC")
     List<Board> findDeleteAtIsNullAll();
 
-    @Query("SELECT b FROM Board b where b.deletedAt IS NULL AND b.member.id = :memberId")
+    @Query("SELECT b FROM Board b where b.deletedAt IS NULL AND b.member.id = :memberId ORDER BY b.createdAt DESC")
     List<Board> findByMemberId(@Param("memberId")Long memberId);
 
-    @Query("SELECT b FROM Board b WHERE b.deletedAt IS NULL ORDER BY b.createdAt DESC")
+    @Query("SELECT b FROM Board b WHERE b.deletedAt IS NULL AND b.description LIKE %:keyword% ORDER BY b.createdAt DESC")
     List<Board> findByDescriptionContaining(@Param("keyword") String keyword);
 }
