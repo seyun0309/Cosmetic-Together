@@ -11,4 +11,6 @@ import lombok.*;
 public class MyPageOverviewResponseDTO {
     private String profileUrl;
     private String nickName;
+    private long followingCount;
+    private long followerCount;
 }
