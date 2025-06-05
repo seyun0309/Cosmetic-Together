@@ -80,16 +80,7 @@ public class Member extends BaseEntity {
         this.profileUrl = profileUrl;
     }
 
-    public void updateMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO, Role role) {
-        this.userName = memberUpdateRequestDTO.getUserName();
-        this.email = memberUpdateRequestDTO.getEmail();
-        this.phone = memberUpdateRequestDTO.getPhone();
-        this.nickname = memberUpdateRequestDTO.getNickname();
-        this.address = memberUpdateRequestDTO.getAddress();
-        this.profileUrl = memberUpdateRequestDTO.getProfile_url();
-        this.backgroundUrl = memberUpdateRequestDTO.getBackground_url();
-        this.role = role;
-    }
+    public void updateProfileUrl(String imgUrl) { this.profileUrl = imgUrl; }
 
     public void updateAddress(String address) {
         this.address = address;
