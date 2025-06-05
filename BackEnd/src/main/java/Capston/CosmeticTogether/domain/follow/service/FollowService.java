@@ -5,25 +5,19 @@ import Capston.CosmeticTogether.domain.board.domain.Board;
 import Capston.CosmeticTogether.domain.board.repository.BoardRepository;
 import Capston.CosmeticTogether.domain.follow.domain.Follow;
 import Capston.CosmeticTogether.domain.follow.dto.response.FollowResponseDTO;
-import Capston.CosmeticTogether.domain.follow.dto.response.GetFollowAndFollowingMemberDTO;
 import Capston.CosmeticTogether.domain.follow.repository.FollowRepository;
 import Capston.CosmeticTogether.domain.form.domain.Form;
 import Capston.CosmeticTogether.domain.form.repository.FormRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
 import Capston.CosmeticTogether.domain.member.repository.MemberRepository;
-import Capston.CosmeticTogether.domain.member.service.MemberService;
-import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
 import Capston.CosmeticTogether.global.auth.service.AuthUtil;
 import Capston.CosmeticTogether.global.enums.ErrorCode;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,13 +25,12 @@ import java.util.List;
 public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
     private final AuthUtil authUtil;
     private final BoardRepository boardRepository;
     private final FormRepository formRepository;
 
     @Transactional
-    public FollowResponseDTO likeOrUnlikeBoardByBoardId(Long boardId) {
+    public FollowResponseDTO followOrUnFollowByBoardId(Long boardId) {
 
         Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
@@ -77,7 +70,7 @@ public class FollowService {
     }
 
     @Transactional
-    public FollowResponseDTO likeOrUnlikeBoardByFormId(Long formId) {
+    public FollowResponseDTO followOrUnFollowByFormId(Long formId) {
 
         Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
@@ -116,40 +109,40 @@ public class FollowService {
         }
     }
 
+    @Transactional
+    public FollowResponseDTO followOrUnFollowByMemberId(Long memberId) {
+        Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
-    public List<GetFollowAndFollowingMemberDTO> getFollowers() {
-        // 1. 로그인 한 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Long followingId = memberId;
 
-        // 2. 팔로워 리스트 가져오기
-        List<GetFollowAndFollowingMemberDTO> followerMemberList = new ArrayList<>();
-
-        for(Follow follow : loginMember.getFollowerList()) {
-            GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
-                    .nickname(follow.getFollowing().getNickname())
-                    .profileUrl(follow.getFollowing().getProfileUrl())
-                    .build();
-            followerMemberList.add(getFollowAndFollowingMemberDTO);
+        // 자신을 팔로우하려는 경우 예외 처리
+        if (loginMember.getId().equals(followingId)) {
+            throw new BusinessException("자기 자신을 팔로우할 수 없습니다", ErrorCode.SELF_FOLLOW);
         }
 
-        return followerMemberList;
-    }
+        // DB에 있는 id인지 검사
+        Member followingMember = memberRepository.findById(followingId).orElseThrow(() -> new BusinessException("해당 사용자가 존재하지 않습니다", ErrorCode.MEMBER_NOT_FOUND));
 
-    public List<GetFollowAndFollowingMemberDTO> getFollowings() {
-        // 1. 로그인 한 사용자 가져오기
-        Member loginMember = memberService.getMemberFromSecurityDTO((SecurityMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        // 팔로우 여부 확인
+        Follow checkFollow = followRepository.findByFollowerIdAndFollowingId(loginMember.getId(), followingId);
 
-        // 2. 팔로워 리스트 가져오기
-        List<GetFollowAndFollowingMemberDTO> followingMemberList = new ArrayList<>();
-
-        for(Follow follow : loginMember.getFollowingList()) {
-            GetFollowAndFollowingMemberDTO getFollowAndFollowingMemberDTO = GetFollowAndFollowingMemberDTO.builder()
-                    .nickname(follow.getFollower().getNickname())
-                    .profileUrl(follow.getFollower().getProfileUrl())
+        if (checkFollow != null) {
+            if(checkFollow.isValid()) {
+                checkFollow.setValid(false);
+                return new FollowResponseDTO(false, followingMember.getNickname());
+            } else {
+                checkFollow.setValid(true);
+                return new FollowResponseDTO(false, followingMember.getNickname());
+            }
+        } else {
+            // 팔로우 처리
+            Follow follow = Follow.builder()
+                    .follower(loginMember)
+                    .following(followingMember)
+                    .isValid(true)
                     .build();
-            followingMemberList.add(getFollowAndFollowingMemberDTO);
+            followRepository.save(follow);
+            return new FollowResponseDTO(true, followingMember.getNickname());
         }
-
-        return followingMemberList;
     }
 }
