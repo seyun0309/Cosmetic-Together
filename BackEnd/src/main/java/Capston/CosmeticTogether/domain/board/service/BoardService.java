@@ -3,6 +3,7 @@ package Capston.CosmeticTogether.domain.board.service;
 import Capston.CosmeticTogether.domain.board.domain.Board;
 import Capston.CosmeticTogether.domain.board.domain.BoardImage;
 import Capston.CosmeticTogether.domain.board.dto.request.CreateBoardRequestDTO;
+import Capston.CosmeticTogether.domain.board.dto.request.UpdateBoardRequestDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardSummaryResponseDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.CommentResponseDTO;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardDetailResponseDTO;
@@ -16,14 +17,11 @@ import Capston.CosmeticTogether.domain.follow.repository.FollowRepository;
 import Capston.CosmeticTogether.domain.likes.domain.Likes;
 import Capston.CosmeticTogether.domain.likes.repository.LikesRepository;
 import Capston.CosmeticTogether.domain.member.domain.Member;
-import Capston.CosmeticTogether.domain.member.service.MemberService;
-import Capston.CosmeticTogether.global.auth.dto.security.SecurityMemberDTO;
 import Capston.CosmeticTogether.global.auth.service.AuthUtil;
 import Capston.CosmeticTogether.global.enums.ErrorCode;
 import Capston.CosmeticTogether.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +39,6 @@ import java.util.stream.Collectors;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardImageRepository boardImageRepository;
-    private final MemberService memberService;
     private final LikesRepository likesRepository;
     private final S3ImageService s3ImageService;
     private final CommentRepository commentRepository;
@@ -226,6 +223,7 @@ public class BoardService {
             String postTime = formatTime(board.getCreatedAt());
 
             BoardSummaryResponseDTO boardSummaryResponseDTO = BoardSummaryResponseDTO.builder()
+                    .boardId(board.getId())
                     .writerNickName(board.getMember().getNickname())
                     .profileUrl(board.getMember().getProfileUrl())
                     .description(board.getDescription())
@@ -262,26 +260,29 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(Long boardId, List<MultipartFile> images, CreateBoardRequestDTO createBoardRequestDTO) {
+    public void updateBoard(Long boardId, List<MultipartFile> images, UpdateBoardRequestDTO updateBoardRequestDTO) {
         // 1. 유효한 boardId인지 확인
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException("존재하는 게시글이 아닙니다", ErrorCode.BOARD_NOT_FOUND));
+
         // 2. 로그인한 사용자랑 게시글의 작성자가 같은지 확인
         Member loginMember = authUtil.extractMemberAfterTokenValidation();
 
+        // 3. 수정
         if(loginMember.equals(board.getMember())) {
-            // 3. 수정
-            board.update(createBoardRequestDTO.getDescription());
-
             // 3-1. 기존 이미지 삭제
-
-            // 3. 이미지 저장 처리
-            if (images != null && !images.isEmpty()) {
-                for(BoardImage boardImage : board.getBoardImages()) {
-                    boardImageRepository.delete(boardImage);
-                    s3ImageService.deleteImageFromS3(boardImage.getBoardUrl());
+            if (updateBoardRequestDTO.getDeleteImageUrls() != null) {
+                for (String url : updateBoardRequestDTO.getDeleteImageUrls()) {
+                    boardImageRepository.deleteByBoardUrl(url);
+                    s3ImageService.deleteImageFromS3(url);
                 }
+            }
+
+            // 2. 새로운 이미지 추가
+            if (images != null && !images.isEmpty()) {
                 saveBoardImages(images, board);
             }
+
+            board.update(updateBoardRequestDTO.getDescription());
 
             boardRepository.save(board);
         } else {
