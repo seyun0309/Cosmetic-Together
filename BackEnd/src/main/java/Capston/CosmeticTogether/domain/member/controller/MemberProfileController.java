@@ -5,16 +5,16 @@ import Capston.CosmeticTogether.ResponseMessage;
 import Capston.CosmeticTogether.domain.board.dto.response.BoardSummaryResponseDTO;
 import Capston.CosmeticTogether.domain.form.dto.resonse.form.FormResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.AddressUpdateRequestDTO;
-import Capston.CosmeticTogether.domain.member.dto.request.MemberUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.NicknameUpdateRequestDTO;
 import Capston.CosmeticTogether.domain.member.dto.request.PasswordUpdateRequestDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.GetFollowerListDTO;
+import Capston.CosmeticTogether.domain.member.dto.response.GetFollowingListDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MemberProfileResponseDTO;
 import Capston.CosmeticTogether.domain.member.dto.PasswordCheckDTO;
 import Capston.CosmeticTogether.domain.member.dto.response.MyPageOverviewResponseDTO;
 import Capston.CosmeticTogether.domain.member.service.MemberProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,6 +36,20 @@ public class MemberProfileController {
     @Operation(summary = "마이페이지 첫 화면에 필요한 정보 - 토큰 필요", description = "마이페이지 첫 화면에 넣을 사용자 프로필 사진, 닉네임 리턴")
     public ResponseEntity<MyPageOverviewResponseDTO> getMyPageOverview() {
         MyPageOverviewResponseDTO response = memberProfileService.getMyPageOverView();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/followers")
+    @Operation(summary = "[API] 본인의 팔로워 가져오기 - 토큰 필요", description = "본인의 팔로워를 사진, 이름과 함께 전달합니다")
+    public ResponseEntity<List<GetFollowerListDTO>> getFollowers() {
+        List<GetFollowerListDTO> response = memberProfileService.getFollowers();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/followings")
+    @Operation(summary = "[API] 본인의 팔로잉 가져오기 - 토큰 필요", description = "본인의 팔로잉을 사진, 이름과 함께 전달합니다")
+    public ResponseEntity<List<GetFollowingListDTO>> getFollowings() {
+        List<GetFollowingListDTO> response = memberProfileService.getFollowings();
         return ResponseEntity.ok(response);
     }
 
@@ -61,12 +75,10 @@ public class MemberProfileController {
     }
 
     // 사용자 정보 수정하는 거
-    @GetMapping("/users")
-    @Operation(summary = "사용자 정보 수정 - 토큰필요", description = "image1(프로필 사진), image2(배경사진), request(사용자 정보)로 서버에 데이터를 보내면 사용자 정보 수정이 완료됩니다")
-    public ResponseEntity<ResponseMessage> updateMemberProfile(@RequestPart(required = false, name = "image1") MultipartFile profileUrl,
-                                                      @RequestPart(required = false, name = "image2") MultipartFile backgroundUrl,
-                                                      @RequestPart(name = "request") @Valid MemberUpdateRequestDTO memberUpdateRequestDTO) {
-        memberProfileService.updateMemberProfile(profileUrl, backgroundUrl, memberUpdateRequestDTO);
+    @PostMapping("/profileImg")
+    @Operation(summary = "프로필 사진 수정 - 토큰필요", description = "image(프로필 사진)를 서버에 보내면 프로필 사진을 수정합니다")
+    public ResponseEntity<ResponseMessage> updateProfileImg(@RequestPart(required = false, name = "image") MultipartFile img) {
+        memberProfileService.updateMemberProfile(img);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK.value(), "회원 정보가 수정되었습니다"));
     }
 
