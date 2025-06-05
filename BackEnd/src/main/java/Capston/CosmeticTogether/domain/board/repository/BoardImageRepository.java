@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
+
+
+    void deleteByBoardUrl(String boardUrl);
 }
