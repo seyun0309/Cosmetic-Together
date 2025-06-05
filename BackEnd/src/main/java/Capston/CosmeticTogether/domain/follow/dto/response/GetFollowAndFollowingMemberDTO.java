@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class GetFollowAndFollowingMemberDTO {
+    private Long memberId;
     private String nickname;
     private String profileUrl;
 }
