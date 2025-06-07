@@ -12,6 +12,7 @@ import com.example.cosmetictogether.presentation.form.view.FormDetailActivity
 import com.example.cosmetictogether.presentation.mypage.view.MyPageActivity
 import com.example.cosmetictogether.presentation.order.adapter.OrderAdapter
 import com.example.cosmetictogether.presentation.order.viewmodel.OrderViewModel
+import com.example.cosmetictogether.presentation.post.view.PostActivity
 
 class OrderActivity : AppCompatActivity(){
     private lateinit var binding: ActivityOrderBinding
@@ -53,14 +54,15 @@ class OrderActivity : AppCompatActivity(){
         viewModel.loadOrderForm(token)
 
         binding.backBtn.setOnClickListener {
-            val intent = Intent(this, MyPageActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.action_post -> {
-                    // PostActivity로 이동할 경우 구현
+                R.id.action_home -> {
+                    val intent = Intent(this, PostActivity::class.java)
+                    startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.action_form -> {
@@ -71,10 +73,6 @@ class OrderActivity : AppCompatActivity(){
                 }
                 R.id.action_home -> {
                     // HomeActivity로 이동할 경우 구현
-                    true
-                }
-                R.id.action_alarm -> {
-                    // AlarmActivity로 이동할 경우 구현
                     true
                 }
                 R.id.action_mypage -> {
