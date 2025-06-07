@@ -54,12 +54,12 @@
             android:id="@+id/orderHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:background="#FFFFFF"
+            android:orientation="horizontal"
             android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <TextView
                 android:id="@+id/tvOrderDate"
@@ -67,8 +67,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@{order.orderDate}"
-                android:textSize="17sp"
                 android:textColor="#000000"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -76,9 +76,63 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="주문번호: 210293621092"
-                android:textSize="14sp"
-                android:textColor="#757575" />
+                android:textColor="#757575"
+                android:textSize="14sp" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/orderStatusContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F7F7F7"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/orderHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 현재 주문 상태 -->
+            <TextView
+                android:id="@+id/tvOrderStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text='@{"현재 상태: " + order.orderStatus}'
+                android:textSize="16sp"
+                android:textColor="#4CAF50"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- 상태 변경 섹션 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- 상태 변경 스피너 -->
+                <Spinner
+                    android:id="@+id/spinnerOrderStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:entries="@array/order_status_array"
+                    android:layout_gravity="center"/>
+
+                <!-- 상태 변경 버튼 -->
+                <Button
+                    android:id="@+id/btnChangeStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="상태 변경"
+                    android:textSize="14sp"
+                    android:background="@drawable/stroke_sky_full_angle"
+                    android:textColor="@android:color/white"
+                    android:layout_marginStart="16dp"
+                    android:paddingHorizontal="16dp" />
+            </LinearLayout>
+        </LinearLayout>
+
 
         <!-- 결제 정보 카드뷰 -->
         <androidx.cardview.widget.CardView
@@ -89,7 +143,7 @@
             android:layout_marginTop="8dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/orderHeader"
+            app:layout_constraintTop_toBottomOf="@id/orderStatusContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -276,8 +330,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#CEDDFE"
-                app:itemIconTint="@color/black"
-                app:menu="@menu/bottom_navigation_menu" />
+                app:menu="@menu/bottom_navigation_menu"
+                app:itemIconTint="@color/bottom_nav_item_color"
+                app:itemTextColor="@color/bottom_nav_item_color"
+                app:itemIconSize="24dp"
+                app:labelVisibilityMode="labeled" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
