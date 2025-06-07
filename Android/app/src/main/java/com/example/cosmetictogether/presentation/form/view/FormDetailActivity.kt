@@ -1,12 +1,10 @@
 package com.example.cosmetictogether.presentation.form.view
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
@@ -17,16 +15,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.example.cosmetictogether.R
+import com.example.cosmetictogether.data.api.RetrofitClient
 import com.example.cosmetictogether.data.model.CreateOrderRequest
 import com.example.cosmetictogether.data.model.ResponseDelivery
 import com.example.cosmetictogether.data.model.ResponseProduct
 import com.example.cosmetictogether.databinding.ActivityFormDetailBinding
 import com.example.cosmetictogether.databinding.ItemFormSelectBinding
+import com.example.cosmetictogether.presentation.form.viewmodel.FormDetailRepository
 import com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModel
+import com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModelFactory
 
 class FormDetailActivity: AppCompatActivity() {
     private lateinit var binding: ActivityFormDetailBinding
-    private val viewModel: FormDetailViewModel by viewModels()
+    private val viewModel: FormDetailViewModel by viewModels {
+        FormDetailViewModelFactory(
+            FormDetailRepository(
+                apiForm =  RetrofitClient.formApi
+            )
+        )
+    }
+
+    private var formId: Long = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +48,13 @@ class FormDetailActivity: AppCompatActivity() {
         binding.lifecycleOwner = this  // LiveData를 자동으로 갱신하기 위한 설정
 
         // formId를 전달받아 데이터를 조회
-        val formId = intent.getLongExtra("formId", -1L) // 전달된 formId 확인
+        formId = intent.getLongExtra("formId", -1L) // 전달된 formId 확인
         if (formId != -1L) {
-            val token = "Bearer " + getToken()
+            val token = getToken()
             viewModel.getFormDetail(formId, token) // formId로 폼 세부 정보 조회
         }
+
+        setUpObservers()
 
         // formItem을 관찰하여 값이 변경되면 UI를 갱신
         viewModel.formItem.observe(this, Observer { form ->
@@ -63,10 +74,19 @@ class FormDetailActivity: AppCompatActivity() {
             binding.totalAmountTextView.text = "총 결제 금액: ${price}원"
         })
 
-
+        // 뒤로가기 버튼
         binding.backBtn.setOnClickListener{
-            val intent = Intent(this, FormActivity::class.java)
-            startActivity(intent)
+            finish()
+        }
+
+        // 찜 버튼 클릭
+        binding.itemView.favoriteButton.setOnClickListener {
+            viewModel.toggleFavorite(formId, getToken())
+        }
+
+        // 팔로우 or 언팔로우 클릭
+        binding.itemView.followButton.setOnClickListener {
+            viewModel.toggleFollow(formId, getToken())
         }
 
         binding.purchaseButton.setOnClickListener {
@@ -104,35 +124,12 @@ class FormDetailActivity: AppCompatActivity() {
 
         viewModel.orderResponse.observe(this) { response ->
             if (response != null) {
-                Toast.makeText(this, "주문 성공: ${response.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "주문 성공", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, FormActivity::class.java)
+                intent.putExtra("SHOW_DIALOG", true)
+                intent.putExtra("orderId", response.orderId)
                 startActivity(intent)
                 finish()
-            }
-        }
-
-        val followButton = binding.root.findViewById<Button>(R.id.followButton)
-
-        viewModel.isFollowing.observe(this) { isFollowing ->
-            val followButton = findViewById<Button>(R.id.followButton)
-            if (isFollowing) {
-                followButton.text = "언팔로우"
-                followButton.setBackgroundColor(Color.parseColor("#CEDDFE"))
-            } else {
-                followButton.text = "팔로우"
-                followButton.setBackgroundColor(Color.parseColor("#FFFFFF"))
-            }
-        }
-
-        // 버튼 클릭 리스너 설정
-        followButton.setOnClickListener {
-            val token = "Bearer " + getToken()
-            val organizerId = viewModel.organizerId.value ?: return@setOnClickListener
-
-            if (viewModel.isFollowing.value == true) {
-                viewModel.followUser(this, token, organizerId)
-            } else {
-                viewModel.followUser(this, token, organizerId)
             }
         }
 
@@ -192,6 +189,29 @@ class FormDetailActivity: AppCompatActivity() {
         layoutContainer.addView(radioGroup)
     }
 
+    private fun setUpObservers() {
+        viewModel.formItem.observe(this) { formItem ->
+            formItem?.let{
+                binding.form = it
+
+                val favorite = it.favorite
+                binding.itemView.favoriteButton.setImageResource(
+                    if (favorite) R.drawable.baseline_bookmark_add_24
+                    else R.drawable.outline_bookmark_add_24
+                )
+
+                val isFollowed = it.following
+                binding.itemView.followButton.apply {
+                    text = if (isFollowed) "언팔로우" else "팔로우"
+                    setBackgroundResource(
+                        if (isFollowed) R.drawable.baseline_unfollow
+                        else R.drawable.baseline_follow
+                    )
+                }
+            }
+        }
+    }
+
     private fun setupListeners() {
         val orderEditText1 = binding.root.findViewById<EditText>(R.id.shippingName)
         val orderEditText2 = binding.root.findViewById<EditText>(R.id.shippingContact)
@@ -240,6 +260,8 @@ class FormDetailActivity: AppCompatActivity() {
 
     private fun getToken(): String {
         val sharedPreferences = getSharedPreferences("auth_prefs", MODE_PRIVATE)
-        return sharedPreferences.getString("access_token", null) ?: ""
+        val token = sharedPreferences.getString("access_token", null) ?: ""
+        val authToken = "Bearer $token"
+        return authToken
     }
 }
