@@ -12,7 +12,7 @@ import com.example.cosmetictogether.R
 import com.example.cosmetictogether.presentation.signup.view.EmailVerificationActivity
 import com.example.cosmetictogether.presentation.signup.viewmodel.AuthViewModel
 import com.example.cosmetictogether.data.model.LoginResponse
-import com.example.cosmetictogether.presentation.home.HomeActivity
+import com.example.cosmetictogether.presentation.post.view.PostActivity
 
 class LoginActivity : AppCompatActivity() {
     // AuthViewModel을 viewModels 델리게이트로 초기화 (ViewModel로 데이터 관리)
@@ -59,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
     private fun handleLoginResponse(response: LoginResponse?) {
         response?.let {
             if (it.accessToken.isNotEmpty()) {
-                startActivity(Intent(this, HomeActivity::class.java)) // 로그인 성공 시 HomeActivity로 이동
+                startActivity(Intent(this, PostActivity::class.java)) // 로그인 성공 시 HomeActivity로 이동
             } else {
                 Toast.makeText(this, "로그인 실패: ${it.refreshToken}", Toast.LENGTH_SHORT).show()
             } // 로그인 실패 시 실패 메시지 표시 (refreshToken 사용)
