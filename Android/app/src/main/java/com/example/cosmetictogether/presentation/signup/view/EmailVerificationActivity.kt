@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.cosmetictogether.R
+import com.example.cosmetictogether.presentation.login.LoginActivity
 import com.example.cosmetictogether.presentation.signup.viewmodel.AuthViewModel
 
 class EmailVerificationActivity : AppCompatActivity() {
@@ -20,6 +22,7 @@ class EmailVerificationActivity : AppCompatActivity() {
     private lateinit var btnVerifyEmail: Button
     private lateinit var btnCheckCode: Button
     private lateinit var btnJoinNext: Button
+    private lateinit var backBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,13 @@ class EmailVerificationActivity : AppCompatActivity() {
         btnVerifyEmail = findViewById(R.id.btnVerifyEmail) // 인증 번호 요청 버튼
         btnCheckCode = findViewById(R.id.btnCheckCode) // 인증 번호 확인 버튼
         btnJoinNext = findViewById(R.id.btnJoinNext) // 다음 화면 이동 버튼 (회원가입)
+        backBtn = findViewById(R.id.backBtn) // 뒤로가기 버튼
+
+        // 뒤로가기 버튼 클릭
+        backBtn.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
 
         // 이메일 인증 번호 요청 버튼 클릭
         btnVerifyEmail.setOnClickListener {
