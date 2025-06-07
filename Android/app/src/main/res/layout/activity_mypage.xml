@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -10,147 +9,260 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/white">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F2F2F2">
 
-        <LinearLayout
-            android:id="@+id/MyPageLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30sp"
-            android:layout_marginTop="84dp"
-            android:layout_marginEnd="30sp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="18dp">
 
-            <ImageView
-                android:id="@+id/imgLogo"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                app:imageUrl="@{viewModel.profileUrl}"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <!-- 사용자 이름을 ViewModel의 데이터를 바인딩 -->
-            <TextView
-                android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/nanum_square_r"
-                android:text="@{viewModel.nickName}"
-                android:textColor="@color/black"
-                android:textSize="28sp"
-                app:layout_constraintTop_toBottomOf="@+id/imgLogo"
-                tools:text="강인서" />
+                android:orientation="vertical">
 
-            <Space
+                <!-- 프로필 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="24dp"
+                    android:background="@drawable/bg_white_box"
+                    android:elevation="2dp">
+
+                    <!-- 프로필 사진 -->
+                    <ImageView
+                        android:id="@+id/imgLogo"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="16dp"
+                        app:imageUrl="@{viewModel.profileUrl}" />
+
+                    <!-- 닉네임 및 팔로잉/팔로워 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- 닉네임 -->
+                        <TextView
+                            android:id="@+id/tvUserName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.nickName}"
+                            android:textSize="20sp"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/nanum_square_b" />
+
+                        <!-- 팔로잉/팔로워 수 -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="7dp">
+
+                            <TextView
+                                android:id="@+id/followingCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text='@{String.valueOf(viewModel.followingCount) + ` 팔로잉`}'
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:layout_marginEnd="16dp"
+                                android:fontFamily="@font/nanum_square_r" />
+
+                            <TextView
+                                android:id="@+id/followerCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text='@{String.valueOf(viewModel.followerCount) + ` 팔로워`}'
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:fontFamily="@font/nanum_square_r" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 나의 활동 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="나의 활동"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_white_box">
+
+                    <Button
+                        android:id="@+id/likePostButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="좋아요 글"
+                        android:drawableStart="@drawable/sharp_favorite_border_black_24"
+                        android:drawablePadding="8dp"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:paddingVertical="12dp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_square_r" />
+
+                    <Button
+                        android:id="@+id/favoriteFormButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="찜 폼"
+                        android:drawableStart="@drawable/outline_bookmark_add_24"
+                        android:drawablePadding="8dp"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:paddingVertical="12dp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_square_r" />
+
+                    <Button
+                        android:id="@+id/writePostButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="작성한 글"
+                        android:drawableStart="@drawable/baseline_edit_note_24"
+                        android:drawablePadding="8dp"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:paddingVertical="12dp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_square_r" />
+                </LinearLayout>
+
+                <!-- 거래 내역 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="거래 내역"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_white_box">
+
+                    <Button
+                        android:id="@+id/salesHistoryButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="판매 내역"
+                        android:drawableStart="@drawable/outline_receipt_long_24"
+                        android:drawablePadding="8dp"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:paddingVertical="12dp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_square_r" />
+
+                    <Button
+                        android:id="@+id/orderListButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="구매 내역"
+                        android:drawableStart="@drawable/outline_shopping_bag_24"
+                        android:drawablePadding="8dp"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:paddingVertical="12dp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_square_r" />
+                </LinearLayout>
+
+                <!-- 기타 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="기타"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_white_box">
+
+                    <Button
+                        android:id="@+id/profileEditButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="계정 / 정보 관리"
+                        android:drawableStart="@drawable/outline_person_24"
+                        android:drawablePadding="8dp"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:paddingVertical="12dp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_square_r" />
+
+                    <Button
+                        android:id="@+id/logOutButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="로그아웃"
+                        android:drawableStart="@drawable/baseline_logout_24"
+                        android:drawablePadding="8dp"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:paddingVertical="12dp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_square_r" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- 하단 네비게이션 -->
+        <LinearLayout
+            android:id="@+id/footerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
-                android:layout_height="20sp" />
-
-            <Button
-                android:id="@+id/profileEditButton"
-                android:layout_width="350sp"
-                android:layout_height="55sp"
-                android:background="@color/white"
-                android:fontFamily="@font/nanum_square_b"
-                android:gravity="center"
-                android:text="프로필 수정"
-                android:textSize="16sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10sp" />
-
-            <Button
-                android:id="@+id/likePostButton"
-                android:layout_width="350sp"
-                android:layout_height="55sp"
-                android:background="@color/white"
-                android:fontFamily="@font/nanum_square_b"
-                android:gravity="center"
-                android:text="저장한 글"
-                android:textSize="16sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10sp" />
-
-            <Button
-                android:id="@+id/likeFormButton"
-                android:layout_width="350sp"
-                android:layout_height="55sp"
-                android:background="@color/white"
-                android:fontFamily="@font/nanum_square_b"
-                android:gravity="center"
-                android:text="저장한 폼"
-                android:textSize="16sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10sp" />
-
-            <Button
-                android:id="@+id/writePostButton"
-                android:layout_width="350sp"
-                android:layout_height="55sp"
-                android:background="@color/white"
-                android:fontFamily="@font/nanum_square_b"
-                android:gravity="center"
-                android:text="작성한 글"
-                android:textSize="16sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10sp" />
-
-            <Button
-                android:id="@+id/salesHistoryButton"
-                android:layout_width="350sp"
-                android:layout_height="55sp"
-                android:background="@color/white"
-                android:fontFamily="@font/nanum_square_b"
-                android:gravity="center"
-                android:text="판매 내역"
-                android:textSize="16sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10sp" />
-
-            <Button
-                android:id="@+id/orderListButton"
-                android:layout_width="350sp"
-                android:layout_height="55sp"
-                android:background="@color/white"
-                android:fontFamily="@font/nanum_square_b"
-                android:gravity="center"
-                android:text="구매 내역"
-                android:textSize="16sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10sp" />
-
-
-            <Button
-                android:id="@+id/logOutButton"
-                android:layout_width="350sp"
-                android:layout_height="55sp"
-                android:background="@color/white"
-                android:fontFamily="@font/nanum_square_b"
-                android:gravity="center"
-                android:text="로그아웃"
-                android:textSize="16sp" />
-
+                android:layout_height="wrap_content"
+                android:background="#CEDDFE"
+                app:menu="@menu/bottom_navigation_menu"
+                app:itemIconTint="@color/bottom_nav_item_color"
+                app:itemTextColor="@color/bottom_nav_item_color"
+                app:itemIconSize="24dp"
+                app:labelVisibilityMode="labeled" />
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
