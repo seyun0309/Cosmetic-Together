@@ -5,20 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cosmetictogether.data.api.FormRetrofitInterface
-import com.example.cosmetictogether.data.api.MyPageRetrofitInterface
 import com.example.cosmetictogether.data.api.RetrofitClient
 import com.example.cosmetictogether.data.model.CreateFormRequest
 import com.example.cosmetictogether.data.model.CreateFormResponse
 import com.example.cosmetictogether.data.model.Delivery
-import com.example.cosmetictogether.data.model.MyPageInfoResponse
 import com.example.cosmetictogether.data.model.Product
-import com.example.cosmetictogether.data.model.SignUpResponse
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import java.util.Objects
 
 class FormCreateViewModel: ViewModel() {
     // 상품 데이터 리스트
