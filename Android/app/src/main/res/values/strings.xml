@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CosmeticTogether</string>
+    <string name="unknown_time">알 수 없음</string>
+    <string name="just_now">방금 전</string>
+    <string name="minutes_ago">%1$d분 전</string>
+    <string name="hours_ago">%1$d시간 전</string>
+    <string name="days_ago">%1$d일 전</string>
 </resources>
