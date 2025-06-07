@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/nanum_square_eb"
-                    android:text="주문 목록"
+                    android:text="구매 내역"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -81,8 +81,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#CEDDFE"
-                app:itemIconTint="@color/black"
-                app:menu="@menu/bottom_navigation_menu" />
+                app:menu="@menu/bottom_navigation_menu"
+                app:itemIconTint="@color/bottom_nav_item_color"
+                app:itemTextColor="@color/bottom_nav_item_color"
+                app:itemIconSize="24dp"
+                app:labelVisibilityMode="labeled" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
