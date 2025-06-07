@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-    android:id="@+id/action_post"
-    android:title="post"
-    android:icon="@drawable/baseline_edit_square_24" />
-
-    <item
-        android:id="@+id/action_form"
-        android:title="form"
-        android:icon="@drawable/baseline_add_shopping_cart_24" />
 
     <item
         android:id="@+id/action_home"
-        android:title="home"
-        android:icon="@drawable/baseline_home_24" />
+        android:title="홈"
+        android:icon="@drawable/baseline_home_gray_24" />
 
     <item
-        android:id="@+id/action_alarm"
-        android:title="alarm"
-        android:icon="@drawable/baseline_circle_notifications_24" />
+        android:id="@+id/action_form"
+        android:title="폼"
+        android:icon="@drawable/baseline_shopping_cart_gray_24" />
+
+    <item
+        android:id="@+id/action_search"
+        android:title="검색"
+        android:icon="@drawable/baseline_search_gray_24" />
 
     <item
         android:id="@+id/action_mypage"
-        android:title="mypage"
-        android:icon="@drawable/baseline_chat_24" />
+        android:title="마이페이지"
+        android:icon="@drawable/baseline_account_gray_24" />
 </menu>
