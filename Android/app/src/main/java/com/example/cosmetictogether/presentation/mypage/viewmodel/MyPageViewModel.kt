@@ -17,18 +17,25 @@ class MyPageViewModel : ViewModel() {
     private val _profileUrl = MutableLiveData<String>()
     val profileUrl: LiveData<String> get() = _profileUrl
 
+    private val _followingCount = MutableLiveData<Long>()
+    val followingCount: LiveData<Long> get() = _followingCount
+
+    private val _followerCount = MutableLiveData<Long>()
+    val followerCount: LiveData<Long> get() = _followerCount
+
     private val myPageApi: MyPageRetrofitInterface =
         RetrofitClient.getInstance().create(MyPageRetrofitInterface::class.java)
 
     fun loadUserData(token: String) {
-        val authToken = "Bearer $token"
 
-        myPageApi.getMyPageInfo(authToken).enqueue(object : Callback<MyPageInfoResponse> {
+        myPageApi.getMyPageInfo(token).enqueue(object : Callback<MyPageInfoResponse> {
             override fun onResponse(call: Call<MyPageInfoResponse>, response: Response<MyPageInfoResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.let { data ->
                         _profileUrl.value = data.profileUrl
                         _nickName.value = data.nickName
+                        _followerCount.value = data.followerCount
+                        _followingCount.value = data.followingCount
                     }
                 }
             }
