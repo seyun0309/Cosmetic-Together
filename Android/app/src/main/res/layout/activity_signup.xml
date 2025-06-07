@@ -20,6 +20,7 @@
             app:layout_scrollFlags="scroll|enterAlways">
 
             <ImageButton
+                android:id="@+id/backBtn"
                 android:layout_width="45sp"
                 android:layout_height="45sp"
                 android:adjustViewBounds="true"
