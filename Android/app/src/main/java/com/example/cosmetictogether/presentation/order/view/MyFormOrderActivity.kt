@@ -6,11 +6,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cosmetictogether.R
 import com.example.cosmetictogether.databinding.ActivityMyformOrderBinding
-import com.example.cosmetictogether.presentation.form.view.FormActivity
 import com.example.cosmetictogether.presentation.form.view.MyFormActivity
-import com.example.cosmetictogether.presentation.mypage.view.MyPageActivity
 import com.example.cosmetictogether.presentation.order.adapter.OrderListAdapter
 import com.example.cosmetictogether.presentation.order.viewmodel.MyFormOrderViewModel
 
@@ -53,38 +50,6 @@ class MyFormOrderActivity : AppCompatActivity() {
         binding.backBtn.setOnClickListener {
             val intent = Intent(this, MyFormActivity::class.java)
             startActivity(intent)
-        }
-
-        // BottomNavigationView의 항목 클릭 이벤트 설정
-        binding.bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.action_post -> {
-                    // PostActivity로 이동할 경우 구현
-                    true
-                }
-                R.id.action_form -> {
-                    val intent = Intent(this, FormActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                R.id.action_home -> {
-                    // HomeActivity로 이동할 경우 구현
-                    true
-                }
-                R.id.action_alarm -> {
-                    // AlarmActivity로 이동할 경우 구현
-                    true
-                }
-                R.id.action_mypage -> {
-                    // MyPageActivity로 이동
-                    val intent = Intent(this, MyPageActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                else -> false
-            }
         }
     }
 
