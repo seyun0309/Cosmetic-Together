@@ -7,17 +7,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.cosmetictogether.data.api.FormRetrofitInterface
 import com.example.cosmetictogether.data.api.RetrofitClient
 import com.example.cosmetictogether.data.model.APIResponse
 import com.example.cosmetictogether.data.model.CreateOrderRequest
+import com.example.cosmetictogether.data.model.CreateOrderResponse
 import com.example.cosmetictogether.data.model.DetailFormResponse
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FormDetailViewModel : ViewModel() {
+class FormDetailViewModel(private val repository: FormDetailRepository) : ViewModel() {
     private val _formItem = MutableLiveData<DetailFormResponse>()
     val formItem: LiveData<DetailFormResponse> get() = _formItem
 
@@ -41,8 +44,11 @@ class FormDetailViewModel : ViewModel() {
     private val formApi: FormRetrofitInterface =
         RetrofitClient.getInstance().create(FormRetrofitInterface::class.java)
 
-    private val _orderResponse = MutableLiveData<APIResponse>()
-    val orderResponse: LiveData<APIResponse> get() = _orderResponse
+    private val _orderResponse = MutableLiveData<CreateOrderResponse>()
+    val orderResponse: LiveData<CreateOrderResponse> get() = _orderResponse
+
+    private val _basicResponse = MutableLiveData<APIResponse>()
+    val basicResponse: LiveData<APIResponse> get() = _basicResponse
 
     private val _isOrderInputsValid = MutableLiveData(false)
     val isOrderInputsValid: LiveData<Boolean> get() = _isOrderInputsValid
@@ -64,6 +70,15 @@ class FormDetailViewModel : ViewModel() {
 
     private val _isFollowing = MutableLiveData<Boolean>()
     val isFollowing: LiveData<Boolean> get() = _isFollowing
+
+    private val _instagramUrl = MutableLiveData<String>()
+    val instagramUrl: LiveData<String> get() = _instagramUrl
+
+    private val _deleteStatus = MutableLiveData<Boolean>()
+    val deleteStatus: LiveData<Boolean> get() = _deleteStatus
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
     init {
         _quantityMap.value = mutableMapOf()
@@ -103,12 +118,14 @@ class FormDetailViewModel : ViewModel() {
 
     // 폼 세부 정보 조회
     fun getFormDetail(formId: Long, token: String) {
-        formApi.getFormDetail(formId, token).enqueue(object : Callback<DetailFormResponse> {
+        formApi.getFormDetail(token, formId).enqueue(object : Callback<DetailFormResponse> {
             override fun onResponse(call: Call<DetailFormResponse>, response: Response<DetailFormResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.let { data ->
                         _formItem.value = data
                         // 여기에서 products의 개수로 initializeProducts 호출
+                        _instagramUrl.value = "https://www.instagram.com/${formItem.value?.instagram}"
+                        Log.d("인스타그램", _instagramUrl.value!!)
                         initializeProducts(data.products.size)
                         setOrganizerId(data.organizerId)
                     }
@@ -190,8 +207,8 @@ class FormDetailViewModel : ViewModel() {
 
     // 주문
     fun createOrder(context: Context, formId: Long, token: String, orderRequest: CreateOrderRequest) {
-        formApi.createOrder(formId, token, orderRequest).enqueue(object : Callback<APIResponse> {
-            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+        formApi.createOrder(formId, token, orderRequest).enqueue(object : Callback<CreateOrderResponse> {
+            override fun onResponse(call: Call<CreateOrderResponse>, response: Response<CreateOrderResponse>) {
                 if (response.isSuccessful) {
                     _orderResponse.value = response.body()
 
@@ -201,7 +218,7 @@ class FormDetailViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+            override fun onFailure(call: Call<CreateOrderResponse>, t: Throwable) {
                 // 네트워크 오류 처리
             }
         })
@@ -222,28 +239,6 @@ class FormDetailViewModel : ViewModel() {
         _finalTotalPrice.value = productTotal + deliveryCost  // 배송 금액과 상품 합계를 더함
     }
 
-    fun followUser(context: Context, token: String, followingId: Long) {
-        formApi.followUser(followingId, token).enqueue(object : Callback<APIResponse> {
-            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
-                if (response.isSuccessful) {
-                    _orderResponse.value = response.body()
-                    val isCurrentlyFollowing = _isFollowing.value ?: false
-                    _isFollowing.value = !isCurrentlyFollowing
-                    Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
-                } else {
-                    val errorMessage = parseErrorMessage(response)
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                    _isFollowing.value = false
-                }
-            }
-
-            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                _isFollowing.value = false
-            }
-        })
-    }
-
     private fun parseErrorMessage(response: Response<*>): String {
         return try {
             val errorBody = response.errorBody()?.string() ?: return "알 수 없는 오류가 발생했습니다."
@@ -253,4 +248,39 @@ class FormDetailViewModel : ViewModel() {
             "오류를 처리할 수 없습니다."
         }
     }
+
+    // 찜
+    fun toggleFavorite(formId: Long, token: String) {
+        viewModelScope.launch {
+            val success = repository.toggleFavorite(formId, token)
+            if(success) {
+                getFormDetail(formId, token)
+            }
+        }
+    }
+
+    fun toggleFollow(formId: Long, token: String) {
+        viewModelScope.launch {
+            val success = repository.toggleFollow(formId, token)
+            if(success) {
+                getFormDetail(formId, token)
+            }
+        }
+    }
+
+    fun deleteForm(token: String, formId: Long) {
+        viewModelScope.launch {
+            try {
+                val success = repository.deletePost(token, formId)
+                _deleteStatus.value = success
+                if (!success) {
+                    _errorMessage.value = "게시글 삭제에 실패했습니다."
+                }
+            } catch (e: Exception) {
+                _deleteStatus.value = false
+                _errorMessage.value = e.message ?: "게시글 삭제 중 오류가 발생했습니다."
+            }
+        }
+    }
+
 }
