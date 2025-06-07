@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <application
+        android:name=".MyApplication"
         android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CosmeticTogether"
         tools:targetApi="31">
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
         <activity
             android:name=".presentation.home.SplashActivity"
             android:exported="true">
@@ -61,6 +63,54 @@
             android:exported="false" />
         <activity
             android:name=".presentation.order.view.MyFormOrderDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.form.view.MyFormDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.post.view.PostWriteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.post.view.PostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.post.view.PostDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.post.view.PostEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.post.view.MyPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.post.view.LikePostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.view.AccountInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.view.AddressSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.view.PasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.view.NicknameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.form.view.FavoriteFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.search.view.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.search.view.SearchResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.post.view.MyPostDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.mypage.view.FollowFollowingListActivity"
             android:exported="false" />
     </application>
 
