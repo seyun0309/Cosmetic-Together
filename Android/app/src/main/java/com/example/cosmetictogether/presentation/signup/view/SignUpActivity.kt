@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -14,7 +15,7 @@ import com.example.cosmetictogether.presentation.login.LoginActivity
 import com.example.cosmetictogether.presentation.signup.viewmodel.SignUpViewModel
 
 class SignUpActivity : AppCompatActivity() {
-    private val viewModel: SignUpViewModel by viewModels() // SignUpViewModel을 viewModel 델리게이트로 초기화 (회원가입 로직 관리)
+    private val viewModel: SignUpViewModel by viewModels()
 
     // UI 요소 선언
     private lateinit var nameEditText: EditText
@@ -29,6 +30,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var signUpButton: Button
     private lateinit var nicknameCheckButton: Button
     private lateinit var passwordCheckButton: Button
+    private lateinit var backBtn : ImageButton
 
     // 상수 메시지 선언
     private companion object {
@@ -58,10 +60,17 @@ class SignUpActivity : AppCompatActivity() {
         signUpButton = findViewById(R.id.SignUpButton) // 회원가입 버튼
         nicknameCheckButton = findViewById(R.id.NickNameCheckBtn) // 닉네임 중복 확인 버튼
         passwordCheckButton = findViewById(R.id.PasswordCheckBtn) // 비밀번호 확인 버튼
+        backBtn = findViewById(R.id.backBtn) //뒤로가기 버튼
 
         val verifiedEmail = intent.getStringExtra("verified_email")
         val emailEditText = findViewById<TextView>(R.id.EmailText)
         emailEditText.text = verifiedEmail
+
+        // 뒤로가기 버튼 클릭
+        backBtn.setOnClickListener {
+            val intent = Intent(this, EmailVerificationActivity::class.java)
+            startActivity(intent)
+        }
 
         // 닉네임 중복 확인 버튼 클릭
         nicknameCheckButton.setOnClickListener {
