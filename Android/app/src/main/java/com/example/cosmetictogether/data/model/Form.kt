@@ -23,7 +23,9 @@ data class CreateFormRequest(
     @SerializedName("maxPurchaseLimit") val maxPurchaseLimit: List<Int>,
     @SerializedName("deliveryOption") val deliveryOption: List<String>,
     @SerializedName("deliveryCost") val deliveryCost: List<Int>,
-    @SerializedName("deliveryInstructions") val deliveryInstructions: String
+    @SerializedName("deliveryInstructions") val deliveryInstructions: String,
+    @SerializedName("bankName") val bankName: String,
+    @SerializedName("accountNumber") val accountNumber: String,
 )
 
 data class CreateFormResponse(
@@ -35,6 +37,7 @@ data class DetailFormResponse(
     @SerializedName("organizerId") val organizerId: Long,
     @SerializedName("thumbnail") val thumbnail: String,
     @SerializedName("organizerName") val organizerName: String,
+    @SerializedName("instagram") val instagram: String,
     @SerializedName("phone") val phone: String,
     @SerializedName("address") val address: String,
     @SerializedName("email") val email: String,
@@ -42,7 +45,8 @@ data class DetailFormResponse(
     @SerializedName("title") val title: String,
     @SerializedName("form_description") val formDescription: String,
     @SerializedName("salesPeriod") val salesPeriod: String,
-    @SerializedName("favoriteCount") val favoriteCount: Int,
+    @SerializedName("favorite") val favorite: Boolean,
+    @SerializedName("following") val following: Boolean,
     @SerializedName("buyerName") val buyerName: String,
     @SerializedName("buyerPhone") val buyerPhone: String,
     @SerializedName("buyerEmail") val buyerEmail: String,
@@ -60,11 +64,21 @@ data class CreateOrderRequest(
     @SerializedName("totalPrice") val totalPrice: Int
 )
 
+data class CreateOrderResponse(
+    @SerializedName("orderId") val orderId: Long
+)
+
 data class MyFormResponse(
     @SerializedName("formId") val formId: Long,
     @SerializedName("thumbnail") val thumbnail: String,
     @SerializedName("title") val title: String,
     @SerializedName("salesPeriod") val salesPeriod: String
+)
+
+data class AccountResponse(
+    @SerializedName("organizerName") val organizerName: String,
+    @SerializedName("bankName") val bankName: String,
+    @SerializedName("accountNumber") val accountNumber: String
 )
 
 data class Product(
