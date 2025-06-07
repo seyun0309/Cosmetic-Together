@@ -13,6 +13,8 @@ import com.example.cosmetictogether.presentation.form.view.FormActivity
 import com.example.cosmetictogether.presentation.mypage.view.MyPageActivity
 import com.example.cosmetictogether.presentation.order.adapter.ProductAdapter
 import com.example.cosmetictogether.presentation.order.viewmodel.OrderDetailViewModel
+import com.example.cosmetictogether.presentation.post.view.PostActivity
+import com.example.cosmetictogether.presentation.search.view.SearchActivity
 
 class OrderDetailActivity : AppCompatActivity(){
     private lateinit var binding: ActivityOrderDetailBinding
@@ -65,29 +67,20 @@ class OrderDetailActivity : AppCompatActivity(){
         // BottomNavigationView의 항목 클릭 이벤트 설정
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.action_post -> {
-                    // PostActivity로 이동할 경우 구현
+                R.id.action_home -> {
+                    startActivity(Intent(this, PostActivity::class.java))
                     true
                 }
                 R.id.action_form -> {
-                    val intent = Intent(this, FormActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    startActivity(Intent(this, FormActivity::class.java))
                     true
                 }
-                R.id.action_home -> {
-                    // HomeActivity로 이동할 경우 구현
-                    true
-                }
-                R.id.action_alarm -> {
-                    // AlarmActivity로 이동할 경우 구현
+                R.id.action_search -> {
+                    startActivity(Intent(this, SearchActivity::class.java))
                     true
                 }
                 R.id.action_mypage -> {
-                    // MyPageActivity로 이동
-                    val intent = Intent(this, MyPageActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    startActivity(Intent(this, MyPageActivity::class.java))
                     true
                 }
                 else -> false
