@@ -137,24 +137,5 @@
             app:spanCount="1"
             tools:ignore="NotSibling"
             tools:listitem="@layout/item_order_summary" />
-
-        <!-- Footer 네비게이션 -->
-        <LinearLayout
-            android:id="@+id/footerLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottomNavigationView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#CEDDFE"
-                app:itemIconTint="@color/black"
-                app:menu="@menu/bottom_navigation_menu" />
-        </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
