@@ -25,11 +25,35 @@ object RetrofitClient { // Retrofit 설정 담당 객체
             .build()
     }
 
+    val formApi : FormRetrofitInterface by lazy {
+        retrofit.create(FormRetrofitInterface::class.java)
+    }
+
+    val postApi: PostRetrofitInterface by lazy {
+        retrofit.create(PostRetrofitInterface::class.java)
+    }
+
+    val commentApi: CommentRetrofitInterface by lazy {
+        retrofit.create(CommentRetrofitInterface::class.java)
+    }
+
+    val mypageApi: MyPageRetrofitInterface by lazy {
+        retrofit.create(MyPageRetrofitInterface::class.java)
+    }
+
+    val apiSearch: SearchRetrofitInterface by lazy {
+        retrofit.create(SearchRetrofitInterface::class.java)
+    }
+
     val apiService: AuthRetrofitInterface by lazy { // API 인터페이스 구현체를 제공하는 프로퍼티
         retrofit.create(AuthRetrofitInterface::class.java) // API 인터페이스 생성
     }
 
     fun getInstance(): Retrofit { // 회원가입 구현 시 추가(외부에서 Retrofit 인스턴스에 접근할 수 있도록 getInstance 함수 제공)
         return retrofit // 생성된 Retrofit 인스턴스 반환
+    }
+
+    fun <T> createService(serviceClass: Class<T>): T {
+        return retrofit.create(serviceClass)
     }
 }
