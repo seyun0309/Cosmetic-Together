@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cosmetictogether.data.api.OrderRetrofitInterface
 import com.example.cosmetictogether.data.api.RetrofitClient
+import com.example.cosmetictogether.data.model.APIResponse
 import com.example.cosmetictogether.data.model.OrderDetailResponse
 import com.example.cosmetictogether.data.model.OrderProductResponse
+import com.example.cosmetictogether.data.model.UpdateOrderStatusRequest
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,6 +46,33 @@ class MyFormOrderDetailViewModel : ViewModel() {
             override fun onFailure(call: Call<OrderDetailResponse>, t: Throwable) {
                 // 네트워크 요청 실패 처리
                 Log.e("OrderDetailViewModel", "API call failed: ${t.message}")
+            }
+        })
+    }
+
+    fun updateOrderStatus(
+        context: Context,
+        formId: Long,
+        status: String,
+        callback: (Boolean) -> Unit
+    ) {
+        val request = UpdateOrderStatusRequest(status)
+        orderApi.updateOrderStatus(formId, request).enqueue(object : Callback<APIResponse> {
+            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                if (response.isSuccessful) {
+                    val errorMessage = parseErrorMessage(response)
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    callback(true)
+                } else {
+                    val errorMessage = parseErrorMessage(response)
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    callback(false)
+                }
+            }
+
+            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                Log.e("OrderDetailViewModel", "API call failed: ${t.message}")
+                callback(false)
             }
         })
     }
