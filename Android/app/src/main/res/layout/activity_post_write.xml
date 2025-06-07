@@ -1,9 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--글 작성 틀-->
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.cosmetictogether.presentation.post.viewmodel.PostWriteViewModel" />
+    </data>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <!-- 글 작성 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- 상단 툴바 -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#CEDDFE"
+            app:contentInsetStart="0sp"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="45sp"
+                android:layout_height="45sp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:backgroundTint="#00FF0000"
+                android:layout_marginStart="10sp"
+                android:src="@drawable/baseline_arrow_back_24" />
+
+            <TextView
+                android:id="@+id/completeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="end"
+                android:layout_marginEnd="10sp"
+                android:padding="10sp"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/nanum_square_eb"
+                android:text="완료" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- 글 입력 -->
+        <LinearLayout
+            android:id="@+id/writeTextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_below="@+id/toolbar">
+
+            <EditText
+                android:id="@+id/postEditTex"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="내용을 입력하세요"
+                android:text="@{viewModel.postDescription}"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:background="@null"
+                android:padding="8dp" />
+        </LinearLayout>
+
+        <!-- 이미지 그리드 RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imageRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/writeTextContainer"
+            android:padding="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_post_write_photo"
+            tools:itemCount="4"
+            app:spanCount="2"/>
+
+        <!-- 이미지 선택 버튼 -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/imageSelectButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_image_24"
+                android:background="?attr/selectableItemBackground"
+                android:layout_gravity="bottom|start"
+                android:padding="8dp"
+                android:contentDescription="이미지 선택" />
+        </FrameLayout>
+    </RelativeLayout>
+</layout>
