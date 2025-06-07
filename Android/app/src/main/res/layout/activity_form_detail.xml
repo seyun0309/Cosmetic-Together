@@ -54,6 +54,17 @@
                     android:fontFamily="@font/nanum_square_eb"
                     android:text="화함" />
 
+                <ImageView
+                    android:id="@+id/moreOptions"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:clickable="true"
+                    android:contentDescription="더보기"
+                    android:focusable="true"
+                    android:src="@drawable/baseline_more_vert_24"
+                    android:layout_gravity="right"/>
+
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -75,8 +86,7 @@
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/footerLayout">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -84,7 +94,9 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <include layout="@layout/item_form_header"
+                        <include
+                            android:id="@+id/itemView"
+                            layout="@layout/item_form_header"
                             bind:form="@{form}"/>
 
                         <View
