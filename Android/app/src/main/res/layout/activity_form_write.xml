@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.cosmetictogether.presentation.form.viewmodel.FormCreateViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,12 +20,14 @@
             tools:ignore="MissingConstraints">
 
             <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#CEDDFE"
                 app:contentInsetStart="0dp">
 
                 <ImageButton
+                    android:id="@+id/backBtn"
                     android:layout_width="45sp"
                     android:layout_height="45sp"
                     android:adjustViewBounds="true"
