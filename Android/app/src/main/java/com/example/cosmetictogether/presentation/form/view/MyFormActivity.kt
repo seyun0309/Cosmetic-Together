@@ -11,13 +11,14 @@ import com.example.cosmetictogether.presentation.form.adapter.MyFormAdapter
 import com.example.cosmetictogether.presentation.form.viewmodel.MyFormViewModel
 import com.example.cosmetictogether.presentation.mypage.view.MyPageActivity
 import com.example.cosmetictogether.presentation.order.view.MyFormOrderActivity
+import com.example.cosmetictogether.presentation.post.view.PostActivity
 
 class MyFormActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMyformBinding
     private val viewModel: MyFormViewModel by viewModels()
 
-    private lateinit var myFormAdapter: MyFormAdapter// 어댑터 선언
+    private lateinit var myFormAdapter: MyFormAdapter
 
     private fun getToken(): String {
         val sharedPreferences = getSharedPreferences("auth_prefs", MODE_PRIVATE)
@@ -50,14 +51,15 @@ class MyFormActivity : AppCompatActivity() {
         viewModel.loadFormList(getToken())
 
         binding.backBtn.setOnClickListener {
-            val intent = Intent(this, MyPageActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.action_post -> {
-                    // PostActivity로 이동할 경우 구현
+                R.id.action_home -> {
+                    val intent = Intent(this, PostActivity::class.java)
+                    startActivity(intent)
+                    finish()
                     true
                 }
                 R.id.action_form -> {
@@ -68,10 +70,6 @@ class MyFormActivity : AppCompatActivity() {
                 }
                 R.id.action_home -> {
                     // HomeActivity로 이동할 경우 구현
-                    true
-                }
-                R.id.action_alarm -> {
-                    // AlarmActivity로 이동할 경우 구현
                     true
                 }
                 R.id.action_mypage -> {
@@ -88,7 +86,7 @@ class MyFormActivity : AppCompatActivity() {
 
 
     private fun navigateToFormDetail(formId: Long) {
-        val intent = Intent(this, FormDetailActivity::class.java)
+        val intent = Intent(this, MyFormDetailActivity::class.java)
         intent.putExtra("formId", formId) // 폼 ID 전달
         startActivity(intent)
     }
