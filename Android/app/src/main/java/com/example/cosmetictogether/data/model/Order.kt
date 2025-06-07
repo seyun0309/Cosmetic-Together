@@ -5,10 +5,11 @@ import com.google.gson.annotations.SerializedName
 data class OrderFormResponse(
     @SerializedName("formId") val formId: Long,
     @SerializedName("orderId") val orderId: Long,
+    @SerializedName("orderStatus") val orderStatus: String,
     @SerializedName("orderDate") val orderDate: String,
     @SerializedName("thumbnail") val thumbnail: String,
     @SerializedName("title") val title: String,
-    @SerializedName("totalPrice") val totalPrice: Int
+    @SerializedName("totalPrice") val totalPrice: String
 )
 
 data class OrderDetailResponse(
@@ -21,7 +22,11 @@ data class OrderDetailResponse(
     @SerializedName("recipientAddress") val recipientAddress: String,
     @SerializedName("orderProducts") val orderProducts: List<OrderProductResponse>,
     @SerializedName("deliveryOption") val deliveryOption: String,
-    @SerializedName("deliveryCost") val deliveryCost: String
+    @SerializedName("deliveryCost") val deliveryCost: String,
+    @SerializedName("orderStatus") val orderStatus: String,
+    @SerializedName("organizerName") val organizerName: String,
+    @SerializedName("bankName") val bankName: String,
+    @SerializedName("accountNumber") val accountNumber: String
 )
 
 data class OrderProductResponse(
@@ -44,4 +49,8 @@ data class Orders(
     @SerializedName("orderDate") val orderDate: String,
     @SerializedName("buyerName") val buyerName: String,
     @SerializedName("totalPrice") val totalPrice: String,
+)
+
+data class UpdateOrderStatusRequest(
+    @SerializedName("orderStatus") val orderStatus: String
 )
