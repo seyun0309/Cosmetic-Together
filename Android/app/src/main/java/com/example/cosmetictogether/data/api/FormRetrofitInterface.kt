@@ -1,15 +1,19 @@
 package com.example.cosmetictogether.data.api
 
 import com.example.cosmetictogether.data.model.APIResponse
+import com.example.cosmetictogether.data.model.AccountResponse
 import com.example.cosmetictogether.data.model.CreateFormRequest
 import com.example.cosmetictogether.data.model.CreateFormResponse
 import com.example.cosmetictogether.data.model.CreateOrderRequest
+import com.example.cosmetictogether.data.model.CreateOrderResponse
 import com.example.cosmetictogether.data.model.DetailFormResponse
 import com.example.cosmetictogether.data.model.FormSummaryResponse
 import com.example.cosmetictogether.data.model.MyFormResponse
+import com.example.cosmetictogether.data.model.PostDeleteResponse
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -21,8 +25,10 @@ interface FormRetrofitInterface {
     @GET("/api/v1/form/recent")
     fun getFormRecent() : Call<List<FormSummaryResponse>>
 
-    @GET("/api/v1/form/following")
-    fun getFollowingForm() : Call<List<FormSummaryResponse>>
+    @GET("/api/v1/mypage/favorite-form")
+    fun getFollowingForm(
+        @Header("Authorization") token: String
+    ) : Call<List<FormSummaryResponse>>
 
     @Multipart
     @POST("/api/v1/form")
@@ -35,15 +41,16 @@ interface FormRetrofitInterface {
 
     @GET("/api/v1/form/{formId}")
     fun getFormDetail(
-        @Path("formId") formId: Long,
-        @Header("Authorization") token: String,) : Call<DetailFormResponse>
+        @Header("Authorization") token: String,
+        @Path("formId") formId: Long
+    ): Call<DetailFormResponse>
 
     @POST("/api/v1/order/{formId}")
     fun createOrder(
         @Path("formId") formId: Long,
         @Header("Authorization") token: String,
         @Body orderRequest: CreateOrderRequest
-    ) : Call<APIResponse>
+    ) : Call<CreateOrderResponse>
 
     @POST("api/v1/follow/{followingId}")
     fun followUser(
@@ -54,4 +61,26 @@ interface FormRetrofitInterface {
 
     @GET("/api/v1/order/my-form")
     fun getMyForm(@Header("Authorization") token: String): Call<List<MyFormResponse>>
+
+    @GET("/api/v1/order/account/{orderId}")
+    fun getAccount(@Path("orderId") orderId: Long,): Call<AccountResponse>
+
+    @POST("/api/v1/favorite/{formId}")
+    fun favoriteOrUnfavoriteForm(
+        @Header("Authorization") token: String,
+        @Path("formId") formId: Long
+    ): Call<APIResponse>
+
+    // 팔로우
+    @POST("/api/v1/follow/form/{formId}")
+    fun followOrUnfollow(
+        @Header("Authorization") token: String,
+        @Path("formId") formId: Long
+    ): Call<APIResponse>
+
+    @DELETE("api/v1/form/{formId}")
+    fun postDelete(
+        @Header("Authorization") token: String,
+        @Path("formId") formId: Long
+    ): Call<PostDeleteResponse>
 }
