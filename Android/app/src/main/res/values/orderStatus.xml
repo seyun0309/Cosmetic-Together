@@ -1,0 +1,10 @@
+<!-- res/values/strings.xml -->
+<resources>
+    <!-- 주문 상태 배열 -->
+    <string-array name="order_status_array">
+        <item>주문 완료</item>
+        <item>결제 완료</item>
+        <item>배송 중</item>
+        <item>배송 완료</item>
+    </string-array>
+</resources>
