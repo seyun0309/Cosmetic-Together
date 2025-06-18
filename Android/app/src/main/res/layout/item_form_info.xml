@@ -1,0 +1,19 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModel" />
+        <variable
+            name="form"
+            type="com.example.cosmetictogether.data.model.DetailFormResponse" />
+    </data>
+
+    <TextView
+        android:id="@+id/productDescriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@{form.formDescription}"
+        android:textSize="16sp" />
+</layout>

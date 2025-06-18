@@ -1,0 +1,88 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModel" />
+        <variable
+            name="form"
+            type="com.example.cosmetictogether.data.model.DetailFormResponse" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/buyerInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="구매자 정보"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/buyerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text='@{`이름: ` + form.buyerName}'
+            android:textSize="15sp"
+            android:padding="7dp"/>
+
+        <TextView
+            android:id="@+id/buyerContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text='@{`연락처: ` + form.buyerPhone}'
+            android:textSize="15sp"
+            android:padding="7dp"/>
+
+        <TextView
+            android:id="@+id/buyerEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text='@{`이메일: ` + form.buyerEmail}'
+            android:textSize="15sp"
+            android:padding="7dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DDDDDD"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/shippingInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="배송 정보"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/shippingName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:hint="수령자 이름" />
+
+        <EditText
+            android:id="@+id/shippingContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:hint="수령자 연락처" />
+
+        <EditText
+            android:id="@+id/shippingAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:hint="수령자 주소" />
+
+    </LinearLayout>
+</layout>

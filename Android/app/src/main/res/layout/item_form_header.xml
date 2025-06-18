@@ -1,0 +1,130 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModel" />
+        <variable
+            name="form"
+            type="com.example.cosmetictogether.data.model.DetailFormResponse" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/formLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintBaseline_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="350dp"
+                android:layout_height="350dp"
+                app:imageUrl="@{form.thumbnail}"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{form.title}"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"/>
+
+        </LinearLayout>
+
+        <!-- 판매 기간 -->
+        <LinearLayout
+            android:id="@+id/salesPeriodLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/formLinearLayout">
+
+            <ImageView
+                android:id="@+id/salesPeriodIcon"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/baseline_calendar_month_24" />
+
+            <TextView
+                android:id="@+id/salesPeriodText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text='@{"판매기간: " + form.salesPeriod}'
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Organizer 정보 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/organizerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/salesPeriodLayout">
+
+            <!-- Organizer 프로필 -->
+            <ImageView
+                android:id="@+id/organizer_url"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{form.organizerProfileUrl}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- 닉네임 -->
+            <TextView
+                android:id="@+id/organizerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{form.organizerName}"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/organizer_url"
+                app:layout_constraintTop_toTopOf="@+id/organizer_url"
+                app:layout_constraintBottom_toBottomOf="@+id/organizer_url"
+                android:layout_marginStart="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:padding="8dp">
+
+                <ImageButton
+                    android:id="@+id/favoriteButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/outline_bookmark_add_24"
+                    android:contentDescription="찜하기" />
+
+                <Button
+                    android:id="@+id/followButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="팔로우"
+                    android:textSize="14sp"
+                    android:background="@drawable/baseline_follow"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

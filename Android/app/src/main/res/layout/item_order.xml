@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--폼 틀 아이템-->
+    <data>
+        <variable
+            name="order"
+            type="com.example.cosmetictogether.data.model.OrderFormResponse" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 주문 날짜 -->
+            <TextView
+                android:id="@+id/tvOrderDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{order.orderDate}"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <!-- 배송완료와 도착일 -->
+            <TextView
+                android:id="@+id/tvDeliveryStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{order.orderStatus}"
+                android:textSize="14sp"
+                android:textColor="#4CAF50" />
+
+            <!-- 주문 아이템 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ivProductImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    app:imageUrl="@{order.thumbnail}" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- 상품 이름 -->
+                    <TextView
+                        android:id="@+id/tvProductName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{order.title}"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="5sp"/>
+
+                    <!-- 상품 가격 및 수량 -->
+                    <TextView
+                        android:id="@+id/tvTotalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text='@{"총 금액 " + order.totalPrice + " 원"}'
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnFormDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="폼 상세 보기"
+                    android:textSize="12sp"
+                    android:paddingHorizontal="8dp" />
+            </LinearLayout>
+
+            <!-- 주문 상세 조회 -->
+            <Button
+                android:id="@+id/btnOrderDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="주문 상세 보기"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+</layout>

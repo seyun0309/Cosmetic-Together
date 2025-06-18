@@ -1,0 +1,3 @@
+<style name="BottomNavTextAppearance" parent="TextAppearance.AppCompat.Caption">
+    <item name="android:textSize">12sp</item> <!-- 원하는 고정 크기 -->
+</style>

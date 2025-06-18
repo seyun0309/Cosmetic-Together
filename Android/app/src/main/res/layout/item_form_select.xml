@@ -1,0 +1,123 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.cosmetictogether.presentation.form.viewmodel.FormDetailViewModel" />
+        <variable
+            name="product"
+            type="com.example.cosmetictogether.data.model.ResponseProduct"/>
+    </data>
+
+    <!-- 제품이 한 줄에 하나씩 나타나도록 LinearLayout을 수직 정렬로 설정 -->
+    <LinearLayout
+        android:id="@+id/layoutProductContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_marginBottom="8dp">
+
+        <!-- 제품 이미지와 정보가 가로로 배치된 컨테이너 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- 제품 이미지 -->
+            <ImageView
+                android:id="@+id/productImageView"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{product.product_url}" />
+
+            <!-- 제품명, 가격, 수량 정보 -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="16dp">
+
+                <!-- 제품명 및 가격 -->
+                <TextView
+                    android:id="@+id/productNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{product.productName}"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/productPriceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{String.valueOf(product.price) + "원"}'
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/productStockTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{"재고: " + String.valueOf(product.stock) + "개"}'
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
+
+            <!-- 버튼 및 최대 수량 정보 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:paddingTop="4dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/decrementButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:text="−"
+                        android:textSize="20sp"
+                        android:onClick="@{() -> viewmodel.decreaseQuantity(product.productId, product.price)}"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:textColor="@android:color/white" />
+
+                    <TextView
+                        android:id="@+id/quantityTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{String.valueOf(viewmodel.getQuantityLiveData(product.productId))}"
+                        android:textSize="18sp"
+                        android:paddingHorizontal="16dp" />
+
+                    <Button
+                        android:id="@+id/incrementButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:onClick="@{() -> viewmodel.increaseQuantity(product.productId, product.maxPurchaseLimit, product.price)}"
+                        android:text="+"
+                        android:textSize="20sp"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/productMaxPurchaseLimitTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text='@{"최대 수량: " + String.valueOf(product.maxPurchaseLimit) + "개"}'
+                    android:textSize="14sp"
+                    android:textColor="@android:color/holo_red_dark" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</layout>
