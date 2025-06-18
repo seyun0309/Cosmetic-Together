@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <!-- 프로필 이미지 -->
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true" />
+
+        <!-- 닉네임 -->
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:fontFamily="@font/nanum_square_b" />
+
+        <!-- 팔로우 버튼 -->
+        <Button
+            android:id="@+id/followButton"
+            android:layout_width="70dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="212dp"
+            android:background="@drawable/baseline_follow"
+            android:text="팔로잉"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            app:layout_constraintVertical_bias="0.266" />
+    </LinearLayout>
+</layout>
