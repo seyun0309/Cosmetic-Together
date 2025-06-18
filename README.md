@@ -21,6 +21,7 @@
 - 화장품 공동구매 폼을 생성 및 참여 가능한 플랫폼으로 통합했습니다.
 
 <br>
+
 ## 👥 팀 구성
 
 | 역할            | 이름     |
@@ -29,6 +30,7 @@
 | 프론트엔드 개발 | 강인서   |
 
 <br>
+
 ## ⚙️ 기술 스택
 
 ### Backend
@@ -45,6 +47,7 @@
 - Kotlin
 
 <br>
+
 ## 주요 기능
 
 ### 🗣️ 게시판
@@ -63,6 +66,7 @@
 - 마이페이지(정보 수정 및 각종 조회)
 
 <br>
+
 ### 앱 주요 화면
 <p align="center">
   <img src="https://github.com/user-attachments/assets/fca3edbe-e48e-4797-85a8-77c9ba574a22" alt="Image 1" width="30%" />
