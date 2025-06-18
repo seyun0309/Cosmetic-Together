@@ -10,15 +10,18 @@
 <img src = "https://github.com/user-attachments/assets/7980364a-e190-4893-842c-6a26958a8c1a" width = "700">
 
 최근 화장품 업계는 **특전(굿즈)**과 함께 **화장품의 묶음 판매**가 많아지면서,<br>
-**특전만 모으려는 사용자**와 **화장품만 저렴하게 구매하려는 사용자** 간의 니즈가 갈리고 있습니다.
+1. **특전만 모으려는 사용자**
+2. **화장품만 저렴하게 구매하려는 사용자**
+간의 니즈가 갈리고 있습니다.
 
 <br>
-<img src = "https://github.com/user-attachments/assets/3c39b964-9a25-491c-a7d4-53325a58fc85" width = "700"><br>
-기존 SNS에서는 관련 정보를 찾기 어려웠고, 위치폼 같은 폼 플랫폼은 정보 공유가 어렵다는 한계가 있습니다.
+기존 SNS에서는 화장품 정보만을 찾기에 어려움이 있고, 위치폼 같은 폼 플랫폼은 정보 공유가 어렵다는 한계가 있습니다.
 
+<br>
 **화함**은 이러한 문제를 해결하기 위해  
 - SNS처럼 사용자 간 소통 가능
-- 화장품 공동구매 폼을 생성 및 참여 가능한 플랫폼으로 통합했습니다.
+- 화장품 공동구매 폼을 생성 및 참여
+를 한 곳에서 제공하여 사용자들의 니즈를 충족시키고자 서비스를 개발하게 되었습니다.
 
 <br>
 
@@ -67,7 +70,7 @@
 
 <br>
 
-### 앱 주요 화면
+## 앱 주요 화면
 <p align="center">
   <img src="https://github.com/user-attachments/assets/fca3edbe-e48e-4797-85a8-77c9ba574a22" alt="Image 1" width="30%" />
   <img src="https://github.com/user-attachments/assets/fa9086ed-5110-4c32-8b86-968004094271" alt="Image 2" width="30%" />
