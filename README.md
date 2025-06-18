@@ -73,6 +73,13 @@
 
 <br>
 
+## 🗂️ ERD
+<img src="https://github.com/user-attachments/assets/7857ee25-dc04-4a3e-95fa-914a24f1e0e7" alt="Image">
+<br>
+<br>
+
+## 🔌 API
+
 ## 앱 주요 화면
 <p align="center">
   <img src="https://github.com/user-attachments/assets/fca3edbe-e48e-4797-85a8-77c9ba574a22" alt="Image 1" width="30%" />
