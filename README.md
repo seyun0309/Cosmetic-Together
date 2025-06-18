@@ -20,7 +20,7 @@
 - SNS처럼 사용자 간 소통 가능
 - 화장품 공동구매 폼을 생성 및 참여 가능한 플랫폼으로 통합했습니다.
 
-
+<br>
 ## 👥 팀 구성
 
 | 역할            | 이름     |
@@ -28,7 +28,7 @@
 | **백엔드 개발, 프론트 개발** | **김세윤** |
 | 프론트엔드 개발 | 강인서   |
 
-
+<br>
 ## ⚙️ 기술 스택
 
 ### Backend
@@ -44,7 +44,7 @@
 - Android Studio
 - Kotlin
 
-
+<br>
 ## 주요 기능
 
 ### 🗣️ 게시판
@@ -62,10 +62,11 @@
 - 일반 회원가입
 - 마이페이지(정보 수정 및 각종 조회)
 
-
+<br>
 ### 앱 주요 화면
-<img src="https://github.com/user-attachments/assets/fca3edbe-e48e-4797-85a8-77c9ba574a22" alt="Image 1" />
-<img src="https://github.com/user-attachments/assets/fa9086ed-5110-4c32-8b86-968004094271" alt="Image 2" />
-<img src="https://github.com/user-attachments/assets/996ecf69-6b91-4036-a018-9eab7e739b90" alt="Image 3" />
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/fca3edbe-e48e-4797-85a8-77c9ba574a22" alt="Image 1" width="30%" />
+  <img src="https://github.com/user-attachments/assets/fa9086ed-5110-4c32-8b86-968004094271" alt="Image 2" width="30%" />
+  <img src="https://github.com/user-attachments/assets/996ecf69-6b91-4036-a018-9eab7e739b90" alt="Image 3" width="30%" />
+</p>
 
