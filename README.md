@@ -79,6 +79,16 @@
 <br>
 
 ## 🔌 API
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0b9ff027-279d-4fd1-b87c-32e6948af46f" alt="Image 1" width="32%" />
+  <img src="https://github.com/user-attachments/assets/bbf1b1c5-6e30-47fd-827f-fc935c59160c" alt="Image 2" width="32%" />
+  <img src="https://github.com/user-attachments/assets/4506cc4b-bc69-4cec-b5f1-37663b25cddd" alt="Image 3" width="32%" />
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4fb0a38d-b065-41d8-8038-b6ff0aca103c" alt="Image 4" width="32%" />
+  <img src="https://github.com/user-attachments/assets/7576c58d-04fc-49a5-b50b-e27a877782fe" alt="Image 5" width="32%" />
+  <img src="https://github.com/user-attachments/assets/779f6c3b-7763-4818-a6f9-0463710ebcd3" alt="Image 6" width="32%" />
+</p>
 
 ## 앱 주요 화면
 <p align="center">
